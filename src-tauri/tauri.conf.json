@@ -37,8 +37,9 @@
         "fullscreen": false,
         "resizable": true,
         "title": "rebebuca",
-        "width": 800,
-        "height": 600
+        "width": 1280,
+        "height": 770,
+        "decorations": false
       }
     ]
   }
