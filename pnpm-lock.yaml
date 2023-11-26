@@ -23,9 +23,9 @@ importers:
       antd:
         specifier: ^5.11.0
         version: 5.11.0(react-dom@18.2.0)(react@18.2.0)
-      hooks:
-        specifier: workspace:*
-        version: link:packages/hooks
+      dayjs:
+        specifier: ^1.11.10
+        version: 1.11.10
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -35,6 +35,9 @@ importers:
       react-router-dom:
         specifier: ^6.8.1
         version: 6.19.0(react-dom@18.2.0)(react@18.2.0)
+      ulid:
+        specifier: ^2.3.0
+        version: 2.3.0
     devDependencies:
       '@tauri-apps/cli':
         specifier: ^1.5.6
@@ -54,6 +57,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.0.3
         version: 4.1.1(vite@4.5.0)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       eslint:
         specifier: ^8.53.0
         version: 8.53.0
@@ -2124,6 +2130,14 @@ packages:
     dependencies:
       toggle-selection: 1.0.6
     dev: false
+
+  /cross-env@7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+    dev: true
 
   /cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -4632,6 +4646,11 @@ packages:
     resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  /ulid@2.3.0:
+    resolution: {integrity: sha512-keqHubrlpvT6G2wH0OEfSW4mquYRcbe/J8NMmveoQOjUqmo+hXtO+ORCpWhdbZ7k72UtY61BL7haGxW6enBnjw==}
+    hasBin: true
+    dev: false
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}

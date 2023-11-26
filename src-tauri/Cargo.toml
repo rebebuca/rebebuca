@@ -9,13 +9,25 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[workspace]
+members = [".", "entity", "migration"]
+
 [build-dependencies]
 tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
+entity = { path = "entity" }
+migration = { path = "migration" }
+
 tauri = { version = "1.5", features = ["shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+tokio = { version = "1.28.2", features = ["full"] }
+
+[dependencies.sea-orm]
+version = "0.12.6"
+features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros"]
+default-features = false
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

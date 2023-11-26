@@ -138,14 +138,12 @@ const renderBadge = (count: number, active = false) => {
 export default () => {
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('tab1')
   const action = useRef<ActionType>()
-  const nav = useNavigate()
   return (
     <ProList<any>
       rowKey="name"
       actionRef={action}
       dataSource={dataSource}
       editable={{}}
-      // grid={{ gutter: 16, column: 2 }}
       pagination={{
         defaultPageSize: 8,
         showSizeChanger: false,
@@ -203,7 +201,7 @@ export default () => {
             <a target="_blank" rel="noopener noreferrer" key="warning" onClick={() => {}}>
               编辑
             </a>,
-            <a target="_blank" rel="noopener noreferrer" key="warning" onClick={() => {}}>
+            <a target="_blank" rel="noopener noreferrer" key="copy" onClick={() => {}}>
               克隆
             </a>,
             <a target="_blank" rel="noopener noreferrer" key="view">
