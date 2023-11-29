@@ -81,7 +81,7 @@ export default () => {
                       },
                       {
                         path: '/project/new',
-                        name: '接口新建',
+                        name: '新建接口',
                         icon: <SmileFilled />,
                       },
                       {
