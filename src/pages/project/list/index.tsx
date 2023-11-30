@@ -1,243 +1,189 @@
-import type { ActionType } from '@ant-design/pro-components'
-import { ProList } from '@ant-design/pro-components'
-import { Badge, Button } from 'antd'
-import React, { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { EllipsisOutlined, SearchOutlined } from '@ant-design/icons';
+import type { ProColumns } from '@ant-design/pro-components';
+import { ProTable, TableDropdown } from '@ant-design/pro-components';
+import { Button, Dropdown, Input } from 'antd';
 
-const dataSource = [
-  {
-    name: '接口1',
-    desc: '介绍',
-    content: [
-      {
-        label: '参数',
-        value: 300,
-      },
-      {
-        label: '命令行',
-        value: 20,
-      },
-      {
-        label: '运行状态',
-        value: '成功',
-        status: 'success',
-      },
-    ],
-  },
-  {
-    name: '接口2',
-    desc: '介绍',
-    content: [
-      {
-        label: '参数',
-        value: 302,
-      },
-      {
-        label: '命令行',
-        value: 28,
-      },
-      {
-        label: '运行状态',
-        value: '成功',
-        status: 'success',
-      },
-    ],
-  },
-  {
-    name: '接口3',
-    desc: '介绍',
-    content: [
-      {
-        label: '参数',
-        value: 400,
-      },
-      {
-        label: '命令行',
-        value: 22,
-      },
-      {
-        label: '运行状态',
-        value: '成功',
-        status: 'success',
-      },
-    ],
-  },
-  {
-    name: '接口4',
-    desc: '介绍',
-    content: [
-      {
-        label: '接口数量',
-        value: 400,
-      },
-      {
-        label: '命令行',
-        value: 22,
-      },
-      {
-        label: '运行状态',
-        value: '成功',
-        status: 'success',
-      },
-    ],
-  },
-  {
-    name: '接口5',
-    desc: '介绍',
-    content: [
-      {
-        label: '接口数量',
-        value: 400,
-      },
-      {
-        label: '命令行',
-        value: 22,
-      },
-      {
-        label: '运行状态',
-        value: '成功',
-        status: 'success',
-      },
-    ],
-  },
-  {
-    name: '接口6',
-    desc: '介绍',
-    content: [
-      {
-        label: '接口数量',
-        value: 400,
-      },
-      {
-        label: '命令行',
-        value: 22,
-      },
-      {
-        label: '运行状态',
-        value: '成功',
-        status: 'success',
-      },
-    ],
-  },
-]
+const valueEnum = {
+  0: 'close',
+  1: 'running',
+  2: 'online',
+  3: 'error',
+};
 
-const renderBadge = (count: number, active = false) => {
-  return (
-    <Badge
-      count={count}
-      style={{
-        marginBlockStart: -2,
-        marginInlineStart: 4,
-        color: active ? '#1890FF' : '#999',
-        backgroundColor: active ? '#E6F7FF' : '#eee',
-      }}
-    />
-  )
+export type TableListItem = {
+  key: number;
+  name: string;
+  containers: number;
+  creator: string;
+  status: string;
+  createdAt: number;
+  progress: number;
+  money: number;
+  memo: string;
+};
+const tableListDataSource: TableListItem[] = [];
+
+const creators = ['付小小', '曲丽丽', '林东东', '陈帅帅', '兼某某'];
+
+for (let i = 0; i < 5; i += 1) {
+  tableListDataSource.push({
+    key: i,
+    name: 'AppName',
+    containers: Math.floor(Math.random() * 20),
+    creator: creators[Math.floor(Math.random() * creators.length)],
+    status: valueEnum[((Math.floor(Math.random() * 10) % 4) + '') as '0'],
+    createdAt: Date.now() - Math.floor(Math.random() * 2000),
+    money: Math.floor(Math.random() * 2000) * i,
+    progress: Math.ceil(Math.random() * 100) + 1,
+    memo:
+      i % 2 === 1
+        ? 'ffmpeg -k -v gsdhofshsdo hhhd iuyiewryiuwen hhhhd '
+        : '简短备注文案',
+  });
 }
+
+const columns: ProColumns<TableListItem>[] = [
+  {
+    title: '排序',
+    dataIndex: 'index',
+    valueType: 'indexBorder',
+    width: 48,
+  },
+  {
+    title: '接口名称',
+    dataIndex: 'name',
+    width: '15%',
+    // render: (_) => <a>{_}</a>,
+    // // 自定义筛选项功能具体实现请参考 https://ant.design/components/table-cn/#components-table-demo-custom-filter-panel
+    // filterDropdown: () => (
+    //   <div style={{ padding: 8 }}>
+    //     <Input style={{ width: 188, marginBlockEnd: 8, display: 'block' }} />
+    //   </div>
+    // ),
+    // filterIcon: (filtered) => (
+    //   <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    // ),
+  },
+  // {
+  //   title: '创建者',
+  //   dataIndex: 'creator',
+  //   valueEnum: {
+  //     all: { text: '全部' },
+  //     付小小: { text: '付小小' },
+  //     曲丽丽: { text: '曲丽丽' },
+  //     林东东: { text: '林东东' },
+  //     陈帅帅: { text: '陈帅帅' },
+  //     兼某某: { text: '兼某某' },
+  //   },
+  // },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    initialValue: 'all',
+    width: '15%',
+    // filters: true,
+    // onFilter: true,
+    valueEnum: {
+      all: { text: '全部', status: 'Default' },
+      close: { text: '关闭', status: 'Default' },
+      running: { text: '运行中', status: 'Processing' },
+      online: { text: '已上线', status: 'Success' },
+      error: { text: '异常', status: 'Error' },
+    },
+  },
+  {
+    title: '命令',
+    dataIndex: 'memo',
+    ellipsis: true,
+    copyable: true,
+  },
+  {
+    title: '操作',
+    width: 180,
+    key: 'option',
+    valueType: 'option',
+    render: () => [
+      <a key="link">运行</a>,
+      <a key="link2">编辑</a>,
+      <a key="link2">复制</a>,
+      <a key="link2">删除</a>,
+      // <a key="link3">克隆</a>,
+      // <TableDropdown
+      //   key="actionGroup"
+      //   menus={[
+      //     { key: 'copy', name: '克隆' },
+      //     { key: 'delete', name: '删除' },
+      //   ]}
+      // />,
+    ],
+  },
+];
 
 export default () => {
-  const [activeKey, setActiveKey] = useState<React.Key | undefined>('tab1')
-  const action = useRef<ActionType>()
   return (
-    <ProList<any>
-      rowKey="name"
-      actionRef={action}
-      dataSource={dataSource}
-      editable={{}}
+    <ProTable<TableListItem>
+      columns={columns}
+      request={(params, sorter, filter) => {
+        // 表单搜索项会从 params 传入，传递给后端接口。
+        console.log(params, sorter, filter);
+        return Promise.resolve({
+          data: tableListDataSource,
+          success: true,
+        });
+      }}
+      // size="small"
+      rowKey="key"
       pagination={{
-        defaultPageSize: 8,
-        showSizeChanger: false,
+        showQuickJumper: true,
       }}
-      metas={{
-        title: {
-          dataIndex: 'name',
-          valueType: 'select',
-          fieldProps: {
-            showSearch: true,
-            placement: 'bottomRight',
-            options: [
-              {
-                label: '实验名称1',
-                value: '实验名称1',
-              },
-            ],
-          },
-        },
-        description: {
-          key: 'desc',
-        },
-        content: {
-          dataIndex: 'content',
-          render: text => (
-            <div key="label" style={{ display: 'flex', justifyContent: 'space-around' }}>
-              {(text as any[]).map(t => (
-                <div key={t.label}>
-                  <div>{t.label}</div>
-                  <div>
-                    {t.status === 'success' && (
-                      <span
-                        style={{
-                          display: 'inline-block',
-                          width: 8,
-                          height: 8,
-                          borderRadius: '50%',
-                          backgroundColor: '#52c41a',
-                          marginInlineEnd: 8,
-                        }}
-                      />
-                    )}
-                    {t.value}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ),
-        },
-        actions: {
-          render: (text, row) => [
-            <a href={row.html_url} target="_blank" rel="noopener noreferrer" key="link">
-              运行
-            </a>,
-            <a target="_blank" rel="noopener noreferrer" key="warning" onClick={() => {}}>
-              编辑
-            </a>,
-            <a target="_blank" rel="noopener noreferrer" key="copy" onClick={() => {}}>
-              克隆
-            </a>,
-            <a target="_blank" rel="noopener noreferrer" key="view">
-              删除
-            </a>,
-          ],
-        },
-      }}
+      options={false}
+      search={false}
+      // search={{
+      //   layout: 'vertical',
+      //   defaultCollapsed: false,
+      // }}
+      dateFormatter="string"
       toolbar={{
-        menu: {
-          activeKey,
-          items: [
-            {
-              key: 'tab1',
-              label: <span>全部项目{renderBadge(99, activeKey === 'tab1')}</span>,
-            },
-            {
-              key: 'tab2',
-              label: <span>我创建的{renderBadge(32, activeKey === 'tab2')}</span>,
-            },
-          ],
-          onChange(key) {
-            setActiveKey(key)
-          },
-        },
-        search: {
-          onSearch: (value: string) => {
-            console.log(value)
-          },
-        },
-        actions: [
-          <Button type="primary" key="primary">
-            新建接口
-          </Button>,
-        ],
+        title: '接口列表',
+        // search: {
+        //   onSearch: (value: string) => {
+        //     alert(value);
+        //   },
+        // },
+        // tooltip: '这是一个标题提示',
       }}
+      toolBarRender={() => [
+        // <Button key="danger" danger>
+        //   危险按钮
+        // </Button>,
+        <Button type="primary" key="primary">
+          创建接口
+        </Button>
+
+        // <Dropdown
+        //   key="menu"
+        //   menu={{
+        //     items: [
+        //       {
+        //         label: '1st item',
+        //         key: '1',
+        //       },
+        //       {
+        //         label: '2nd item',
+        //         key: '2',
+        //       },
+        //       {
+        //         label: '3rd item',
+        //         key: '3',
+        //       },
+        //     ],
+        //   }}
+        // >
+        //   <Button>
+        //     <EllipsisOutlined />
+        //   </Button>
+        // </Dropdown>,
+      ]}
     />
-  )
-}
+  );
+};

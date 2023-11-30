@@ -1,6 +1,6 @@
 import type { ActionType } from '@ant-design/pro-components'
 import { ProList, ModalForm, ProForm, ProFormText } from '@ant-design/pro-components'
-import { Badge, Button, Form, message, Popconfirm, Space } from 'antd'
+import { Badge, Button, Form, message, Popconfirm, Space, Col, Row } from 'antd'
 import React, { useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { invoke } from '@tauri-apps/api'
@@ -96,7 +96,7 @@ export default () => {
         }}
         grid={{ gutter: 16, column: 2 }}
         pagination={{
-          defaultPageSize: 6,
+          defaultPageSize: 4,
           showSizeChanger: false,
         }}
         metas={{
@@ -114,20 +114,35 @@ export default () => {
           content: {
             dataIndex: 'updated_at',
             render: (text, row) => (
-              <Space size="large">
-                <div style={{ width: '200px' }}>
+              <Row style={{ width: '100%' }}>
+                <Col span={8}>
                   <div style={{ opacity: 1 }}>项目介绍</div>
                   {row.desc}
-                </div>
-                <div>
+                </Col>
+                <Col span={8}>
                   <div>接口数量</div>
                   {row.name}
-                </div>
-                <div>
-                  <div style={{ marginRight: '20px' }}>修改日期</div>
+                </Col>
+                <Col span={8}>
+                  <div>修改日期</div>
                   <div>{(text as string).split('+')[0].replace('T', ' ').replace('2023-', '')}</div>
-                </div>
-              </Space>
+                </Col>
+              </Row>
+              // <Space size="large">
+
+              //   <div style={{ width: '100px' }}>
+              //     <div style={{ opacity: 1 }}>项目介绍</div>
+              //     {row.desc}
+              //   </div>
+              //   <div>
+              //     <div>接口数量</div>
+              //     {row.name}
+              //   </div>
+              //   <div>
+              //     <div style={{ marginRight: '20px' }}>修改日期</div>
+              //     <div>{(text as string).split('+')[0].replace('T', ' ').replace('2023-', '')}</div>
+              //   </div>
+              // </Space>
             ),
           },
           actions: {
@@ -215,20 +230,20 @@ export default () => {
                 key: 'tab1',
                 label: <span>全部项目{renderBadge(list.length, activeKey === 'tab1')}</span>,
               },
-              {
-                key: 'tab2',
-                label: <span>正在运行{renderBadge(0, activeKey === 'tab2')}</span>,
-              },
+              // {
+              //   key: 'tab2',
+              //   label: <span>正在运行{renderBadge(0, activeKey === 'tab2')}</span>,
+              // },
             ],
             onChange(key) {
               setActiveKey(key)
             },
           },
-          search: {
-            onSearch: (value: string) => {
-              console.log(value)
-            },
-          },
+          // search: {
+          //   onSearch: (value: string) => {
+          //     console.log(value)
+          //   },
+          // },
           actions: [
             <ModalForm<{
               name: string

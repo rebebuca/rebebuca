@@ -22,10 +22,10 @@ export default () => {
 
   return (
     <div
-      id="test-pro-layout"
-      style={{
-        height: '100vh',
-      }}
+      // id="test-pro-layout"
+      // style={{
+      //   height: '100vh',
+      // }}
     >
       <ProLayout
         siderWidth={300}
@@ -102,11 +102,11 @@ export default () => {
             colorBgMenuItemSelected: 'rgba(0,0,0,0.04)',
           },
         }}
-        avatarProps={{
-          src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
-          title: 'godkun',
-          size: 'small',
-        }}
+        // avatarProps={{
+        //   src: '../../public/rebebuca.ico',
+        //   title: 'Rebebuca',
+        //   size: 'small',
+        // }}
         actionsRender={props => {
           return [<SettingFilled key="SettingFilled" />, <GithubFilled key="GithubFilled" />]
         }}
@@ -114,7 +114,6 @@ export default () => {
           <Link
             to={`${item.path}?name=${searchParams.get('name')}`}
             onClick={() => {
-              console.log(444, item.path)
               setPathname(item.path || '/project')
             }}
           >
