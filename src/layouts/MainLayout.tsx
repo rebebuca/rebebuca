@@ -3,13 +3,21 @@ import ProLayout from '@ant-design/pro-layout'
 import { useState } from 'react'
 import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 
-import { Typography } from 'antd'
+import { Typography, Space, Button } from 'antd'
 
-const { Paragraph } = Typography
+const { Paragraph, Title } = Typography
 
-import { SmileFilled, SettingFilled, GithubFilled } from '@ant-design/icons'
+import {
+  UnorderedListOutlined,
+  SettingFilled,
+  GithubFilled,
+  HomeOutlined,
+  ProjectOutlined,
+  PlusCircleOutlined,
+} from '@ant-design/icons'
 
 import { useLocationListen } from '../hooks'
+import { dialog, shell } from '@tauri-apps/api'
 
 export default () => {
   const location = useLocation()
@@ -21,12 +29,7 @@ export default () => {
   })
 
   return (
-    <div
-      // id="test-pro-layout"
-      // style={{
-      //   height: '100vh',
-      // }}
-    >
+    <div>
       <ProLayout
         siderWidth={300}
         collapsedButtonRender={false}
@@ -65,30 +68,30 @@ export default () => {
             {
               path: '/home',
               name: '首頁',
-              icon: <SmileFilled />,
+              icon: <HomeOutlined />,
             },
             {
               path: '/project',
               name: '我的项目',
-              icon: <SmileFilled />,
+              icon: <ProjectOutlined />,
               routes:
                 pathname != '/project'
                   ? [
                       {
                         path: '/project/list',
                         name: '接口管理',
-                        icon: <SmileFilled />,
+                        icon: <UnorderedListOutlined />,
                       },
                       {
                         path: '/project/new',
                         name: '新建接口',
-                        icon: <SmileFilled />,
+                        icon: <PlusCircleOutlined />,
                       },
-                      {
-                        path: '/project/setting',
-                        name: '项目设置',
-                        icon: <SmileFilled />,
-                      },
+                      // {
+                      //   path: '/project/setting',
+                      //   name: '项目设置',
+                      //   icon: <SmileFilled />,
+                      // },
                     ]
                   : [],
             },
@@ -107,8 +110,24 @@ export default () => {
         //   title: 'Rebebuca',
         //   size: 'small',
         // }}
-        actionsRender={props => {
-          return [<SettingFilled key="SettingFilled" />, <GithubFilled key="GithubFilled" />]
+        actionsRender={() => {
+          // return [<Button type="link">官网</Button>, <SettingFilled key="SettingFilled" />, <GithubFilled key="GithubFilled" />]
+          return [
+            <Button
+              type="link"
+              onClick={() => {
+                shell.open('https://rebebuca.com')
+              }}
+            >
+              官网
+            </Button>,
+            <GithubFilled
+              key="GithubFilled"
+              onClick={() => {
+                shell.open('https://github.com/rebebuca')
+              }}
+            />,
+          ]
         }}
         menuItemRender={(item, dom) => (
           <Link

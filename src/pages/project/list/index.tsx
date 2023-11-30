@@ -1,29 +1,29 @@
-import { EllipsisOutlined, SearchOutlined } from '@ant-design/icons';
-import type { ProColumns } from '@ant-design/pro-components';
-import { ProTable, TableDropdown } from '@ant-design/pro-components';
-import { Button, Dropdown, Input } from 'antd';
+import { EllipsisOutlined, SearchOutlined } from '@ant-design/icons'
+import type { ProColumns } from '@ant-design/pro-components'
+import { ProTable, TableDropdown } from '@ant-design/pro-components'
+import { Button, Dropdown, Input } from 'antd'
 
 const valueEnum = {
   0: 'close',
   1: 'running',
   2: 'online',
   3: 'error',
-};
+}
 
 export type TableListItem = {
-  key: number;
-  name: string;
-  containers: number;
-  creator: string;
-  status: string;
-  createdAt: number;
-  progress: number;
-  money: number;
-  memo: string;
-};
-const tableListDataSource: TableListItem[] = [];
+  key: number
+  name: string
+  containers: number
+  creator: string
+  status: string
+  createdAt: number
+  progress: number
+  money: number
+  memo: string
+}
+const tableListDataSource: TableListItem[] = []
 
-const creators = ['付小小', '曲丽丽', '林东东', '陈帅帅', '兼某某'];
+const creators = ['付小小', '曲丽丽', '林东东', '陈帅帅', '兼某某']
 
 for (let i = 0; i < 5; i += 1) {
   tableListDataSource.push({
@@ -35,11 +35,8 @@ for (let i = 0; i < 5; i += 1) {
     createdAt: Date.now() - Math.floor(Math.random() * 2000),
     money: Math.floor(Math.random() * 2000) * i,
     progress: Math.ceil(Math.random() * 100) + 1,
-    memo:
-      i % 2 === 1
-        ? 'ffmpeg -k -v gsdhofshsdo hhhd iuyiewryiuwen hhhhd '
-        : '简短备注文案',
-  });
+    memo: i % 2 === 1 ? 'ffmpeg -k -v gsdhofshsdo hhhd iuyiewryiuwen hhhhd ' : '简短备注文案',
+  })
 }
 
 const columns: ProColumns<TableListItem>[] = [
@@ -117,7 +114,7 @@ const columns: ProColumns<TableListItem>[] = [
       // />,
     ],
   },
-];
+]
 
 export default () => {
   return (
@@ -125,11 +122,11 @@ export default () => {
       columns={columns}
       request={(params, sorter, filter) => {
         // 表单搜索项会从 params 传入，传递给后端接口。
-        console.log(params, sorter, filter);
+        console.log(params, sorter, filter)
         return Promise.resolve({
           data: tableListDataSource,
           success: true,
-        });
+        })
       }}
       // size="small"
       rowKey="key"
@@ -158,7 +155,7 @@ export default () => {
         // </Button>,
         <Button type="primary" key="primary">
           创建接口
-        </Button>
+        </Button>,
 
         // <Dropdown
         //   key="menu"
@@ -185,5 +182,5 @@ export default () => {
         // </Dropdown>,
       ]}
     />
-  );
-};
+  )
+}

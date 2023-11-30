@@ -1,12 +1,24 @@
-import React, { useRef, useState } from 'react';
-import { Tabs, Col, Space, Form, Input, Badge, Button, Descriptions, Typography, Segmented } from 'antd';
-import type { DescriptionsProps } from 'antd';
+import React, { useRef, useState } from 'react'
+import {
+  Tabs,
+  Col,
+  Space,
+  Form,
+  Input,
+  Badge,
+  Button,
+  Descriptions,
+  Typography,
+  Segmented,
+} from 'antd'
+import type { DescriptionsProps } from 'antd'
 
 const descItems: DescriptionsProps['items'] = [
   {
     key: '1',
     label: '接口 URL',
-    children: 'ffmpeg sss hjfdoijoisfj ffmpeg sss hjfdoijoisfj ffmpeg sss hjfdoijoisfj ffmpeg sss hjfdoijoisfj',
+    children:
+      'ffmpeg sss hjfdoijoisfj ffmpeg sss hjfdoijoisfj ffmpeg sss hjfdoijoisfj ffmpeg sss hjfdoijoisfj',
     span: 3,
   },
   {
@@ -35,33 +47,28 @@ const descItems: DescriptionsProps['items'] = [
       </>
     ),
   },
-];
+]
 
-import type { ProColumns } from '@ant-design/pro-components';
-import {
-  EditableProTable,
-  ProForm,
-  ProFormText,
-  ProCard
-} from '@ant-design/pro-components';
-import { message } from 'antd';
+import type { ProColumns } from '@ant-design/pro-components'
+import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
+import { message } from 'antd'
 
 const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
+      resolve(true)
+    }, time)
+  })
+}
 
 type DataSourceType = {
-  id: React.Key;
-  title?: string;
-  decs?: string;
-  state?: string;
-  created_at?: number;
-  children?: DataSourceType[];
-};
+  id: React.Key
+  title?: string
+  decs?: string
+  state?: string
+  created_at?: number
+  children?: DataSourceType[]
+}
 
 const defaultData: DataSourceType[] = [
   {
@@ -78,7 +85,7 @@ const defaultData: DataSourceType[] = [
     state: 'closed',
     created_at: 1590481162000,
   },
-];
+]
 
 const columns: ProColumns<DataSourceType>[] = [
   {
@@ -116,83 +123,79 @@ const columns: ProColumns<DataSourceType>[] = [
     title: '操作',
     valueType: 'option',
   },
-];
+]
 
+type TargetKey = React.MouseEvent | React.KeyboardEvent | string
 
-type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
-
-const initialItems = [
-  { label: '新建接口', children: '', key: '1' },
-];
+const initialItems = [{ label: '新建接口', children: '', key: '1' }]
 
 const ProjectItemNew: React.FC = () => {
-  const [activeKey, setActiveKey] = useState(initialItems[0].key);
-  const [items, setItems] = useState(initialItems);
-  const newTabIndex = useRef(0);
+  const [activeKey, setActiveKey] = useState(initialItems[0].key)
+  const [items, setItems] = useState(initialItems)
+  const newTabIndex = useRef(0)
 
   const { Title } = Typography
 
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() =>
-    defaultData.map((item) => item.id),
-  );
-
+    defaultData.map(item => item.id)
+  )
 
   const onChange = (newActiveKey: string) => {
-    setActiveKey(newActiveKey);
-  };
+    setActiveKey(newActiveKey)
+  }
 
   const add = () => {
-    const newActiveKey = `newTab${newTabIndex.current++}`;
-    const newPanes = [...items];
-    newPanes.push({ label: '新建接口', children: '', key: newActiveKey });
-    setItems(newPanes);
-    setActiveKey(newActiveKey);
-  };
+    const newActiveKey = `newTab${newTabIndex.current++}`
+    const newPanes = [...items]
+    newPanes.push({ label: '新建接口', children: '', key: newActiveKey })
+    setItems(newPanes)
+    setActiveKey(newActiveKey)
+  }
 
   const remove = (targetKey: TargetKey) => {
-    let newActiveKey = activeKey;
-    let lastIndex = -1;
+    let newActiveKey = activeKey
+    let lastIndex = -1
     items.forEach((item, i) => {
       if (item.key === targetKey) {
-        lastIndex = i - 1;
+        lastIndex = i - 1
       }
-    });
-    const newPanes = items.filter((item) => item.key !== targetKey);
+    })
+    const newPanes = items.filter(item => item.key !== targetKey)
     if (newPanes.length && newActiveKey === targetKey) {
       if (lastIndex >= 0) {
-        newActiveKey = newPanes[lastIndex].key;
+        newActiveKey = newPanes[lastIndex].key
       } else {
-        newActiveKey = newPanes[0].key;
+        newActiveKey = newPanes[0].key
       }
     }
-    setItems(newPanes);
-    setActiveKey(newActiveKey);
-  };
+    setItems(newPanes)
+    setActiveKey(newActiveKey)
+  }
 
   const onEdit = (
     targetKey: React.MouseEvent | React.KeyboardEvent | string,
-    action: 'add' | 'remove',
+    action: 'add' | 'remove'
   ) => {
     if (action === 'add') {
-      add();
+      add()
     } else {
-      remove(targetKey);
+      remove(targetKey)
     }
-  };
+  }
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
-  };
+    console.log('Success:', values)
+  }
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   type FieldType = {
-    username?: string;
-    password?: string;
-    remember?: string;
-  };
+    username?: string
+    password?: string
+    remember?: string
+  }
 
   return (
     <div>
@@ -203,24 +206,23 @@ const ProjectItemNew: React.FC = () => {
         onEdit={onEdit}
         items={items}
       />
-      {
-
-        items.map(item => {
-          if (item.key == activeKey) return (
+      {items.map(item => {
+        if (item.key == activeKey)
+          return (
             <ProCard
               // title="接口设置"
               // extra="2019年9月28日"
-              split='vertical'
-            // bordered
-            // headerBordered
+              split="vertical"
+              // bordered
+              // headerBordered
             >
               <ProCard title="" colSpan="50%">
                 <Space direction="vertical">
                   <Segmented options={['新建', '高级设置']} />
                   {/* <ProCard title="新建" colSpan="50%"> */}
                   <ProForm<{
-                    name: string;
-                    company: string;
+                    name: string
+                    company: string
                   }>
                     grid
                     submitter={{
@@ -236,12 +238,9 @@ const ProjectItemNew: React.FC = () => {
                       },
                       submitButtonProps: {},
                       render: (props, doms) => {
-                        console.log(props);
+                        console.log(props)
                         return [
-                          <Button
-                            key="rest"
-                            onClick={() => props.form?.resetFields()}
-                          >
+                          <Button key="rest" onClick={() => props.form?.resetFields()}>
                             重置
                           </Button>,
                           <Button
@@ -258,13 +257,13 @@ const ProjectItemNew: React.FC = () => {
                           >
                             运行
                           </Button>,
-                        ];
+                        ]
                       },
                     }}
-                    onFinish={async (values) => {
-                      await waitTime(2000);
-                      console.log(values);
-                      message.success('提交成功');
+                    onFinish={async values => {
+                      await waitTime(2000)
+                      console.log(values)
+                      message.success('提交成功')
                     }}
                     initialValues={{
                       name: '蚂蚁设计有限公司',
@@ -304,7 +303,7 @@ const ProjectItemNew: React.FC = () => {
                           editableKeys,
                           onChange: setEditableRowKeys,
                           actionRender: (row, _, dom) => {
-                            return [dom.delete];
+                            return [dom.delete]
                           },
                         }}
                       />
@@ -321,11 +320,9 @@ const ProjectItemNew: React.FC = () => {
               </ProCard>
             </ProCard>
           )
-        }
-        )
-      }
+      })}
     </div>
-  );
-};
+  )
+}
 
-export default ProjectItemNew;
+export default ProjectItemNew
