@@ -12,7 +12,7 @@ pub async fn get_project_db() -> Result<Vec<Model>, DbErr> {
 pub async fn add_project_db(project: Model) -> Result<Vec<Model>, DbErr> {
     let db: DatabaseConnection = connection::establish_connection().await.unwrap();
     let model = ActiveModel {
-        id: Set(project.id),
+        project_id: Set(project.project_id),
         name: Set(project.name),
         desc: Set(project.desc),
         updated_at: Set(project.updated_at),
@@ -26,7 +26,7 @@ pub async fn add_project_db(project: Model) -> Result<Vec<Model>, DbErr> {
 pub async fn update_project_db(project: Model) -> Result<Vec<Model>, DbErr> {
     let db: DatabaseConnection = connection::establish_connection().await.unwrap();
     let model = ActiveModel {
-        id: Set(project.id),
+        project_id: Set(project.project_id),
         name: Set(project.name),
         desc: Set(project.desc),
         updated_at: Set(project.updated_at),

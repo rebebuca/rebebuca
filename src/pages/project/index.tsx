@@ -22,7 +22,7 @@ const renderBadge = (count: number, active = false) => {
 }
 
 export interface IItem {
-  id: string
+  project_id: string
   name: string
   desc: string
   updated_at: string
@@ -42,7 +42,7 @@ export default () => {
 
   const newProject = async (values: object) => {
     const project = {
-      id: ulid(),
+      project_id: ulid(),
       updated_at: dayjs().format(),
       ...values,
     }
@@ -54,7 +54,7 @@ export default () => {
 
   const updateProject = async (row: IItem, values: object) => {
     const project = {
-      id: row.id,
+      project_id: row.project_id,
       updated_at: dayjs().format(),
       ...values,
     }
@@ -66,7 +66,7 @@ export default () => {
 
   const delProject = async (row: IItem) => {
     const res: Array<IItem> = await invoke('del_project', {
-      id: row.id,
+      project_id: row.project_id,
     })
     message.success('刪除成功')
     setList(res)
@@ -89,7 +89,7 @@ export default () => {
             onClick: () => {
               nav({
                 pathname: `/project/list`,
-                search: `name=${record.name}&projectId=${record.id}`,
+                search: `name=${record.name}&projectId=${record.project_id}`,
               })
             },
           }
@@ -100,8 +100,8 @@ export default () => {
           showSizeChanger: false,
         }}
         metas={{
-          id: {
-            dataIndex: 'id',
+          project_id: {
+            dataIndex: 'project_id',
           },
           title: {
             dataIndex: 'name',
