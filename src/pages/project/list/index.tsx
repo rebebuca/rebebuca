@@ -31,6 +31,7 @@ export default () => {
   const delProjectDetail = async (id: string) => {
     const res: Array<IItem> = await invoke('del_project_detail', {
       id: id,
+      projectId: searchParams.get('projectId'),
     })
     message.success('刪除成功')
     setList(res)

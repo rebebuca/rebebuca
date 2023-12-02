@@ -30,7 +30,7 @@ pub async fn update_project_detail(project_detail: Model) -> Result<Vec<Model>, 
 }
 
 #[tauri::command]
-pub async fn del_project_detail(id: String) -> Result<Vec<Model>, ()> {
-    let res = del_project_detail_db(id).await.unwrap();
+pub async fn del_project_detail(id: String, project_id: String) -> Result<Vec<Model>, ()> {
+    let res = del_project_detail_db(id, project_id).await.unwrap();
     Ok(res)
 }

@@ -39,19 +39,31 @@ const descItems: DescriptionsProps['items'] = [
     children: (
       <div>
         <Space>
-          <Button type="primary" key="run" onClick={() => {
-            console.log('click')
-          }}>
+          <Button
+            type="primary"
+            key="run"
+            onClick={() => {
+              console.log('click')
+            }}
+          >
             运行
           </Button>
-          <Button type="primary" key="stop" onClick={() => {
-            console.log('click')
-          }}>
+          <Button
+            type="primary"
+            key="stop"
+            onClick={() => {
+              console.log('click')
+            }}
+          >
             停止
           </Button>
-          <Button type="primary" key="runAgain" onClick={() => {
-            console.log('click')
-          }}>
+          <Button
+            type="primary"
+            key="runAgain"
+            onClick={() => {
+              console.log('click')
+            }}
+          >
             重启
           </Button>
         </Space>
@@ -149,35 +161,35 @@ const ProjectItemEdit: React.FC = () => {
     <div>
       <Tabs type="card" onChange={onChange} activeKey={activeKey} items={items} hideAdd />
       {items.map(item => {
-        if (item.key == activeKey)
-          return (
-            <ProCard key={item.key} split="vertical">
-              <ProCard title="">
-                <Space direction="vertical">
-                  <Segmented
-                    options={['接口信息', '其他信息']}
-                    onChange={value => {
-                      setSegmentedLeft(value as string)
-                    }}
-                  />
-                  {segmentedLeft == '接口信息' && <Descriptions items={descItems} />}
-                  {segmentedLeft == '其他信息' && <div>敬请期待</div>}
-                </Space>
-              </ProCard>
-              <ProCard title="" colSpan="50%">
-                <Space direction="vertical">
-                  <Segmented
-                    options={['运行日志', '其他操作']}
-                    onChange={value => {
-                      setSegmentedRight(value as string)
-                    }}
-                  />
-                  {segmentedRight == '运行日志' && <Descriptions items={runLog} />}
-                  {segmentedRight == '其他操作' && <div>敬请期待</div>}
-                </Space>
-              </ProCard>
+        // if (item.key == activeKey)
+        return (
+          <ProCard key={item.key} split="vertical">
+            <ProCard title="">
+              <Space direction="vertical">
+                <Segmented
+                  options={['接口信息', '其他信息']}
+                  onChange={value => {
+                    setSegmentedLeft(value as string)
+                  }}
+                />
+                {segmentedLeft == '接口信息' && <Descriptions items={descItems} />}
+                {segmentedLeft == '其他信息' && <div>敬请期待</div>}
+              </Space>
             </ProCard>
-          )
+            <ProCard title="" colSpan="50%">
+              <Space direction="vertical">
+                <Segmented
+                  options={['运行日志', '其他操作']}
+                  onChange={value => {
+                    setSegmentedRight(value as string)
+                  }}
+                />
+                {segmentedRight == '运行日志' && <Descriptions items={runLog} />}
+                {segmentedRight == '其他操作' && <div>敬请期待</div>}
+              </Space>
+            </ProCard>
+          </ProCard>
+        )
       })}
     </div>
   )

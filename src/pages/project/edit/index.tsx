@@ -3,10 +3,10 @@ import { Tabs, Space, Button, Descriptions, Segmented, message } from 'antd'
 import type { DescriptionsProps } from 'antd'
 import { useSearchParams } from 'react-router-dom'
 import { invoke } from '@tauri-apps/api'
-import { ulid } from 'ulid'
 import dayjs from 'dayjs'
 import type { ProColumns } from '@ant-design/pro-components'
 import { produce } from 'immer'
+import { useNavigate } from 'react-router-dom'
 import {
   EditableProTable,
   ProForm,
@@ -106,6 +106,7 @@ export interface ITabItem {
 }
 
 const ProjectItemEdit: React.FC = () => {
+  const nav = useNavigate()
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
   const [items, setItems] = useState<Array<ITabItem>>([])
   const [searchParams] = useSearchParams()
@@ -114,19 +115,26 @@ const ProjectItemEdit: React.FC = () => {
 
   const formRef = useRef<ProFormInstance>()
 
-  const addProjectDeatail = async (opts: any) => {
+  const updateProjectDeatailItem = async (opts: any) => {
     if (opts.name && opts.url) {
+      const id = searchParams.get('id') as string
+      const res: Array<IItem> = await invoke('get_project_detail_item', {
+        id,
+      })
+      let defaultOpts = res[0]
       const projectDetail = {
-        id: ulid(),
-        status: 'stop',
-        project_id: searchParams.get('projectId'),
+        ...defaultOpts,
         updated_at: dayjs().format(),
         ...opts,
       }
-      await invoke('add_project_detail', {
+      await invoke('update_project_detail', {
         projectDetail,
       })
-      message.success('新建成功')
+      message.success('保存成功')
+      nav({
+        pathname: `/project/list`,
+        search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`,
+      })
     } else return
   }
 
@@ -149,7 +157,7 @@ const ProjectItemEdit: React.FC = () => {
     setActiveKey(newActiveKey)
   }
 
-  const addProjectDeatailItem = async () => {
+  const getProjectDeatailItem = async () => {
     const id = searchParams.get('id') as string
     const res: Array<IItem> = await invoke('get_project_detail_item', {
       id,
@@ -165,122 +173,122 @@ const ProjectItemEdit: React.FC = () => {
   }
 
   useEffect(() => {
-    addProjectDeatailItem()
+    getProjectDeatailItem()
   }, [])
 
   return (
     <div>
       <Tabs type="card" onChange={onChange} activeKey={activeKey} items={items} hideAdd />
       {items.map(item => {
-        if (item.key == activeKey)
-          return (
-            <ProCard key={item.key} split="vertical">
-              <ProCard title="" colSpan="50%">
-                <Space direction="vertical">
-                  <Segmented
-                    options={['编辑', '高级模式']}
-                    onChange={value => {
-                      setSegmentedLeft(value as string)
-                    }}
-                  />
-                  <ProForm<{
-                    name: string
-                    url: string
-                  }>
-                    grid
-                    formRef={formRef}
-                    submitter={{
-                      resetButtonProps: {
-                        style: {
-                          display: 'none',
-                        },
+        // if (item.key == activeKey)
+        return (
+          <ProCard key={item.key} split="vertical">
+            <ProCard title="" colSpan="50%">
+              <Space direction="vertical">
+                <Segmented
+                  options={['编辑', '高级模式']}
+                  onChange={value => {
+                    setSegmentedLeft(value as string)
+                  }}
+                />
+                <ProForm<{
+                  name: string
+                  url: string
+                }>
+                  grid
+                  formRef={formRef}
+                  submitter={{
+                    resetButtonProps: {
+                      style: {
+                        display: 'none',
                       },
-                      submitButtonProps: {},
-                      render: (props, _) => {
-                        return [
-                          <Button
-                            type="primary"
-                            key="save"
-                            onClick={() => {
-                              addProjectDeatail(props.form?.getFieldsValue())
-                            }}
-                          >
-                            保存
-                          </Button>,
-                          <Button type="primary" key="run" onClick={() => props.form?.submit?.()}>
-                            保存并运行
-                          </Button>,
-                        ]
-                      },
-                    }}
-                  >
-                    <ProForm.Group>
-                      <ProFormText
+                    },
+                    submitButtonProps: {},
+                    render: (props, _) => {
+                      return [
+                        <Button
+                          type="primary"
+                          key="save"
+                          onClick={() => {
+                            updateProjectDeatailItem(props.form?.getFieldsValue())
+                          }}
+                        >
+                          保存
+                        </Button>,
+                        <Button type="primary" key="run" onClick={() => props.form?.submit?.()}>
+                          保存并运行
+                        </Button>,
+                      ]
+                    },
+                  }}
+                >
+                  <ProForm.Group>
+                    <ProFormText
+                      width="md"
+                      name="name"
+                      label="接口名称"
+                      initialValue={item.name}
+                      placeholder="请输入名称"
+                    />
+                    {['新建', '编辑'].includes(segmentedLeft) && (
+                      <ProFormTextArea
                         width="md"
-                        name="name"
-                        label="接口名称"
-                        initialValue={item.name}
-                        placeholder="请输入名称"
+                        name="url"
+                        initialValue={item.url}
+                        label="接口参数"
+                        placeholder="请输入参数"
                       />
-                      {['新建', '编辑'].includes(segmentedLeft) && (
-                        <ProFormTextArea
-                          width="md"
-                          name="url"
-                          initialValue={item.url}
-                          label="接口参数"
-                          placeholder="请输入参数"
-                        />
-                      )}
-                    </ProForm.Group>
-
-                    {segmentedLeft == '高级模式' && (
-                      <ProForm.Item
-                        label="FFMPEG参数设置"
-                        name="dataSource"
-                        initialValue={defaultData}
-                        trigger="onValuesChange"
-                      >
-                        <EditableProTable<DataSourceType>
-                          rowKey="id"
-                          toolBarRender={false}
-                          columns={columns}
-                          recordCreatorProps={{
-                            newRecordType: 'dataSource',
-                            position: 'top',
-                            record: () => ({
-                              id: Date.now(),
-                              addonBefore: 'ccccccc',
-                              decs: 'testdesc',
-                            }),
-                          }}
-                          editable={{
-                            type: 'multiple',
-                            editableKeys,
-                            onChange: setEditableRowKeys,
-                            actionRender: (__, _, dom) => {
-                              return [dom.delete]
-                            },
-                          }}
-                        />
-                      </ProForm.Item>
                     )}
-                  </ProForm>
-                </Space>
-              </ProCard>
-              <ProCard title="">
-                <Space direction="vertical">
-                  <Segmented
-                    options={['默认配置', '高级选项']}
-                    onChange={value => {
-                      setSegmentedRight(value as string)
-                    }}
-                  />
-                  {segmentedRight == '默认配置' && <Descriptions items={descItems} />}
-                  {segmentedRight == '高级选项' && <div>敬请期待</div>}
-                </Space>
-              </ProCard>
+                  </ProForm.Group>
+
+                  {segmentedLeft == '高级模式' && (
+                    <ProForm.Item
+                      label="FFMPEG参数设置"
+                      name="dataSource"
+                      initialValue={defaultData}
+                      trigger="onValuesChange"
+                    >
+                      <EditableProTable<DataSourceType>
+                        rowKey="id"
+                        toolBarRender={false}
+                        columns={columns}
+                        recordCreatorProps={{
+                          newRecordType: 'dataSource',
+                          position: 'top',
+                          record: () => ({
+                            id: Date.now(),
+                            addonBefore: 'ccccccc',
+                            decs: 'testdesc',
+                          }),
+                        }}
+                        editable={{
+                          type: 'multiple',
+                          editableKeys,
+                          onChange: setEditableRowKeys,
+                          actionRender: (__, _, dom) => {
+                            return [dom.delete]
+                          },
+                        }}
+                      />
+                    </ProForm.Item>
+                  )}
+                </ProForm>
+              </Space>
             </ProCard>
-          )
+            <ProCard title="">
+              <Space direction="vertical">
+                <Segmented
+                  options={['默认配置', '高级选项']}
+                  onChange={value => {
+                    setSegmentedRight(value as string)
+                  }}
+                />
+                {segmentedRight == '默认配置' && <Descriptions items={descItems} />}
+                {segmentedRight == '高级选项' && <div>敬请期待</div>}
+              </Space>
+            </ProCard>
+          </ProCard>
+        )
       })}
     </div>
   )

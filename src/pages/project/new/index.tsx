@@ -131,7 +131,7 @@ const ProjectItemNew: React.FC = () => {
       message.success('新建成功')
       nav({
         pathname: `/project/list`,
-        search: `projectId=${searchParams.get('projectId')}`,
+        search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`,
       })
     } else return
   }
@@ -218,9 +218,13 @@ const ProjectItemNew: React.FC = () => {
                           >
                             新建
                           </Button>,
-                          <Button type="primary" key="run" onClick={() => {
-                            addProjectDeatail(props.form?.getFieldsValue())
-                          }}>
+                          <Button
+                            type="primary"
+                            key="run"
+                            onClick={() => {
+                              addProjectDeatail(props.form?.getFieldsValue())
+                            }}
+                          >
                             新建并运行
                           </Button>,
                         ]
