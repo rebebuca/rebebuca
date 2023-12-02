@@ -58,6 +58,7 @@ export default () => {
     const project = {
       project_id: row.project_id,
       updated_at: dayjs().format(),
+      count: row.count,
       ...values,
     }
     const res: Array<IItem> = await invoke('update_project', {
