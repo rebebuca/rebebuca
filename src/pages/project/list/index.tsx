@@ -2,44 +2,16 @@ import type { ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
 import { invoke } from '@tauri-apps/api'
 import { Button, Popconfirm, message } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
-const valueEnum = {
-  0: 'close',
-  1: 'running',
-  2: 'online',
-  3: 'error',
-}
-
 export type TableListItem = {
-  key: number
+  id: string
+  project_id: string
   name: string
-  containers: number
-  creator: string
-  status: string
-  createdAt: number
-  progress: number
-  money: number
-  memo: string
-}
-const tableListDataSource: TableListItem[] = []
-
-const creators = ['付小小', '曲丽丽', '林东东', '陈帅帅', '兼某某']
-
-for (let i = 0; i < 5; i += 1) {
-  tableListDataSource.push({
-    key: i,
-    name: 'AppName',
-    containers: Math.floor(Math.random() * 20),
-    creator: creators[Math.floor(Math.random() * creators.length)],
-    status: valueEnum[((Math.floor(Math.random() * 10) % 4) + '') as '0'],
-    createdAt: Date.now() - Math.floor(Math.random() * 2000),
-    money: Math.floor(Math.random() * 2000) * i,
-    progress: Math.ceil(Math.random() * 100) + 1,
-    memo: i % 2 === 1 ? 'ffmpeg -k -v gsdhofshsdo hhhd iuyiewryiuwen hhhhd ' : '简短备注文案',
-  })
+  url: string
+  updated_at: string
 }
 
 export interface IItem {
@@ -100,7 +72,7 @@ export default () => {
       width: 180,
       key: 'option',
       valueType: 'option',
-      render: row => [
+      render: (row: any) => [
         <a key="link4">运行</a>,
         <a
           key="link"

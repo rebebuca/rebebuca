@@ -3,13 +3,12 @@ import ProLayout from '@ant-design/pro-layout'
 import { useState } from 'react'
 import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 
-import { Typography, Space, Button } from 'antd'
+import { Typography, Button } from 'antd'
 
-const { Paragraph, Title } = Typography
+const { Paragraph } = Typography
 
 import {
   UnorderedListOutlined,
-  SettingFilled,
   GithubFilled,
   HomeOutlined,
   ProjectOutlined,
@@ -17,7 +16,7 @@ import {
 } from '@ant-design/icons'
 
 import { useLocationListen } from '../hooks'
-import { dialog, shell } from '@tauri-apps/api'
+import { shell } from '@tauri-apps/api'
 
 export default () => {
   const location = useLocation()

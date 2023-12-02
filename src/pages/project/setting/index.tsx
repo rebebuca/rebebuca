@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 
 const ProjectSetting: FC = () => {
   return <div>项目设置</div>

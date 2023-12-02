@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { Tabs, Space, Badge, Button, Descriptions, Segmented, message } from 'antd'
+import { Tabs, Space, Button, Descriptions, Segmented, message } from 'antd'
 import type { DescriptionsProps } from 'antd'
 import { useSearchParams } from 'react-router-dom'
 import { invoke } from '@tauri-apps/api'

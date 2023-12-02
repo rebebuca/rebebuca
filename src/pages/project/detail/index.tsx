@@ -39,13 +39,19 @@ const descItems: DescriptionsProps['items'] = [
     children: (
       <div>
         <Space>
-          <Button type="primary" key="run" onClick={() => props.form?.submit?.()}>
+          <Button type="primary" key="run" onClick={() => {
+            console.log('click')
+          }}>
             运行
           </Button>
-          <Button type="primary" key="stop" onClick={() => props.form?.submit?.()}>
+          <Button type="primary" key="stop" onClick={() => {
+            console.log('click')
+          }}>
             停止
           </Button>
-          <Button type="primary" key="runAgain" onClick={() => props.form?.submit?.()}>
+          <Button type="primary" key="runAgain" onClick={() => {
+            console.log('click')
+          }}>
             重启
           </Button>
         </Space>
