@@ -6,6 +6,7 @@ mod connection;
 mod service;
 
 use command::project;
+use command::project_detail;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -19,7 +20,12 @@ fn main() {
             project::get_project,
             project::add_project,
             project::del_project,
-            project::update_project
+            project::update_project,
+            project_detail::get_project_detail,
+            project_detail::add_project_detail,
+            project_detail::del_project_detail,
+            project_detail::update_project_detail,
+            project_detail::get_project_detail_item,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

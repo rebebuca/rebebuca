@@ -79,14 +79,24 @@ export default () => {
                   ? [
                       {
                         path: '/project/list',
-                        name: '接口管理',
+                        name: '接口列表',
                         icon: <UnorderedListOutlined />,
                       },
                       {
                         path: '/project/new',
-                        name: '新建接口',
+                        name: '接口新建',
                         icon: <PlusCircleOutlined />,
                       },
+                      // {
+                      //   path: '/project/edit',
+                      //   name: '接口编辑',
+                      //   icon: <PlusCircleOutlined />,
+                      // },
+                      // {
+                      //   path: '/project/detail',
+                      //   name: '接口详情',
+                      //   icon: <PlusCircleOutlined />,
+                      // }
                       // {
                       //   path: '/project/setting',
                       //   name: '项目设置',
@@ -131,7 +141,9 @@ export default () => {
         }}
         menuItemRender={(item, dom) => (
           <Link
-            to={`${item.path}?name=${searchParams.get('name')}`}
+            to={`${item.path}?name=${searchParams.get('name')}&projectId=${searchParams.get(
+              'projectId'
+            )}`}
             onClick={() => {
               setPathname(item.path || '/project')
             }}

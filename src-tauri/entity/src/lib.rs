@@ -3,3 +3,4 @@
 pub mod prelude;
 
 pub mod project;
+pub mod project_detail;

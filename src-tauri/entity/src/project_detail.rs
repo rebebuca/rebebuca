@@ -8,31 +8,33 @@ pub struct Entity;
 
 impl EntityName for Entity {
     fn table_name(&self) -> &str {
-        "project"
+        "project_detail"
     }
 }
 
 #[derive(Clone, Debug, PartialEq, DeriveModel, DeriveActiveModel, Eq, Serialize, Deserialize)]
 pub struct Model {
+    pub id: String,
     pub project_id: String,
     pub name: String,
-    pub desc: String,
-    pub count: i32,
+    pub url: String,
+    pub status: String,
     pub updated_at: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveColumn)]
 pub enum Column {
+    Id,
     ProjectId,
     Name,
-    Desc,
-    Count,
+    Url,
+    Status,
     UpdatedAt,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DerivePrimaryKey)]
 pub enum PrimaryKey {
-    ProjectId,
+    Id,
 }
 
 impl PrimaryKeyTrait for PrimaryKey {
@@ -49,10 +51,11 @@ impl ColumnTrait for Column {
     type EntityName = Entity;
     fn def(&self) -> ColumnDef {
         match self {
+            Self::Id => ColumnType::String(None).def(),
             Self::ProjectId => ColumnType::String(None).def(),
             Self::Name => ColumnType::String(None).def(),
-            Self::Desc => ColumnType::String(None).def(),
-            Self::Count => ColumnType::Integer.def(),
+            Self::Url => ColumnType::String(None).def(),
+            Self::Status => ColumnType::String(None).def(),
             Self::UpdatedAt => ColumnType::String(None).def(),
         }
     }

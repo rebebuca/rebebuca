@@ -25,6 +25,7 @@ export interface IItem {
   project_id: string
   name: string
   desc: string
+  count: string
   updated_at: string
 }
 
@@ -44,6 +45,7 @@ export default () => {
     const project = {
       project_id: ulid(),
       updated_at: dayjs().format(),
+      count: 0,
       ...values,
     }
     const res: Array<IItem> = await invoke('add_project', {
@@ -66,7 +68,7 @@ export default () => {
 
   const delProject = async (row: IItem) => {
     const res: Array<IItem> = await invoke('del_project', {
-      project_id: row.project_id,
+      projectId: row.project_id,
     })
     message.success('刪除成功')
     setList(res)
@@ -121,28 +123,13 @@ export default () => {
                 </Col>
                 <Col span={8}>
                   <div>接口数量</div>
-                  {row.name}
+                  {row.count}
                 </Col>
                 <Col span={8}>
                   <div>修改日期</div>
                   <div>{(text as string).split('+')[0].replace('T', ' ').replace('2023-', '')}</div>
                 </Col>
               </Row>
-              // <Space size="large">
-
-              //   <div style={{ width: '100px' }}>
-              //     <div style={{ opacity: 1 }}>项目介绍</div>
-              //     {row.desc}
-              //   </div>
-              //   <div>
-              //     <div>接口数量</div>
-              //     {row.name}
-              //   </div>
-              //   <div>
-              //     <div style={{ marginRight: '20px' }}>修改日期</div>
-              //     <div>{(text as string).split('+')[0].replace('T', ' ').replace('2023-', '')}</div>
-              //   </div>
-              // </Space>
             ),
           },
           actions: {
@@ -230,20 +217,11 @@ export default () => {
                 key: 'tab1',
                 label: <span>全部项目{renderBadge(list.length, activeKey === 'tab1')}</span>,
               },
-              // {
-              //   key: 'tab2',
-              //   label: <span>正在运行{renderBadge(0, activeKey === 'tab2')}</span>,
-              // },
             ],
             onChange(key) {
               setActiveKey(key)
             },
           },
-          // search: {
-          //   onSearch: (value: string) => {
-          //     console.log(value)
-          //   },
-          // },
           actions: [
             <ModalForm<{
               name: string

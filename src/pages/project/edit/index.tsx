@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { Tabs, Space, Button, Descriptions, Segmented, message } from 'antd'
+import { Tabs, Space, Badge, Button, Descriptions, Segmented, message } from 'antd'
 import type { DescriptionsProps } from 'antd'
 import { useSearchParams } from 'react-router-dom'
 import { invoke } from '@tauri-apps/api'
@@ -7,7 +7,6 @@ import { ulid } from 'ulid'
 import dayjs from 'dayjs'
 import type { ProColumns } from '@ant-design/pro-components'
 import { produce } from 'immer'
-import { useNavigate } from 'react-router-dom'
 import {
   EditableProTable,
   ProForm,
@@ -96,7 +95,7 @@ const columns: ProColumns<DataSourceType>[] = [
   },
 ]
 
-const initialItems = [{ label: '新建接口', key: '1000', id: '', name: '', url: '' }]
+const initialItems = [{ label: '', key: '', id: '', name: '', url: '' }]
 
 export interface ITabItem {
   label: string
@@ -106,12 +105,11 @@ export interface ITabItem {
   url: string
 }
 
-const ProjectItemNew: React.FC = () => {
-  const nav = useNavigate()
+const ProjectItemEdit: React.FC = () => {
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
-  const [items, setItems] = useState<Array<ITabItem>>(initialItems)
+  const [items, setItems] = useState<Array<ITabItem>>([])
   const [searchParams] = useSearchParams()
-  const [segmentedLeft, setSegmentedLeft] = useState<string>('简单模式')
+  const [segmentedLeft, setSegmentedLeft] = useState<string>('编辑')
   const [segmentedRight, setSegmentedRight] = useState<string>('默认配置')
 
   const formRef = useRef<ProFormInstance>()
@@ -129,10 +127,6 @@ const ProjectItemNew: React.FC = () => {
         projectDetail,
       })
       message.success('新建成功')
-      nav({
-        pathname: `/project/list`,
-        search: `projectId=${searchParams.get('projectId')}`,
-      })
     } else return
   }
 
@@ -147,7 +141,7 @@ const ProjectItemNew: React.FC = () => {
         if (r) {
           let form = formRef.current?.getFieldsValue()
           r.name = form.name
-          r.label = form.name || '新建接口'
+          r.label = form.name
           r.url = form.url
         }
       })
@@ -171,10 +165,7 @@ const ProjectItemNew: React.FC = () => {
   }
 
   useEffect(() => {
-    const type = searchParams.get('type')
-    if (type == 'edit') {
-      addProjectDeatailItem()
-    }
+    addProjectDeatailItem()
   }, [])
 
   return (
@@ -184,10 +175,10 @@ const ProjectItemNew: React.FC = () => {
         if (item.key == activeKey)
           return (
             <ProCard key={item.key} split="vertical">
-              <ProCard title="" colSpan="70%">
+              <ProCard title="" colSpan="50%">
                 <Space direction="vertical">
                   <Segmented
-                    options={['简单模式', '高级模式']}
+                    options={['编辑', '高级模式']}
                     onChange={value => {
                       setSegmentedLeft(value as string)
                     }}
@@ -206,8 +197,6 @@ const ProjectItemNew: React.FC = () => {
                       },
                       submitButtonProps: {},
                       render: (props, _) => {
-                        // 点击新建，直接跳到接口列表或者接口详情
-                        // 点击运行，则新建按钮disabled 直到运行结束，才可以继续新建
                         return [
                           <Button
                             type="primary"
@@ -216,12 +205,10 @@ const ProjectItemNew: React.FC = () => {
                               addProjectDeatail(props.form?.getFieldsValue())
                             }}
                           >
-                            新建
+                            保存
                           </Button>,
-                          <Button type="primary" key="run" onClick={() => {
-                            addProjectDeatail(props.form?.getFieldsValue())
-                          }}>
-                            新建并运行
+                          <Button type="primary" key="run" onClick={() => props.form?.submit?.()}>
+                            保存并运行
                           </Button>,
                         ]
                       },
@@ -235,7 +222,7 @@ const ProjectItemNew: React.FC = () => {
                         initialValue={item.name}
                         placeholder="请输入名称"
                       />
-                      {['简单模式'].includes(segmentedLeft) && (
+                      {['新建', '编辑'].includes(segmentedLeft) && (
                         <ProFormTextArea
                           width="md"
                           name="url"
@@ -299,4 +286,4 @@ const ProjectItemNew: React.FC = () => {
   )
 }
 
-export default ProjectItemNew
+export default ProjectItemEdit
