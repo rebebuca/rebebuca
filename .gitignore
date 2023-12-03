@@ -25,4 +25,4 @@ dist-ssr
 
 rb.sqlite
 
-src-tauri/migration
+# src-tauri/migration
