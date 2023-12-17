@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { Tabs, Space, Button, Descriptions, Segmented, message } from 'antd'
+import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typography } from 'antd'
 import type { DescriptionsProps } from 'antd'
 import { useSearchParams } from 'react-router-dom'
 import { invoke } from '@tauri-apps/api'
@@ -8,37 +8,19 @@ import dayjs from 'dayjs'
 import type { ProColumns } from '@ant-design/pro-components'
 import { produce } from 'immer'
 import { useNavigate } from 'react-router-dom'
-import {
-  EditableProTable,
-  ProForm,
-  ProFormText,
-  ProCard,
-  ProFormTextArea,
-} from '@ant-design/pro-components'
-import type { ProFormInstance } from '@ant-design/pro-components'
+import { open } from '@tauri-apps/api/dialog'
+import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
+import type { ProFormInstance, EditableFormInstance } from '@ant-design/pro-components'
 
-const descItems: DescriptionsProps['items'] = [
-  {
-    key: '6',
-    label: 'FFMPEG版本',
-    children: '16',
-    span: 3,
-  },
-  {
-    key: '9',
-    label: '失败重启次数',
-    children: '0',
-    span: 3,
-  },
-]
+import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
+import { argList } from '../../../constants/keys'
+
+const { Paragraph } = Typography
 
 type DataSourceType = {
-  id: React.Key
-  title?: string
-  decs?: string
-  state?: string
-  created_at?: number
-  children?: DataSourceType[]
+  id: number
+  key?: string
+  value?: string
 }
 
 export interface IItem {
@@ -46,48 +28,26 @@ export interface IItem {
   project_id: string
   name: string
   url: string
+  argList: Array<Object>
+  log: ''
   updated_at: string
 }
-
-const defaultData: DataSourceType[] = [
-  {
-    id: 624748504,
-    title: '活动名称一',
-    decs: '这个活动真好玩',
-    state: 'open',
-    created_at: 1590486176000,
-  },
-  {
-    id: 624691229,
-    title: '活动名称二',
-    decs: '这个活动真好玩',
-    state: 'closed',
-    created_at: 1590481162000,
-  },
-]
 
 const columns: ProColumns<DataSourceType>[] = [
   {
     title: '参数key',
     width: '30%',
-    key: 'state',
-    dataIndex: 'state',
+    key: 'key',
+    dataIndex: 'key',
     valueType: 'select',
-    valueEnum: {
-      all: { text: '全部', status: 'Default' },
-      open: {
-        text: '未解决',
-        status: 'Error',
-      },
-      closed: {
-        text: '已解决',
-        status: 'Success',
-      },
+    fieldProps: {
+      showSearch: true,
+      options: argList,
     },
   },
   {
     title: '参数value',
-    dataIndex: 'title',
+    dataIndex: 'value',
     width: '50%',
   },
   {
@@ -96,7 +56,7 @@ const columns: ProColumns<DataSourceType>[] = [
   },
 ]
 
-const initialItems = [{ label: '新建接口', key: '1000', id: '', name: '', url: '' }]
+const initialItems = [{ label: '新建接口', key: '1000', id: '', name: '', url: '', argList: [] }]
 
 export interface ITabItem {
   label: string
@@ -111,19 +71,83 @@ const ProjectItemNew: React.FC = () => {
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
   const [items, setItems] = useState<Array<ITabItem>>(initialItems)
   const [searchParams] = useSearchParams()
-  const [segmentedLeft, setSegmentedLeft] = useState<string>('简单模式')
-  const [segmentedRight, setSegmentedRight] = useState<string>('默认配置')
+  const [segmentedLeft, setSegmentedLeft] = useState<string>('标准模式')
+  const [segmentedRight, setSegmentedRight] = useState<string>('信息面板')
+  const [argList, setArgList] = useState([])
+
+  const editableFormRef = useRef<EditableFormInstance>()
 
   const formRef = useRef<ProFormInstance>()
+
+  const [descItems, setDescItems] = useState<DescriptionsProps['items']>([
+    {
+      key: '6',
+      label: 'FFMPEG版本',
+      children: '16',
+      span: 3,
+    },
+    {
+      key: '9',
+      label: '失败重启次数',
+      children: '0',
+      span: 3,
+    },
+    {
+      key: '7',
+      label: 'FFMPEG URL',
+      children: '',
+      span: 3,
+    },
+  ])
+
+  const onValuesChange = () => {
+    setDescItems(
+      produce(draft => {
+        let r = draft.find(i => i.key == '7')
+        if (formRef.current?.getFieldsValue().url.length) {
+          let arr = formRef.current?.getFieldsValue().url
+          let url = arr.reduce((accumulator, item) => {
+            if (item.key && item.value) {
+              return accumulator + ' ' + item.key + ' ' + item.value
+            } else if (item.key) {
+              return accumulator + ' ' + item.key
+            } else if (item.value) {
+              return accumulator + ' ' + item.value
+            }
+            return accumulator
+          }, '')
+          if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
+        }
+      })
+    )
+  }
+
+  const getUrl = () => {
+    let arr = formRef.current?.getFieldsValue().url
+    let url = arr.reduce((accumulator, item) => {
+      if (item.key && item.value) {
+        return accumulator + ' ' + item.key + ' ' + item.value
+      } else if (item.key) {
+        return accumulator + ' ' + item.key
+      } else if (item.value) {
+        return accumulator + ' ' + item.value
+      }
+      return accumulator
+    }, '')
+    return 'ffmpeg' + url
+  }
 
   const addProjectDeatail = async (opts: any) => {
     if (opts.name && opts.url) {
       const projectDetail = {
         id: ulid(),
-        status: 'stop',
+        status: '-1',
         project_id: searchParams.get('projectId'),
         updated_at: dayjs().format(),
-        ...opts,
+        name: opts.name,
+        url: getUrl(),
+        log: '',
+        arg_list: JSON.stringify(opts.url),
       }
       await invoke('add_project_detail', {
         projectDetail,
@@ -135,10 +159,6 @@ const ProjectItemNew: React.FC = () => {
       })
     } else return
   }
-
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() =>
-    defaultData.map(item => item.id)
-  )
 
   const onChange = (newActiveKey: string) => {
     setItems(
@@ -155,27 +175,42 @@ const ProjectItemNew: React.FC = () => {
     setActiveKey(newActiveKey)
   }
 
-  const addProjectDeatailItem = async () => {
-    const id = searchParams.get('id') as string
-    const res: Array<IItem> = await invoke('get_project_detail_item', {
-      id,
-    })
-    const { name, url } = res[0]
-    setItems(
-      produce(draft => {
-        let r = draft.find(i => i.id == id)
-        if (r) setActiveKey(r.key)
-        else draft.unshift({ label: name, name, key: id, id, url })
+  const selectFileOrDir = async (row, type) => {
+    try {
+      const selected = await open({
+        directory: type == 1 ? false : true,
       })
-    )
+      if (selected) {
+        editableFormRef.current?.setRowData?.(row.index, {
+          value: selected,
+        })
+        const { url } = formRef.current?.getFieldsValue()
+        url.forEach(item => {
+          if (item.id == row.id) item.value = selected
+        })
+        formRef.current?.setFieldValue('url', url)
+        setDescItems(
+          produce(draft => {
+            let r = draft.find(i => i.key == '7')
+            if (formRef.current?.getFieldsValue().url.length) {
+              let arr = formRef.current?.getFieldsValue().url
+              let url = arr.reduce((accumulator, item) => {
+                if (item.key && item.value) {
+                  return accumulator + ' ' + item.key + ' ' + item.value
+                } else if (item.key) {
+                  return accumulator + ' ' + item.key
+                } else if (item.value) {
+                  return accumulator + ' ' + item.value
+                }
+                return accumulator
+              }, '')
+              if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
+            }
+          })
+        )
+      }
+    } catch (err) {}
   }
-
-  useEffect(() => {
-    const type = searchParams.get('type')
-    if (type == 'edit') {
-      addProjectDeatailItem()
-    }
-  }, [])
 
   return (
     <div>
@@ -186,28 +221,16 @@ const ProjectItemNew: React.FC = () => {
             <ProCard key={item.key} split="vertical">
               <ProCard title="" colSpan="70%">
                 <Space direction="vertical">
-                  <Segmented
-                    options={['简单模式', '高级模式']}
-                    onChange={value => {
-                      setSegmentedLeft(value as string)
-                    }}
-                  />
+                  <Segmented options={['标准模式']} />
                   <ProForm<{
                     name: string
-                    url: string
+                    url: Array<Object>
                   }>
                     grid
                     formRef={formRef}
+                    onValuesChange={onValuesChange}
                     submitter={{
-                      resetButtonProps: {
-                        style: {
-                          display: 'none',
-                        },
-                      },
-                      submitButtonProps: {},
                       render: (props, _) => {
-                        // 点击新建，直接跳到接口列表或者接口详情
-                        // 点击运行，则新建按钮disabled 直到运行结束，才可以继续新建
                         return [
                           <Button
                             type="primary"
@@ -236,46 +259,56 @@ const ProjectItemNew: React.FC = () => {
                         width="md"
                         name="name"
                         label="接口名称"
+                        required
                         initialValue={item.name}
                         placeholder="请输入名称"
                       />
-                      {['简单模式'].includes(segmentedLeft) && (
-                        <ProFormTextArea
-                          width="md"
-                          name="url"
-                          initialValue={item.url}
-                          label="接口参数"
-                          placeholder="请输入参数"
-                        />
-                      )}
                     </ProForm.Group>
 
-                    {segmentedLeft == '高级模式' && (
+                    {segmentedLeft == '标准模式' && (
                       <ProForm.Item
                         label="FFMPEG参数设置"
-                        name="dataSource"
-                        initialValue={defaultData}
+                        required
+                        name="url"
+                        initialValue={argList}
                         trigger="onValuesChange"
                       >
                         <EditableProTable<DataSourceType>
                           rowKey="id"
                           toolBarRender={false}
                           columns={columns}
+                          editableFormRef={editableFormRef}
                           recordCreatorProps={{
                             newRecordType: 'dataSource',
-                            position: 'top',
+                            position: 'bottom',
                             record: () => ({
                               id: Date.now(),
-                              addonBefore: 'ccccccc',
-                              decs: 'testdesc',
+                              key: '',
+                              value: '',
                             }),
                           }}
                           editable={{
                             type: 'multiple',
-                            editableKeys,
-                            onChange: setEditableRowKeys,
-                            actionRender: (__, _, dom) => {
-                              return [dom.delete]
+                            actionRender: (row, _, dom) => {
+                              return [
+                                dom.delete,
+                                <Tooltip placement="top" title="选择文件路径">
+                                  <FileOutlined
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                      selectFileOrDir(row, 1)
+                                    }}
+                                  />
+                                </Tooltip>,
+                                <Tooltip placement="top" title="选择文件路径">
+                                  <FolderOpenOutlined
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                      selectFileOrDir(row, 2)
+                                    }}
+                                  />
+                                </Tooltip>,
+                              ]
                             },
                           }}
                         />
@@ -287,12 +320,17 @@ const ProjectItemNew: React.FC = () => {
               <ProCard title="">
                 <Space direction="vertical">
                   <Segmented
-                    options={['默认配置', '高级选项']}
+                    options={['信息面板']}
                     onChange={value => {
                       setSegmentedRight(value as string)
                     }}
                   />
-                  {segmentedRight == '默认配置' && <Descriptions items={descItems} />}
+                  {segmentedRight == '信息面板' && (
+                    <div>
+                      <Descriptions items={descItems.slice(0, 2)} />
+                      <Descriptions items={descItems.slice(2, 3)} layout="vertical" />
+                    </div>
+                  )}
                   {segmentedRight == '高级选项' && <div>敬请期待</div>}
                 </Space>
               </ProCard>

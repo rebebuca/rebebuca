@@ -2,9 +2,17 @@ import type { ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
 import { invoke } from '@tauri-apps/api'
 import { Button, Popconfirm, message } from 'antd'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import { produce } from 'immer'
+import { ulid } from 'ulid'
+
+import { updateCommand, resetCommandLog } from '../../../store/commandList'
+
+import { useDispatch } from 'react-redux'
+
+import { runFFmpeg } from '../../../utils'
 
 export type TableListItem = {
   id: string
@@ -24,9 +32,10 @@ export interface IItem {
 
 export default () => {
   const [list, setList] = useState<Array<IItem>>([])
-
+  const actionRef = useRef()
   const [searchParams] = useSearchParams()
   const nav = useNavigate()
+  const dispatch = useDispatch()
 
   const delProjectDetail = async (id: string) => {
     const res: Array<IItem> = await invoke('del_project_detail', {
@@ -37,44 +46,96 @@ export default () => {
     setList(res)
   }
 
+  const getProjectDetail = async () => {
+    const res: Array<IItem> = await invoke('get_project_detail', {
+      projectId: searchParams.get('projectId'),
+    })
+    setList(res)
+  }
+
+  const updateProjectDetailStatus = async (item, status) => {
+    setList(
+      produce(draft => {
+        let index = list.findIndex(k => k.id == item.id)
+        if (index != -1) {
+          if (draft[index].status == status) return
+          else {
+            draft[index].status = status
+          }
+        }
+      })
+    )
+  }
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '排序',
       dataIndex: 'index',
       valueType: 'indexBorder',
       width: 48,
+      key: `${ulid()}_index`,
     },
     {
       title: '接口名称',
       dataIndex: 'name',
       width: '15%',
+      key: `${ulid()}_name`,
     },
     {
       title: '状态',
       dataIndex: 'status',
       initialValue: 'stop',
       width: '15%',
+      key: `${ulid()}_status`,
       valueEnum: {
-        all: { text: '全部', status: 'Default' },
-        close: { text: '关闭', status: 'Default' },
-        running: { text: '运行中', status: 'Processing' },
-        online: { text: '已上线', status: 'Success' },
-        stop: { text: '停止', status: 'Default' },
+        '-1': { text: '未运行', status: 'Default' },
+        '1': { text: '失败', status: 'Error' },
+        '12': { text: '运行中', status: 'Processing' },
+        '0': { text: '成功', status: 'Success' },
+        '11': { text: '停止', status: 'Default' },
       },
     },
     {
       title: '命令',
       dataIndex: 'url',
       ellipsis: true,
+      key: `${ulid()}_url`,
       copyable: true,
     },
     {
       title: '操作',
       width: 180,
-      key: 'option',
+      key: `${ulid()}_option`,
       valueType: 'option',
       render: (row: any) => [
-        <a key="link4">运行</a>,
+        <a
+          key="link4"
+          onClick={async () => {
+            const item = row.props.record
+            dispatch(
+              resetCommandLog({
+                id: item.id,
+              })
+            )
+            let argArr = item.url.split(' ')
+            argArr.shift()
+            if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
+            let s = await runFFmpeg(argArr, (line: string, status: string) => {
+              dispatch(
+                updateCommand({
+                  id: item.id,
+                  status: status,
+                  pid: s.id,
+                  log: line,
+                  item: item,
+                })
+              )
+              updateProjectDetailStatus(item, status)
+            })
+          }}
+        >
+          运行
+        </a>,
         <a
           key="link"
           onClick={() => {
@@ -103,7 +164,7 @@ export default () => {
         </a>,
         <Popconfirm
           title="提示"
-          description="确定要删除这个项目吗?"
+          description="确定要删除这个接口吗?"
           onConfirm={() => {
             delProjectDetail(row.props.record.id)
           }}
@@ -117,20 +178,20 @@ export default () => {
     },
   ]
 
-  const getProjectDetail = async () => {
-    const res: Array<IItem> = await invoke('get_project_detail', {
-      projectId: searchParams.get('projectId'),
-    })
-    setList(res)
-  }
-
   useEffect(() => {
     getProjectDetail()
+    const interval = setInterval(() => {
+      getProjectDetail()
+    }, 5000)
+    return () => {
+      clearInterval(interval)
+    }
   }, [])
 
   return (
     <ProTable<TableListItem>
       columns={columns}
+      actionRef={actionRef}
       dataSource={list}
       rowKey="id"
       pagination={{

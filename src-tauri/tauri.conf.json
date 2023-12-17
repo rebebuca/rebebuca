@@ -6,28 +6,74 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "rebebuca",
-    "version": "0.0.0"
+    "productName": "Rebebuca",
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
       "all": true,
       "shell": {
-        "all": false,
-        "open": true
+        "sidecar": true,
+        "execute": true,
+        "open": "",
+        "scope": [
+          { "name": "bin/ffmpeg", "args": true, "sidecar": true }
+        ]
+      },
+      "fs": {
+        "all": true,
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "copyFile": true,
+        "createDir": true,
+        "removeDir": true,
+        "removeFile": true,
+        "renameFile": true,
+        "exists": true
+      },
+      "window": {
+        "startDragging": true
       }
     },
     "bundle": {
       "active": true,
-      "targets": "all",
-      "identifier": "com.rebebuca",
+      "category": "DeveloperTool",
+      "copyright": "© 2023 rebebuca. All rights reserved.",
+      "deb": {
+        "depends": []
+      },
+      "externalBin": [
+        "bin/ffmpeg"
+      ],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
+      ],
+      "identifier": "com.rebebuca",
+      "longDescription": "FFmpeg Desktop Application",
+      "macOS": {
+        "entitlements": null,
+        "exceptionDomain": "",
+        "frameworks": [],
+        "providerShortName": null,
+        "signingIdentity": null
+      },
+      "resources": [],
+      "shortDescription": "Rebebuca",
+      "targets": "all",
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": "",
+        "webviewInstallMode": {
+          "silent": true,
+          "type": "embedBootstrapper"
+        }
+      }
     },
     "security": {
       "csp": null
@@ -35,10 +81,12 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": true,
-        "title": "rebebuca",
+        "resizable": false,
+        "title": "Rebebuca",
         "width": 1280,
         "height": 770,
+        "minHeight": 770,
+        "minWidth": 1280,
         "decorations": false
       }
     ]

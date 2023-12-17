@@ -18,6 +18,8 @@ pub struct Model {
     pub project_id: String,
     pub name: String,
     pub url: String,
+    pub arg_list: String,
+    pub log: String,
     pub status: String,
     pub updated_at: String,
 }
@@ -28,6 +30,8 @@ pub enum Column {
     ProjectId,
     Name,
     Url,
+    ArgList,
+    Log,
     Status,
     UpdatedAt,
 }
@@ -55,6 +59,8 @@ impl ColumnTrait for Column {
             Self::ProjectId => ColumnType::String(None).def(),
             Self::Name => ColumnType::String(None).def(),
             Self::Url => ColumnType::String(None).def(),
+            Self::ArgList => ColumnType::String(None).def(),
+            Self::Log => ColumnType::String(None).def(),
             Self::Status => ColumnType::String(None).def(),
             Self::UpdatedAt => ColumnType::String(None).def(),
         }

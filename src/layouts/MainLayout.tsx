@@ -13,15 +13,41 @@ import {
   HomeOutlined,
   ProjectOutlined,
   PlusCircleOutlined,
+  MinusOutlined,
+  CloseOutlined,
+  BorderOutlined,
+  // SettingOutlined,
+  // TwitterOutlined,
 } from '@ant-design/icons'
 
 import { useLocationListen } from '../hooks'
 import { shell } from '@tauri-apps/api'
+import { appWindow } from '@tauri-apps/api/window'
 
 export default () => {
   const location = useLocation()
   const [pathname, setPathname] = useState(location.pathname)
   const [searchParams] = useSearchParams()
+
+  const [isMaximize, setIsMaximize] = useState(false)
+
+  const minimize = async () => {
+    await appWindow.minimize()
+  }
+
+  const maximize = async () => {
+    await appWindow.maximize()
+    setIsMaximize(true)
+  }
+
+  const unmaximize = async () => {
+    await appWindow.unmaximize()
+    setIsMaximize(false)
+  }
+
+  const close = async () => {
+    await appWindow.close()
+  }
 
   useLocationListen(listener => {
     setPathname(listener.pathname)
@@ -29,6 +55,7 @@ export default () => {
 
   return (
     <div>
+      {/* <div data-tauri-drag-region style={{ background: '#000', height: '60vw' }}> */}
       <ProLayout
         siderWidth={300}
         collapsedButtonRender={false}
@@ -66,7 +93,7 @@ export default () => {
           routes: [
             {
               path: '/home',
-              name: '首頁',
+              name: '首页',
               icon: <HomeOutlined />,
             },
             {
@@ -120,10 +147,17 @@ export default () => {
         //   size: 'small',
         // }}
         actionsRender={() => {
-          // return [<Button type="link">官网</Button>, <SettingFilled key="SettingFilled" />, <GithubFilled key="GithubFilled" />]
           return [
+            // <div data-tauri-drag-region style={{ background: '#000', height: '80px', width: '60vw', opacity: 0 }}></div>,
             <Button
-              type="link"
+              type="text"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontSize: '14px',
+                color: '#252525',
+              }}
               onClick={() => {
                 shell.open('https://rebebuca.com')
               }}
@@ -131,10 +165,35 @@ export default () => {
               官网
             </Button>,
             <GithubFilled
-              key="GithubFilled"
+              style={{ fontSize: '14px', color: '#252525' }}
               onClick={() => {
                 shell.open('https://github.com/rebebuca')
               }}
+            />,
+            // <TwitterOutlined style={{ fontSize: '14px', color: '#252525' }}></TwitterOutlined>,
+            // <SettingOutlined style={{ fontSize: '14px', color: '#252525' }} />,
+            <MinusOutlined onClick={minimize} style={{ fontSize: '14px', color: '#252525' }} />,
+            <img
+              src="/unmini.svg"
+              onClick={unmaximize}
+              style={{
+                fontSize: '14px',
+                color: '#000',
+                width: '35px',
+                display: isMaximize ? 'block' : 'none',
+              }}
+            />,
+            <BorderOutlined
+              onClick={maximize}
+              style={{
+                fontSize: '14px',
+                color: '#252525',
+                display: !isMaximize ? 'block' : 'none',
+              }}
+            />,
+            <CloseOutlined
+              onClick={close}
+              style={{ fontSize: '14px', color: '#252525', marginRight: '10px' }}
             />,
           ]
         }}
@@ -154,6 +213,7 @@ export default () => {
         <PageContainer>
           <Outlet />
         </PageContainer>
+        {/* <div  data-tauri-drag-region style={{background: '#000', width: '100vw', height: '100vw', position: 'fixed', opacity: 0, zIndex: -1}}></div>, */}
       </ProLayout>
     </div>
   )

@@ -1,13 +1,12 @@
 {
   "name": "rebebuca",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "tauri": "tauri",
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri",
     "lint": " eslint src/**/*.{js,ts,jsx,tsx} ",
     "format": " prettier --write src/**/*.{js,ts,jsx,tsx}",
     "gen": "rm -rf rb.sqlite && sea-orm-cli migrate refresh -d src-tauri/migration && sea-orm-cli generate entity -l -o src-tauri/entity/src --expanded-format --with-serde both"
@@ -16,12 +15,14 @@
     "@ant-design/icons": "^5.2.6",
     "@ant-design/pro-components": "^2.6.28",
     "@ant-design/pro-layout": "^7.6.1",
+    "@reduxjs/toolkit": "^2.0.1",
     "@tauri-apps/api": "^1.5.1",
     "antd": "^5.11.0",
     "dayjs": "^1.11.10",
     "immer": "^10.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^9.0.2",
     "react-router-dom": "^6.8.1",
     "ulid": "^2.3.0"
   },
