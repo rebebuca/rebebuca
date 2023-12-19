@@ -8,6 +8,7 @@ enum ProjectDetail {
     Name,
     Url,
     ArgList,
+    Pid,
     Log,
     Status,
     UpdatedAt,
@@ -37,6 +38,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(ProjectDetail::Name).string().not_null())
                     .col(ColumnDef::new(ProjectDetail::Url).string().not_null())
                     .col(ColumnDef::new(ProjectDetail::ArgList).string().not_null())
+                    .col(ColumnDef::new(ProjectDetail::Pid).integer().not_null())
                     .col(ColumnDef::new(ProjectDetail::Log).string().not_null())
                     .col(ColumnDef::new(ProjectDetail::Status).string().not_null())
                     .col(ColumnDef::new(ProjectDetail::UpdatedAt).string().not_null())

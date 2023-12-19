@@ -1,11 +1,10 @@
 import type { ProColumns } from '@ant-design/pro-components'
-import { ProTable } from '@ant-design/pro-components'
+import { ProTable, TableDropdown } from '@ant-design/pro-components'
 import { invoke } from '@tauri-apps/api'
 import { Button, Popconfirm, message } from 'antd'
 import { useEffect, useState, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import { produce } from 'immer'
 import { ulid } from 'ulid'
 
 import { updateCommand, resetCommandLog } from '../../../store/commandList'
@@ -13,6 +12,8 @@ import { updateCommand, resetCommandLog } from '../../../store/commandList'
 import { useDispatch } from 'react-redux'
 
 import { runFFmpeg } from '../../../utils'
+import { Command } from '@tauri-apps/api/shell'
+import { produce } from 'immer'
 
 export type TableListItem = {
   id: string
@@ -50,12 +51,16 @@ export default () => {
     const res: Array<IItem> = await invoke('get_project_detail', {
       projectId: searchParams.get('projectId'),
     })
-    setList(res)
+    setList(() => {
+      console.log(4444, res)
+      return res
+    })
   }
 
   const updateProjectDetailStatus = async (item, status) => {
     setList(
       produce(draft => {
+        // draft = { ...draft }
         let index = list.findIndex(k => k.id == item.id)
         if (index != -1) {
           if (draft[index].status == status) return
@@ -104,37 +109,109 @@ export default () => {
     },
     {
       title: '操作',
-      width: 180,
+      width: 220,
       key: `${ulid()}_option`,
       valueType: 'option',
       render: (row: any) => [
         <a
           key="link4"
           onClick={async () => {
+
+            // row.props.record.status = 12
+            // return
             const item = row.props.record
-            dispatch(
-              resetCommandLog({
-                id: item.id,
+            if (item.status != '12') updateProjectDetailStatus(item, '12')
+            // else updateProjectDetailStatus(item, '1')
+            console.log(item.status, item.pid)
+            let showStop = item.status == '12'
+            if (showStop) {
+              const cmd = `/C taskkill /f /t /pid ${item.pid}`
+              const command = await new Command('ffmpeg', cmd);
+              command.spawn()
+              command.on('close', () => {
+                console.log("进程关闭")
               })
-            )
-            let argArr = item.url.split(' ')
-            argArr.shift()
-            if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
-            let s = await runFFmpeg(argArr, (line: string, status: string) => {
+            } else {
               dispatch(
-                updateCommand({
+                resetCommandLog({
                   id: item.id,
-                  status: status,
-                  pid: s.id,
-                  log: line,
-                  item: item,
                 })
               )
-              updateProjectDetailStatus(item, status)
-            })
+              let argArr = item.url.split(' ')
+              argArr.shift()
+              if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
+              let s = await runFFmpeg(argArr, (line: string, status: string) => {
+                dispatch(
+                  updateCommand({
+                    id: item.id,
+                    status: status,
+                    pid: s.pid,
+                    log: line,
+                    item: item,
+                  })
+                )
+              })
+            }
           }}
         >
-          运行
+          {row.props.record.status == '12' ? '停止' : '运行'}
+        </a>,
+        <a
+          key="link11"
+          onClick={async () => {
+            const item = row.props.record
+            let showStop = item.status == '12'
+            if (showStop) {
+              const cmd = `/C taskkill /f /t /pid ${item.pid}`
+              const command = await new Command('ffmpeg', cmd);
+              command.spawn()
+              command.on('close', async () => {
+                console.log("进程关闭")
+                dispatch(
+                  resetCommandLog({
+                    id: item.id,
+                  })
+                )
+                let argArr = item.url.split(' ')
+                argArr.shift()
+                if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
+                let s = await runFFmpeg(argArr, (line: string, status: string) => {
+                  dispatch(
+                    updateCommand({
+                      id: item.id,
+                      status: status,
+                      pid: s.pid,
+                      log: line,
+                      item: item,
+                    })
+                  )
+                })
+              })
+            } else {
+              dispatch(
+                resetCommandLog({
+                  id: item.id,
+                })
+              )
+              let argArr = item.url.split(' ')
+              argArr.shift()
+              if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
+              let k = ''
+              let s = await runFFmpeg(argArr, (line: string, status: string) => {
+                dispatch(
+                  updateCommand({
+                    id: item.id,
+                    status: status,
+                    pid: s.pid,
+                    log: line,
+                    item: item,
+                  })
+                )
+              })
+            }
+          }}
+        >
+          重启
         </a>,
         <a
           key="link"
@@ -174,6 +251,29 @@ export default () => {
         >
           <a style={{ opacity: 0.88, color: '#000' }}>删除</a>
         </Popconfirm>,
+        // <TableDropdown
+        //   key="actionGroup"
+        //   menus={[
+        //     {
+        //       key: 'restart',
+        //       name: '重启',
+        //     },
+        //     {
+        //       key: 'delete', name: <Popconfirm
+        //         title="提示"
+        //         description="确定要删除这个接口吗?"
+        //         onConfirm={() => {
+        //           delProjectDetail(row.props.record.id)
+        //         }}
+        //         key="del"
+        //         okText="Yes"
+        //         cancelText="No"
+        //       >
+        //         <a style={{ opacity: 0.88, color: '#000' }}>删除</a>
+        //       </Popconfirm>
+        //     },
+        //   ]}
+        // />,
       ],
     },
   ]
@@ -182,7 +282,7 @@ export default () => {
     getProjectDetail()
     const interval = setInterval(() => {
       getProjectDetail()
-    }, 5000)
+    }, 3000)
     return () => {
       clearInterval(interval)
     }

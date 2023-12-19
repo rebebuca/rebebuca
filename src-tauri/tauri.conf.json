@@ -13,11 +13,43 @@
     "allowlist": {
       "all": true,
       "shell": {
+        "all": true,
         "sidecar": true,
         "execute": true,
-        "open": "",
+        "open": true,
         "scope": [
-          { "name": "bin/ffmpeg", "args": true, "sidecar": true }
+          {
+            "name": "bin/ffmpeg",
+            "args": true,
+            "sidecar": true
+          },
+          {
+            "name": "ffmpeg",
+            "cmd": "cmd",
+            "args": [
+              {
+                "validator": "\\S+"
+              }
+            ]
+          },
+          {
+            "name": "run-node-v",
+            "cmd": "node",
+            "args": [
+              {
+                "validator": "\\S+"
+              }
+            ]
+          },
+          {
+            "name": "yarn",
+            "cmd": "yarn",
+            "args": [
+              {
+                "validator": "\\S+"
+              }
+            ]
+          }
         ]
       },
       "fs": {
@@ -30,7 +62,8 @@
         "removeDir": true,
         "removeFile": true,
         "renameFile": true,
-        "exists": true
+        "exists": true,
+        "scope": ["C:/**/*", "D:/**/*", "E:/**/*", "F:/**/*"]
       },
       "window": {
         "startDragging": true

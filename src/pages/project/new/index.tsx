@@ -28,6 +28,7 @@ export interface IItem {
   project_id: string
   name: string
   url: string
+  pid: number
   argList: Array<Object>
   log: ''
   updated_at: string
@@ -147,6 +148,7 @@ const ProjectItemNew: React.FC = () => {
         name: opts.name,
         url: getUrl(),
         log: '',
+        pid: 0,
         arg_list: JSON.stringify(opts.url),
       }
       await invoke('add_project_detail', {

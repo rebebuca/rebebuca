@@ -64,6 +64,7 @@ export interface ITabItem {
   name: string
   url: string
   log: ''
+  pid: number
   arg_list: Array<Object>
 }
 

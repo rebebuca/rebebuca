@@ -61,18 +61,21 @@ export const todoListSlice = createSlice({
             const projectDetail = {
               ...item,
               status: status,
+              pid,
               log: JSON.stringify(draft[index].log),
             }
             invoke('update_project_detail', {
               projectDetail,
             })
-            // return 888888
+            run12Once = false
           }
 
           if (status == '12' && !run12Once) {
+            console.log(12, 12, 12, run12Once)
             const projectDetail = {
               ...item,
               status: status,
+              pid,
               log: JSON.stringify(draft[index].log),
             }
             invoke('update_project_detail', {
@@ -94,21 +97,25 @@ export const todoListSlice = createSlice({
             const projectDetail = {
               ...item,
               status: status,
+              pid,
               log: JSON.stringify(draft[0].log),
             }
             invoke('update_project_detail', {
               projectDetail,
             })
+            run12Once = false
           }
           if (status == '12' && !run12Once) {
             const projectDetail = {
               ...item,
               status: status,
+              pid,
               log: JSON.stringify(draft[0].log),
             }
             invoke('update_project_detail', {
               projectDetail,
             })
+            run12Once = true
           }
         }
       }

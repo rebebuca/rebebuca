@@ -33,6 +33,7 @@ pub async fn add_project_detail_db(project_detail: Model) -> Result<Vec<Model>, 
         url: Set(project_detail.url),
         log: Set(project_detail.log),
         arg_list: Set(project_detail.arg_list),
+        pid: Set(project_detail.pid),
         status: Set(project_detail.status),
         updated_at: Set(project_detail.updated_at),
     };
@@ -58,6 +59,7 @@ pub async fn update_project_detail_db(project: Model) -> Result<Vec<Model>, DbEr
         url: Set(project.url),
         log: Set(project.log),
         arg_list: Set(project.arg_list),
+        pid: Set(project.pid),
         status: Set(project.status),
         updated_at: Set(project.updated_at),
     };

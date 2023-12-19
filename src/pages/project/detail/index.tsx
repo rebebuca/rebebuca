@@ -3,6 +3,7 @@ import { Tabs, Space, Badge, Button, Descriptions, Segmented, Typography } from 
 import type { DescriptionsProps } from 'antd'
 import { useSearchParams } from 'react-router-dom'
 import { invoke } from '@tauri-apps/api'
+import { Command } from '@tauri-apps/api/shell'
 import { produce } from 'immer'
 import { ProCard } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
@@ -88,6 +89,8 @@ const ProjectItemEdit: React.FC = () => {
 
   const formRef = useRef<ProFormInstance>()
 
+  const list = useRef([])
+
   const onChange = (newActiveKey: string) => {
     setItems(
       produce(draft => {
@@ -110,6 +113,8 @@ const ProjectItemEdit: React.FC = () => {
     })
     const { url } = res[0]
     setItems(res)
+    list.current = res
+    console.log(111, list)
     add(res[0])
     setDescItems(
       produce(draft => {
@@ -124,8 +129,6 @@ const ProjectItemEdit: React.FC = () => {
         id: item.id,
         status: item.status,
         log: (item.log && JSON.parse(item.log)) || [''],
-        // log: item.log,
-        // log: [''],
         pid: 0,
         url: '',
         statusText: '',
@@ -211,43 +214,107 @@ const ProjectItemEdit: React.FC = () => {
                     type="primary"
                     key="run"
                     onClick={async () => {
-                      dispatch(
-                        resetCommandLog({
-                          id: item.id,
+                      // { commandList[0].status == '12' ? '停止' : '运行' }
+                      let showStop = commandList[0].status == '12'
+                      if (showStop) {
+                        const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
+                        const command = await new Command('ffmpeg', cmd);
+                        command.spawn()
+                        command.on('close', () => {
+                          console.log("进程关闭")
                         })
-                      )
-                      let argArr = item.url.split(' ')
-                      argArr.shift()
-                      if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
-                      let s = await runFFmpeg(argArr, (line: string, status: string) => {
+                      } else {
                         dispatch(
-                          updateCommand({
+                          resetCommandLog({
                             id: item.id,
-                            status: status,
-                            pid: s.id,
-                            log: line,
-                            item: items[0],
                           })
                         )
+                        let argArr = item.url.split(' ')
+                        argArr.shift()
+                        if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
+                        let s = await runFFmpeg(argArr, (line: string, status: string) => {
+                          dispatch(
+                            updateCommand({
+                              id: item.id,
+                              status: status,
+                              pid: s.pid,
+                              log: line,
+                              item: items[0],
+                            })
+                          )
+                        })
+                      }
+                    }}
+                  >
+                    {commandList[0].status == '12' ? '停止' : '运行'}
+                  </Button>
+                  {/* <Button
+                    type="primary"
+                    key="stop"
+                    onClick={async () => {
+                      console.log(666, commandList[0].status)
+                      const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
+                      const command = await new Command('ffmpeg', cmd);
+                      command.spawn()
+                      command.on('close', () => {
+                        console.log("进程关闭")
                       })
                     }}
                   >
-                    运行
-                  </Button>
-                  <Button
-                    type="primary"
-                    key="stop"
-                    onClick={() => {
-                      console.log('click')
-                    }}
-                  >
-                    停止
-                  </Button>
+                    {commandList[0].status == '12' ? '停止' : '运行'}
+                  </Button> */}
                   <Button
                     type="primary"
                     key="runAgain"
-                    onClick={() => {
-                      console.log('click')
+                    onClick={async () => {
+                      let showStop = commandList[0].status == '12'
+                      if (showStop) {
+                        const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
+                        const command = await new Command('ffmpeg', cmd);
+                        command.spawn()
+                        command.on('close', async () => {
+                          console.log("进程关闭")
+                          dispatch(
+                            resetCommandLog({
+                              id: item.id,
+                            })
+                          )
+                          let argArr = item.url.split(' ')
+                          argArr.shift()
+                          if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
+                          let s = await runFFmpeg(argArr, (line: string, status: string) => {
+                            dispatch(
+                              updateCommand({
+                                id: item.id,
+                                status: status,
+                                pid: s.pid,
+                                log: line,
+                                item: items[0],
+                              })
+                            )
+                          })
+                        })
+                      } else {
+                        dispatch(
+                          resetCommandLog({
+                            id: item.id,
+                          })
+                        )
+                        let argArr = item.url.split(' ')
+                        argArr.shift()
+                        if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
+                        let s = await runFFmpeg(argArr, (line: string, status: string) => {
+                          dispatch(
+                            updateCommand({
+                              id: item.id,
+                              status: status,
+                              pid: s.pid,
+                              log: line,
+                              item: items[0],
+                            })
+                          )
+                        })
+                      }
                     }}
                   >
                     重启
