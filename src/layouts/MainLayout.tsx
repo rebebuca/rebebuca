@@ -1,11 +1,10 @@
-import { PageContainer } from '@ant-design/pro-components'
-import ProLayout from '@ant-design/pro-layout'
 import { useState } from 'react'
-import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
-
+import { shell } from '@tauri-apps/api'
 import { Typography, Button } from 'antd'
-
-const { Paragraph } = Typography
+import ProLayout from '@ant-design/pro-layout'
+import { appWindow } from '@tauri-apps/api/window'
+import { PageContainer } from '@ant-design/pro-components'
+import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 
 import {
   UnorderedListOutlined,
@@ -16,13 +15,12 @@ import {
   MinusOutlined,
   CloseOutlined,
   BorderOutlined,
-  // SettingOutlined,
-  // TwitterOutlined,
+  SettingOutlined
 } from '@ant-design/icons'
 
+const { Paragraph } = Typography
+
 import { useLocationListen } from '../hooks'
-import { shell } from '@tauri-apps/api'
-import { appWindow } from '@tauri-apps/api/window'
 
 export default () => {
   const location = useLocation()
@@ -73,20 +71,20 @@ export default () => {
             src: 'https://img.alicdn.com/imgextra/i2/O1CN01O4etvp1DvpFLKfuWq_!!6000000000279-2-tps-609-606.png',
             left: 85,
             bottom: 100,
-            height: '303px',
+            height: '303px'
           },
           {
             src: 'https://img.alicdn.com/imgextra/i2/O1CN01O4etvp1DvpFLKfuWq_!!6000000000279-2-tps-609-606.png',
             bottom: -68,
             right: -45,
-            height: '303px',
+            height: '303px'
           },
           {
             src: 'https://img.alicdn.com/imgextra/i3/O1CN018NxReL1shX85Yz6Cx_!!6000000005798-2-tps-884-496.png',
             bottom: 0,
             left: 0,
-            width: '331px',
-          },
+            width: '331px'
+          }
         ]}
         route={{
           path: '/',
@@ -94,7 +92,7 @@ export default () => {
             {
               path: '/home',
               name: '首页',
-              icon: <HomeOutlined />,
+              icon: <HomeOutlined />
             },
             {
               path: '/project',
@@ -106,57 +104,38 @@ export default () => {
                       {
                         path: '/project/list',
                         name: '接口列表',
-                        icon: <UnorderedListOutlined />,
+                        icon: <UnorderedListOutlined />
                       },
                       {
                         path: '/project/new',
                         name: '接口新建',
-                        icon: <PlusCircleOutlined />,
-                      },
-                      // {
-                      //   path: '/project/edit',
-                      //   name: '接口编辑',
-                      //   icon: <PlusCircleOutlined />,
-                      // },
-                      // {
-                      //   path: '/project/detail',
-                      //   name: '接口详情',
-                      //   icon: <PlusCircleOutlined />,
-                      // }
-                      // {
-                      //   path: '/project/setting',
-                      //   name: '项目设置',
-                      //   icon: <SmileFilled />,
-                      // },
+                        icon: <PlusCircleOutlined />
+                      }
                     ]
-                  : [],
-            },
-          ],
+                  : []
+            }
+          ]
         }}
         location={{
-          pathname,
+          pathname
         }}
         token={{
           header: {
-            colorBgMenuItemSelected: 'rgba(0,0,0,0.04)',
-          },
+            colorBgMenuItemSelected: 'rgba(0,0,0,0.04)'
+          }
         }}
-        // avatarProps={{
-        //   src: '../../public/rebebuca.ico',
-        //   title: 'Rebebuca',
-        //   size: 'small',
-        // }}
         actionsRender={() => {
           return [
             // <div data-tauri-drag-region style={{ background: '#000', height: '80px', width: '60vw', opacity: 0 }}></div>,
             <Button
               type="text"
+              key="gw"
               style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 fontSize: '14px',
-                color: '#252525',
+                color: '#252525'
               }}
               onClick={() => {
                 shell.open('https://rebebuca.com')
@@ -165,36 +144,43 @@ export default () => {
               官网
             </Button>,
             <GithubFilled
+              key="github"
               style={{ fontSize: '14px', color: '#252525' }}
               onClick={() => {
                 shell.open('https://github.com/rebebuca')
               }}
             />,
-            // <TwitterOutlined style={{ fontSize: '14px', color: '#252525' }}></TwitterOutlined>,
-            // <SettingOutlined style={{ fontSize: '14px', color: '#252525' }} />,
-            <MinusOutlined onClick={minimize} style={{ fontSize: '14px', color: '#252525' }} />,
+            <SettingOutlined key="setting" style={{ fontSize: '14px', color: '#252525' }} />,
+            <MinusOutlined
+              key="mini"
+              onClick={minimize}
+              style={{ fontSize: '14px', color: '#252525' }}
+            />,
             <img
               src="/unmini.svg"
               onClick={unmaximize}
+              key="unmini"
               style={{
                 fontSize: '14px',
                 color: '#000',
                 width: '35px',
-                display: isMaximize ? 'block' : 'none',
+                display: isMaximize ? 'block' : 'none'
               }}
             />,
             <BorderOutlined
               onClick={maximize}
+              key="maximize"
               style={{
                 fontSize: '14px',
                 color: '#252525',
-                display: !isMaximize ? 'block' : 'none',
+                display: !isMaximize ? 'block' : 'none'
               }}
             />,
             <CloseOutlined
               onClick={close}
+              key="close"
               style={{ fontSize: '14px', color: '#252525', marginRight: '10px' }}
-            />,
+            />
           ]
         }}
         menuItemRender={(item, dom) => (

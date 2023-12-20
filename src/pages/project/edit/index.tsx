@@ -1,24 +1,23 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typography } from 'antd'
-import type { DescriptionsProps } from 'antd'
-import { useSearchParams } from 'react-router-dom'
-import { invoke } from '@tauri-apps/api'
-import { ulid } from 'ulid'
 import dayjs from 'dayjs'
-import type { ProColumns } from '@ant-design/pro-components'
 import { produce } from 'immer'
-import { useNavigate } from 'react-router-dom'
+import { invoke } from '@tauri-apps/api'
 import { open } from '@tauri-apps/api/dialog'
-import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
-import type { ProFormInstance, EditableFormInstance } from '@ant-design/pro-components'
-
+import { useNavigate } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
+import React, { useRef, useState, useEffect } from 'react'
+import type { ProColumns } from '@ant-design/pro-components'
 import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
-import { argList } from '../../../constants/keys'
+import type { ProFormInstance, EditableFormInstance } from '@ant-design/pro-components'
+import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
+import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typography } from 'antd'
+
+import { argKeyList } from '../../../constants/keys'
 
 const { Paragraph } = Typography
 
 type DataSourceType = {
   id: number
+  index: string
   key?: string
   value?: string
 }
@@ -30,6 +29,8 @@ export interface IItem {
   url: string
   arg_list: string
   updated_at: string
+  pid: number
+  log: string
 }
 
 const columns: ProColumns<DataSourceType>[] = [
@@ -41,18 +42,18 @@ const columns: ProColumns<DataSourceType>[] = [
     valueType: 'select',
     fieldProps: {
       showSearch: true,
-      options: argList,
-    },
+      options: argKeyList
+    }
   },
   {
     title: '参数value',
     dataIndex: 'value',
-    width: '50%',
+    width: '50%'
   },
   {
     title: '操作',
-    valueType: 'option',
-  },
+    valueType: 'option'
+  }
 ]
 
 const initialItems = [{ label: '', key: '', id: '', name: '', url: '', arg_list: [] }]
@@ -63,9 +64,16 @@ export interface ITabItem {
   id: string
   name: string
   url: string
-  log: ''
+  log: string
   pid: number
-  arg_list: Array<Object>
+  arg_list: Array<object>
+}
+
+export interface IDescItem {
+  key: string
+  label: string
+  span: number
+  children: React.ReactNode
 }
 
 const ProjectItemEdit: React.FC = () => {
@@ -73,9 +81,9 @@ const ProjectItemEdit: React.FC = () => {
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
   const [items, setItems] = useState<Array<ITabItem>>([])
   const [searchParams] = useSearchParams()
-  const [segmentedLeft, setSegmentedLeft] = useState<string>('编辑模式')
+  const [segmentedLeft] = useState<string>('编辑模式')
   const [segmentedRight, setSegmentedRight] = useState<string>('信息面板')
-  const [argList, setArgList] = useState([])
+  // const [argList, setArgList] = useState([])
 
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([])
 
@@ -83,34 +91,34 @@ const ProjectItemEdit: React.FC = () => {
 
   const formRef = useRef<ProFormInstance>()
 
-  const [descItems, setDescItems] = useState<DescriptionsProps['items']>([
+  const [descItems, setDescItems] = useState<Array<IDescItem>>([
     {
       key: '6',
       label: 'FFMPEG版本',
       children: '16',
-      span: 3,
+      span: 3
     },
     {
       key: '9',
       label: '失败重启次数',
       children: '0',
-      span: 3,
+      span: 3
     },
     {
       key: '7',
       label: 'FFMPEG URL',
       children: '',
-      span: 3,
-    },
+      span: 3
+    }
   ])
 
   const onValuesChange = () => {
     setDescItems(
       produce(draft => {
-        let r = draft.find(i => i.key == '7')
+        const r = draft.find(i => i.key == '7')
         if (formRef.current?.getFieldsValue().url.length) {
-          let arr = formRef.current?.getFieldsValue().url
-          let url = arr.reduce((accumulator, item) => {
+          const arr = formRef.current?.getFieldsValue().url
+          const url = arr.reduce((accumulator: string, item: DataSourceType) => {
             if (item.key && item.value) {
               return accumulator + ' ' + item.key + ' ' + item.value
             } else if (item.key) {
@@ -120,6 +128,7 @@ const ProjectItemEdit: React.FC = () => {
             }
             return accumulator
           }, '')
+          // @ts-expect-error no error
           if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
         }
       })
@@ -127,8 +136,8 @@ const ProjectItemEdit: React.FC = () => {
   }
 
   const getUrl = () => {
-    let arr = formRef.current?.getFieldsValue().url
-    let url = arr.reduce((accumulator, item) => {
+    const arr = formRef.current?.getFieldsValue().url
+    const url = arr.reduce((accumulator: string, item: DataSourceType) => {
       if (item.key && item.value) {
         return accumulator + ' ' + item.key + ' ' + item.value
       } else if (item.key) {
@@ -141,27 +150,27 @@ const ProjectItemEdit: React.FC = () => {
     return 'ffmpeg' + url
   }
 
-  const updateProjectDeatailItem = async (opts: any) => {
+  const updateProjectDeatailItem = async (opts: { name: string; url: string }) => {
     if (opts.name && opts.url) {
       const id = searchParams.get('id') as string
       const res: Array<IItem> = await invoke('get_project_detail_item', {
-        id,
+        id
       })
-      let defaultOpts = res[0]
+      const defaultOpts = res[0]
       const projectDetail = {
         ...defaultOpts,
         updated_at: dayjs().format(),
         name: opts.name,
         url: getUrl(),
-        arg_list: JSON.stringify(opts.url),
+        arg_list: JSON.stringify(opts.url)
       }
       await invoke('update_project_detail', {
-        projectDetail,
+        projectDetail
       })
       message.success('保存成功')
       nav({
         pathname: `/project/list`,
-        search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`,
+        search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`
       })
     } else return
   }
@@ -169,9 +178,9 @@ const ProjectItemEdit: React.FC = () => {
   const onChange = (newActiveKey: string) => {
     setItems(
       produce(draft => {
-        let r = draft.find(i => i.key == activeKey)
+        const r = draft.find(i => i.key == activeKey)
         if (r) {
-          let form = formRef.current?.getFieldsValue()
+          const form = formRef.current?.getFieldsValue()
           r.name = form.name
           r.label = form.name
           r.url = form.url
@@ -181,44 +190,42 @@ const ProjectItemEdit: React.FC = () => {
     setActiveKey(newActiveKey)
   }
 
-  const addProjectDeatailItem = async () => {
+  const getProjectDeatailItem = async () => {
     const id = searchParams.get('id') as string
     const res: Array<IItem> = await invoke('get_project_detail_item', {
-      id,
+      id
     })
-    const { name, url, arg_list } = res[0]
+    const { name, url, arg_list, log, pid } = res[0]
     const argList = JSON.parse(arg_list)
-    setArgList(
-      produce(draft => {
-        draft = JSON.parse(arg_list)
-      })
-    )
-    let idList = argList.map(i => i.id)
+    const idList = argList.map((i: { id: string }) => i.id)
     setEditableRowKeys(idList)
     setItems(
       produce(draft => {
-        let r = draft.find(i => i.id == id)
+        const r = draft.find(i => i.id == id)
         if (r) setActiveKey(r.key)
-        else draft.unshift({ label: name, name, key: id, id, url: url, arg_list: argList })
+        else
+          draft.unshift({ label: name, name, key: id, id, url: url, arg_list: argList, pid, log })
       })
     )
   }
 
-  const selectFileOrDir = async (row, type) => {
+  const selectFileOrDir = async (row: DataSourceType, type: number) => {
     try {
       const selected = await open({
-        directory: type == 1 ? false : true,
+        directory: type == 1 ? false : true
       })
       if (selected) {
         editableFormRef.current?.setRowData?.(row.index, {
-          value: selected,
+          value: selected
         })
+        // eslint-disable-next-line no-unsafe-optional-chaining
         const { url } = formRef.current?.getFieldsValue()
-        let newUrl = url.map(k => {
+        const newUrl = url.map((k: { id: string }) => {
+          // @ts-expect-error no error
           if (k.id == row.id) {
             return {
               ...k,
-              value: selected,
+              value: selected
             }
           } else {
             return k
@@ -227,10 +234,10 @@ const ProjectItemEdit: React.FC = () => {
         formRef.current?.setFieldValue('url', newUrl)
         setDescItems(
           produce(draft => {
-            let r = draft.find(i => i.key == '7')
+            const r = draft.find(i => i.key == '7')
             if (formRef.current?.getFieldsValue().url.length) {
-              let arr = formRef.current?.getFieldsValue().url
-              let url = arr.reduce((accumulator, item) => {
+              const arr = formRef.current?.getFieldsValue().url
+              const url = arr.reduce((accumulator: string, item: DataSourceType) => {
                 if (item.key && item.value) {
                   return accumulator + ' ' + item.key + ' ' + item.value
                 } else if (item.key) {
@@ -240,16 +247,19 @@ const ProjectItemEdit: React.FC = () => {
                 }
                 return accumulator
               }, '')
+              // @ts-expect-error no error
               if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
             }
           })
         )
       }
-    } catch (err) {}
+    } catch (err) {
+      /* empty */
+    }
   }
 
   useEffect(() => {
-    addProjectDeatailItem()
+    getProjectDeatailItem()
   }, [])
 
   return (
@@ -264,18 +274,19 @@ const ProjectItemEdit: React.FC = () => {
                 <ProForm<{
                   name: string
                   url: string
-                  argList: Array<Object>
+                  argList: Array<object>
                 }>
                   grid
                   formRef={formRef}
                   onValuesChange={onValuesChange}
                   submitter={{
-                    render: (props, _) => {
+                    render: props => {
                       return [
                         <Button
                           type="primary"
                           key="save"
                           onClick={() => {
+                            // eslint-disable-next-line react/prop-types
                             updateProjectDeatailItem(props.form?.getFieldsValue())
                           }}
                         >
@@ -283,9 +294,9 @@ const ProjectItemEdit: React.FC = () => {
                         </Button>,
                         <Button type="primary" key="run" onClick={() => {}}>
                           保存并运行
-                        </Button>,
+                        </Button>
                       ]
-                    },
+                    }
                   }}
                 >
                   <ProForm.Group>
@@ -315,11 +326,12 @@ const ProjectItemEdit: React.FC = () => {
                         recordCreatorProps={{
                           newRecordType: 'dataSource',
                           position: 'bottom',
+                          // @ts-expect-error no error
                           record: () => ({
                             id: Date.now(),
                             key: '',
-                            value: '',
-                          }),
+                            value: ''
+                          })
                         }}
                         editable={{
                           type: 'multiple',
@@ -328,7 +340,7 @@ const ProjectItemEdit: React.FC = () => {
                           actionRender: (row, _, dom) => {
                             return [
                               dom.delete,
-                              <Tooltip placement="top" title="选择文件路径">
+                              <Tooltip placement="top" title="选择文件路径" key="file">
                                 <FileOutlined
                                   style={{ cursor: 'pointer' }}
                                   onClick={() => {
@@ -336,16 +348,16 @@ const ProjectItemEdit: React.FC = () => {
                                   }}
                                 />
                               </Tooltip>,
-                              <Tooltip placement="top" title="选择文件路径">
+                              <Tooltip placement="top" title="选择文件路径" key="dir">
                                 <FolderOpenOutlined
                                   style={{ cursor: 'pointer' }}
                                   onClick={() => {
                                     selectFileOrDir(row, 2)
                                   }}
                                 />
-                              </Tooltip>,
+                              </Tooltip>
                             ]
-                          },
+                          }
                         }}
                       />
                     </ProForm.Item>

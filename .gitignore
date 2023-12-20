@@ -23,6 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
+docs
+
 rb.sqlite
 
 # src-tauri/migration

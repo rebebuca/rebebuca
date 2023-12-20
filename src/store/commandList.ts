@@ -1,30 +1,28 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { invoke } from '@tauri-apps/api'
 import { produce } from 'immer'
+import { invoke } from '@tauri-apps/api'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export type CommandItemType = {
   id: string
-  log: string[]
-  statusText: string
-  pid?: number
-  status: string
   url: string
+  status: string
+  log: string[]
+  pid?: number
 }
 
 const INIT_STATE: CommandItemType[] = [
   {
     id: '0',
     log: [''],
-    statusText: '',
     status: '-1',
     pid: 0,
-    url: '',
-  },
+    url: ''
+  }
 ]
 
 let run12Once = false
 
-export const todoListSlice = createSlice({
+export const commandListSlice = createSlice({
   name: 'todoList',
   initialState: INIT_STATE,
   reducers: {
@@ -62,24 +60,23 @@ export const todoListSlice = createSlice({
               ...item,
               status: status,
               pid,
-              log: JSON.stringify(draft[index].log),
+              log: JSON.stringify(draft[index].log)
             }
             invoke('update_project_detail', {
-              projectDetail,
+              projectDetail
             })
             run12Once = false
           }
 
           if (status == '12' && !run12Once) {
-            console.log(12, 12, 12, run12Once)
             const projectDetail = {
               ...item,
               status: status,
               pid,
-              log: JSON.stringify(draft[index].log),
+              log: JSON.stringify(draft[index].log)
             }
             invoke('update_project_detail', {
-              projectDetail,
+              projectDetail
             })
             run12Once = true
           }
@@ -87,10 +84,9 @@ export const todoListSlice = createSlice({
           draft.unshift({
             id,
             log: [log],
-            statusText: '',
             status,
             pid,
-            url: item.url,
+            url: item.url
           })
 
           if (status == '1' || status == '0' || status == '11') {
@@ -98,10 +94,10 @@ export const todoListSlice = createSlice({
               ...item,
               status: status,
               pid,
-              log: JSON.stringify(draft[0].log),
+              log: JSON.stringify(draft[0].log)
             }
             invoke('update_project_detail', {
-              projectDetail,
+              projectDetail
             })
             run12Once = false
           }
@@ -110,10 +106,10 @@ export const todoListSlice = createSlice({
               ...item,
               status: status,
               pid,
-              log: JSON.stringify(draft[0].log),
+              log: JSON.stringify(draft[0].log)
             }
             invoke('update_project_detail', {
-              projectDetail,
+              projectDetail
             })
             run12Once = true
           }
@@ -133,10 +129,11 @@ export const todoListSlice = createSlice({
       const { id } = action.payload
       const index = draft.findIndex(i => i.id === id)
       draft.splice(index, 1)
-    }),
-  },
+    })
+  }
 })
 
-export const { addCommand, removeCommand, updateCommand, resetCommandLog } = todoListSlice.actions
+export const { addCommand, removeCommand, updateCommand, resetCommandLog } =
+  commandListSlice.actions
 
-export default todoListSlice.reducer
+export default commandListSlice.reducer

@@ -1,11 +1,11 @@
-import type { ActionType } from '@ant-design/pro-components'
-import { ProList, ModalForm, ProForm, ProFormText } from '@ant-design/pro-components'
-import { Badge, Button, Form, message, Popconfirm, Space, Col, Row } from 'antd'
-import React, { useRef, useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { invoke } from '@tauri-apps/api'
-import { ulid } from 'ulid'
 import dayjs from 'dayjs'
+import { ulid } from 'ulid'
+import { invoke } from '@tauri-apps/api'
+import { useNavigate } from 'react-router-dom'
+import React, { useRef, useState, useEffect } from 'react'
+import type { ActionType } from '@ant-design/pro-components'
+import { Badge, Button, Form, message, Popconfirm, Space, Col, Row } from 'antd'
+import { ProList, ModalForm, ProForm, ProFormText } from '@ant-design/pro-components'
 
 const renderBadge = (count: number, active = false) => {
   return (
@@ -15,7 +15,7 @@ const renderBadge = (count: number, active = false) => {
         marginBlockStart: -2,
         marginInlineStart: 4,
         color: active ? '#1890FF' : '#999',
-        backgroundColor: active ? '#E6F7FF' : '#eee',
+        backgroundColor: active ? '#E6F7FF' : '#eee'
       }}
     />
   )
@@ -46,10 +46,10 @@ export default () => {
       project_id: ulid(),
       updated_at: dayjs().format(),
       count: 0,
-      ...values,
+      ...values
     }
     const res: Array<IItem> = await invoke('add_project', {
-      project,
+      project
     })
     setList(res)
   }
@@ -59,17 +59,17 @@ export default () => {
       project_id: row.project_id,
       updated_at: dayjs().format(),
       count: row.count,
-      ...values,
+      ...values
     }
     const res: Array<IItem> = await invoke('update_project', {
-      project,
+      project
     })
     setList(res)
   }
 
   const delProject = async (row: IItem) => {
     const res: Array<IItem> = await invoke('del_project', {
-      projectId: row.project_id,
+      projectId: row.project_id
     })
     message.success('刪除成功')
     setList(res)
@@ -81,38 +81,38 @@ export default () => {
 
   return (
     <div>
-      <ProList<any>
+      <ProList
         rowKey="title"
         actionRef={action}
         dataSource={list}
         ghost={false}
         editable={{}}
-        onItem={(record: any) => {
+        onItem={(record: IItem) => {
           return {
             onClick: () => {
               nav({
                 pathname: `/project/list`,
-                search: `name=${record.name}&projectId=${record.project_id}`,
+                search: `name=${record.name}&projectId=${record.project_id}`
               })
-            },
+            }
           }
         }}
         grid={{ gutter: 16, column: 2 }}
         pagination={{
           defaultPageSize: 4,
-          showSizeChanger: false,
+          showSizeChanger: false
         }}
         metas={{
           project_id: {
-            dataIndex: 'project_id',
+            dataIndex: 'project_id'
           },
           title: {
-            dataIndex: 'name',
+            dataIndex: 'name'
           },
           description: {
             render: () => {
               return 'Ant Design, Ant UED Team'
-            },
+            }
           },
           content: {
             dataIndex: 'updated_at',
@@ -131,7 +131,7 @@ export default () => {
                   <div>{(text as string).split('+')[0].replace('T', ' ').replace('2023-', '')}</div>
                 </Col>
               </Row>
-            ),
+            )
           },
           actions: {
             render: (_, row: IItem) => [
@@ -142,7 +142,7 @@ export default () => {
                   onClick={() => {
                     nav({
                       pathname: '/project/list',
-                      search: `name=${row.name}`,
+                      search: `name=${row.name}&projectId=${row.project_id}`
                     })
                   }}
                 >
@@ -160,7 +160,7 @@ export default () => {
                     </a>
                   }
                   modalProps={{
-                    destroyOnClose: true,
+                    destroyOnClose: true
                   }}
                   form={form}
                   onFinish={async values => {
@@ -178,8 +178,8 @@ export default () => {
                       initialValue={row.name}
                       rules={[
                         {
-                          required: true,
-                        },
+                          required: true
+                        }
                       ]}
                       placeholder="请输入项目名称"
                     />
@@ -206,9 +206,9 @@ export default () => {
                 >
                   <div style={{ opacity: 0.88 }}>删除</div>
                 </Popconfirm>
-              </Space>,
-            ],
-          },
+              </Space>
+            ]
+          }
         }}
         toolbar={{
           menu: {
@@ -216,23 +216,24 @@ export default () => {
             items: [
               {
                 key: 'tab1',
-                label: <span>全部项目{renderBadge(list.length, activeKey === 'tab1')}</span>,
-              },
+                label: <span>全部项目{renderBadge(list.length, activeKey === 'tab1')}</span>
+              }
             ],
             onChange(key) {
               setActiveKey(key)
-            },
+            }
           },
           actions: [
             <ModalForm<{
               name: string
               desc: string
             }>
+              key="new-project"
               title="新建项目"
               autoFocusFirstInput={false}
               trigger={<Button type="primary">新建项目</Button>}
               modalProps={{
-                destroyOnClose: true,
+                destroyOnClose: true
               }}
               form={form}
               onFinish={async values => {
@@ -249,8 +250,8 @@ export default () => {
                   tooltip=""
                   rules={[
                     {
-                      required: true,
-                    },
+                      required: true
+                    }
                   ]}
                   placeholder="请输入项目名称"
                 />
@@ -258,8 +259,8 @@ export default () => {
               <ProForm.Group>
                 <ProFormText width="md" name="desc" label="项目介绍" placeholder="请输入项目介绍" />
               </ProForm.Group>
-            </ModalForm>,
-          ],
+            </ModalForm>
+          ]
         }}
       />
     </div>

@@ -1,13 +1,13 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
-import MainLayout from '../layouts/MainLayout'
+
 import Home from '../pages/home'
 import ProjectList from '../pages/project'
-import ProjectItemList from '../pages/project/list'
+import MainLayout from '../layouts/MainLayout'
 import ProjectItemNew from '../pages/project/new'
+import ProjectItemList from '../pages/project/list'
 import ProjectItemEdit from '../pages/project/edit'
-import ProjectItemDetail from '../pages/project/detail'
-
 import ProjectSetting from '../pages/project/setting'
+import ProjectItemDetail from '../pages/project/detail'
 
 const router = createBrowserRouter([
   {
@@ -16,17 +16,17 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Navigate to="/project" />,
+        element: <Navigate to="/project" />
       },
       {
         path: 'home',
-        element: <Home />,
+        element: <Home />
       },
       {
         path: 'project',
-        element: <ProjectList />,
-      },
-    ],
+        element: <ProjectList />
+      }
+    ]
   },
   {
     path: '/project',
@@ -34,26 +34,26 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'list',
-        element: <ProjectItemList />,
+        element: <ProjectItemList />
       },
       {
         path: 'new',
-        element: <ProjectItemNew />,
+        element: <ProjectItemNew />
       },
       {
         path: 'edit',
-        element: <ProjectItemEdit />,
+        element: <ProjectItemEdit />
       },
       {
         path: 'detail',
-        element: <ProjectItemDetail />,
+        element: <ProjectItemDetail />
       },
       {
         path: 'setting',
-        element: <ProjectSetting />,
-      },
-    ],
-  },
+        element: <ProjectSetting />
+      }
+    ]
+  }
 ])
 
 export default router

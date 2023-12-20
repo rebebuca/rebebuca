@@ -1,24 +1,23 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typography } from 'antd'
-import type { DescriptionsProps } from 'antd'
-import { useSearchParams } from 'react-router-dom'
-import { invoke } from '@tauri-apps/api'
-import { ulid } from 'ulid'
 import dayjs from 'dayjs'
-import type { ProColumns } from '@ant-design/pro-components'
+import { ulid } from 'ulid'
 import { produce } from 'immer'
-import { useNavigate } from 'react-router-dom'
+import { invoke } from '@tauri-apps/api'
 import { open } from '@tauri-apps/api/dialog'
-import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
-import type { ProFormInstance, EditableFormInstance } from '@ant-design/pro-components'
-
+import React, { useRef, useState } from 'react'
+import type { ProColumns } from '@ant-design/pro-components'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
-import { argList } from '../../../constants/keys'
+import type { ProFormInstance, EditableFormInstance } from '@ant-design/pro-components'
+import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
+import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typography } from 'antd'
+
+import { argKeyList } from '../../../constants/keys'
 
 const { Paragraph } = Typography
 
 type DataSourceType = {
   id: number
+  index: string
   key?: string
   value?: string
 }
@@ -29,7 +28,7 @@ export interface IItem {
   name: string
   url: string
   pid: number
-  argList: Array<Object>
+  argList: Array<object>
   log: ''
   updated_at: string
 }
@@ -43,18 +42,18 @@ const columns: ProColumns<DataSourceType>[] = [
     valueType: 'select',
     fieldProps: {
       showSearch: true,
-      options: argList,
-    },
+      options: argKeyList
+    }
   },
   {
     title: '参数value',
     dataIndex: 'value',
-    width: '50%',
+    width: '50%'
   },
   {
     title: '操作',
-    valueType: 'option',
-  },
+    valueType: 'option'
+  }
 ]
 
 const initialItems = [{ label: '新建接口', key: '1000', id: '', name: '', url: '', argList: [] }]
@@ -67,47 +66,52 @@ export interface ITabItem {
   url: string
 }
 
+export interface IDescItem {
+  key: string
+  label: string
+  span: number
+  children: React.ReactNode
+}
+
 const ProjectItemNew: React.FC = () => {
   const nav = useNavigate()
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
   const [items, setItems] = useState<Array<ITabItem>>(initialItems)
   const [searchParams] = useSearchParams()
-  const [segmentedLeft, setSegmentedLeft] = useState<string>('标准模式')
   const [segmentedRight, setSegmentedRight] = useState<string>('信息面板')
-  const [argList, setArgList] = useState([])
 
   const editableFormRef = useRef<EditableFormInstance>()
 
   const formRef = useRef<ProFormInstance>()
 
-  const [descItems, setDescItems] = useState<DescriptionsProps['items']>([
+  const [descItems, setDescItems] = useState<Array<IDescItem>>([
     {
       key: '6',
       label: 'FFMPEG版本',
       children: '16',
-      span: 3,
+      span: 3
     },
     {
       key: '9',
       label: '失败重启次数',
       children: '0',
-      span: 3,
+      span: 3
     },
     {
       key: '7',
       label: 'FFMPEG URL',
       children: '',
-      span: 3,
-    },
+      span: 3
+    }
   ])
 
   const onValuesChange = () => {
     setDescItems(
       produce(draft => {
-        let r = draft.find(i => i.key == '7')
+        const r: IDescItem | undefined = draft.find(i => i.key == '7')
         if (formRef.current?.getFieldsValue().url.length) {
-          let arr = formRef.current?.getFieldsValue().url
-          let url = arr.reduce((accumulator, item) => {
+          const arr = formRef.current?.getFieldsValue().url
+          const url = arr.reduce((accumulator: string, item: DataSourceType) => {
             if (item.key && item.value) {
               return accumulator + ' ' + item.key + ' ' + item.value
             } else if (item.key) {
@@ -117,6 +121,7 @@ const ProjectItemNew: React.FC = () => {
             }
             return accumulator
           }, '')
+          // @ts-expect-error no error
           if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
         }
       })
@@ -124,8 +129,8 @@ const ProjectItemNew: React.FC = () => {
   }
 
   const getUrl = () => {
-    let arr = formRef.current?.getFieldsValue().url
-    let url = arr.reduce((accumulator, item) => {
+    const arr = formRef.current?.getFieldsValue().url
+    const url = arr.reduce((accumulator: string, item: DataSourceType) => {
       if (item.key && item.value) {
         return accumulator + ' ' + item.key + ' ' + item.value
       } else if (item.key) {
@@ -138,7 +143,7 @@ const ProjectItemNew: React.FC = () => {
     return 'ffmpeg' + url
   }
 
-  const addProjectDeatail = async (opts: any) => {
+  const addProjectDeatail = async (opts: { name: string; url: string }) => {
     if (opts.name && opts.url) {
       const projectDetail = {
         id: ulid(),
@@ -149,15 +154,15 @@ const ProjectItemNew: React.FC = () => {
         url: getUrl(),
         log: '',
         pid: 0,
-        arg_list: JSON.stringify(opts.url),
+        arg_list: JSON.stringify(opts.url)
       }
       await invoke('add_project_detail', {
-        projectDetail,
+        projectDetail
       })
       message.success('新建成功')
       nav({
         pathname: `/project/list`,
-        search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`,
+        search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`
       })
     } else return
   }
@@ -165,9 +170,9 @@ const ProjectItemNew: React.FC = () => {
   const onChange = (newActiveKey: string) => {
     setItems(
       produce(draft => {
-        let r = draft.find(i => i.key == activeKey)
+        const r = draft.find(i => i.key == activeKey)
         if (r) {
-          let form = formRef.current?.getFieldsValue()
+          const form = formRef.current?.getFieldsValue()
           r.name = form.name
           r.label = form.name || '新建接口'
           r.url = form.url
@@ -177,26 +182,28 @@ const ProjectItemNew: React.FC = () => {
     setActiveKey(newActiveKey)
   }
 
-  const selectFileOrDir = async (row, type) => {
+  const selectFileOrDir = async (row: DataSourceType, type: number) => {
     try {
       const selected = await open({
-        directory: type == 1 ? false : true,
+        directory: type == 1 ? false : true
       })
       if (selected) {
         editableFormRef.current?.setRowData?.(row.index, {
-          value: selected,
+          value: selected
         })
+        // eslint-disable-next-line no-unsafe-optional-chaining
         const { url } = formRef.current?.getFieldsValue()
-        url.forEach(item => {
+        url.forEach((item: { id: string; value: string | unknown }) => {
+          // @ts-expect-error no error
           if (item.id == row.id) item.value = selected
         })
         formRef.current?.setFieldValue('url', url)
         setDescItems(
           produce(draft => {
-            let r = draft.find(i => i.key == '7')
+            const r = draft.find(i => i.key == '7')
             if (formRef.current?.getFieldsValue().url.length) {
-              let arr = formRef.current?.getFieldsValue().url
-              let url = arr.reduce((accumulator, item) => {
+              const arr = formRef.current?.getFieldsValue().url
+              const url = arr.reduce((accumulator: string, item: DataSourceType) => {
                 if (item.key && item.value) {
                   return accumulator + ' ' + item.key + ' ' + item.value
                 } else if (item.key) {
@@ -206,12 +213,15 @@ const ProjectItemNew: React.FC = () => {
                 }
                 return accumulator
               }, '')
+              // @ts-expect-error no error
               if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
             }
           })
         )
       }
-    } catch (err) {}
+    } catch (err) {
+      /* empty */
+    }
   }
 
   return (
@@ -226,18 +236,19 @@ const ProjectItemNew: React.FC = () => {
                   <Segmented options={['标准模式']} />
                   <ProForm<{
                     name: string
-                    url: Array<Object>
+                    url: Array<object>
                   }>
                     grid
                     formRef={formRef}
                     onValuesChange={onValuesChange}
                     submitter={{
-                      render: (props, _) => {
+                      render: props => {
                         return [
                           <Button
                             type="primary"
                             key="save"
                             onClick={() => {
+                              // eslint-disable-next-line react/prop-types
                               addProjectDeatail(props.form?.getFieldsValue())
                             }}
                           >
@@ -247,13 +258,14 @@ const ProjectItemNew: React.FC = () => {
                             type="primary"
                             key="run"
                             onClick={() => {
+                              // eslint-disable-next-line react/prop-types
                               addProjectDeatail(props.form?.getFieldsValue())
                             }}
                           >
                             新建并运行
-                          </Button>,
+                          </Button>
                         ]
-                      },
+                      }
                     }}
                   >
                     <ProForm.Group>
@@ -267,55 +279,54 @@ const ProjectItemNew: React.FC = () => {
                       />
                     </ProForm.Group>
 
-                    {segmentedLeft == '标准模式' && (
-                      <ProForm.Item
-                        label="FFMPEG参数设置"
-                        required
-                        name="url"
-                        initialValue={argList}
-                        trigger="onValuesChange"
-                      >
-                        <EditableProTable<DataSourceType>
-                          rowKey="id"
-                          toolBarRender={false}
-                          columns={columns}
-                          editableFormRef={editableFormRef}
-                          recordCreatorProps={{
-                            newRecordType: 'dataSource',
-                            position: 'bottom',
-                            record: () => ({
-                              id: Date.now(),
-                              key: '',
-                              value: '',
-                            }),
-                          }}
-                          editable={{
-                            type: 'multiple',
-                            actionRender: (row, _, dom) => {
-                              return [
-                                dom.delete,
-                                <Tooltip placement="top" title="选择文件路径">
-                                  <FileOutlined
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => {
-                                      selectFileOrDir(row, 1)
-                                    }}
-                                  />
-                                </Tooltip>,
-                                <Tooltip placement="top" title="选择文件路径">
-                                  <FolderOpenOutlined
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => {
-                                      selectFileOrDir(row, 2)
-                                    }}
-                                  />
-                                </Tooltip>,
-                              ]
-                            },
-                          }}
-                        />
-                      </ProForm.Item>
-                    )}
+                    <ProForm.Item
+                      label="FFMPEG参数设置"
+                      required
+                      name="url"
+                      initialValue={[]}
+                      trigger="onValuesChange"
+                    >
+                      <EditableProTable<DataSourceType>
+                        rowKey="id"
+                        toolBarRender={false}
+                        columns={columns}
+                        editableFormRef={editableFormRef}
+                        recordCreatorProps={{
+                          newRecordType: 'dataSource',
+                          position: 'bottom',
+                          // @ts-expect-error no error
+                          record: () => ({
+                            id: Date.now(),
+                            key: '',
+                            value: ''
+                          })
+                        }}
+                        editable={{
+                          type: 'multiple',
+                          actionRender: (row, _, dom) => {
+                            return [
+                              dom.delete,
+                              <Tooltip placement="top" title="选择文件路径" key="file-path">
+                                <FileOutlined
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() => {
+                                    selectFileOrDir(row, 1)
+                                  }}
+                                />
+                              </Tooltip>,
+                              <Tooltip placement="top" title="选择文件路径" key="dir-path">
+                                <FolderOpenOutlined
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() => {
+                                    selectFileOrDir(row, 2)
+                                  }}
+                                />
+                              </Tooltip>
+                            ]
+                          }
+                        }}
+                      />
+                    </ProForm.Item>
                   </ProForm>
                 </Space>
               </ProCard>

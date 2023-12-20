@@ -1,330 +1,330 @@
-export const argList = [
+export const argKeyList = [
   {
     label: '-i',
-    value: '-i',
+    value: '-i'
   },
   {
     label: '-f',
-    value: '-f',
+    value: '-f'
   },
   {
     label: '-y',
-    value: '-y',
+    value: '-y'
   },
   {
     label: '-c:v',
-    value: '-c:v',
+    value: '-c:v'
   },
   {
     label: '-t',
-    value: '-t',
+    value: '-t'
   },
   {
     label: '-v',
-    value: '-v',
+    value: '-v'
   },
   {
     label: '-ss',
-    value: '-ss',
+    value: '-ss'
   },
   {
     label: '-L',
-    value: '-L',
+    value: '-L'
   },
   {
     label: '-title',
-    value: '-title',
+    value: '-title'
   },
   {
     label: '-author',
-    value: '-author',
+    value: '-author'
   },
   {
     label: '-copyright',
-    value: '-copyright',
+    value: '-copyright'
   },
   {
     label: '-comment',
-    value: '-comment',
+    value: '-comment'
   },
   {
     label: '-target',
-    value: '-target',
+    value: '-target'
   },
   {
     label: '-hq',
-    value: '-hq',
+    value: '-hq'
   },
   {
     label: '-itsoffset',
-    value: '-itsoffset',
+    value: '-itsoffset'
   },
   {
     label: '-ab',
-    value: '-ab',
+    value: '-ab'
   },
   {
     label: '-ar',
-    value: '-ar',
+    value: '-ar'
   },
   {
     label: '-ac',
-    value: '-ac',
+    value: '-ac'
   },
   {
     label: '-an',
-    value: '-an',
+    value: '-an'
   },
   {
     label: '-acodec',
-    value: '-acodec',
+    value: '-acodec'
   },
   {
     label: '-vd',
-    value: '-vd',
+    value: '-vd'
   },
   {
     label: '-vc',
-    value: '-vc',
+    value: '-vc'
   },
   {
     label: '-tvstd',
-    value: '-tvstd',
+    value: '-tvstd'
   },
   {
     label: '-dv1394',
-    value: '-dv1394',
+    value: '-dv1394'
   },
   {
     label: '-av',
-    value: '-av',
+    value: '-av'
   },
   {
     label: '-b',
-    value: '-b',
+    value: '-b'
   },
   {
     label: '-r',
-    value: '-r',
+    value: '-r'
   },
   {
     label: '-s',
-    value: '-s',
+    value: '-s'
   },
   {
     label: '-aspect',
-    value: '-aspect',
+    value: '-aspect'
   },
   {
     label: '-croptop',
-    value: '-croptop',
+    value: '-croptop'
   },
   {
     label: '-padcolor',
-    value: '-padcolor',
+    value: '-padcolor'
   },
   {
     label: '-vn',
-    value: '-vn',
+    value: '-vn'
   },
   {
     label: '-bt',
-    value: '-bt',
+    value: '-bt'
   },
   {
     label: '-maxrate',
-    value: '-maxrate',
+    value: '-maxrate'
   },
   {
     label: '-minrate',
-    value: '-minrate',
+    value: '-minrate'
   },
   {
     label: '-bufsize',
-    value: '-bufsize',
+    value: '-bufsize'
   },
   {
     label: '-vcodec',
-    value: '-vcodec',
+    value: '-vcodec'
   },
   {
     label: '-sameq',
-    value: '-sameq',
+    value: '-sameq'
   },
   {
     label: '-pass',
-    value: '-pass',
+    value: '-pass'
   },
   {
     label: '-passlogfile',
-    value: '-passlogfile',
+    value: '-passlogfile'
   },
   {
     label: '-g',
-    value: '-g',
+    value: '-g'
   },
   {
     label: '-intra',
-    value: '-intra',
+    value: '-intra'
   },
   {
     label: '-qscale',
-    value: '-qscale',
+    value: '-qscale'
   },
   {
     label: '-qmin',
-    value: '-qmin',
+    value: '-qmin'
   },
   {
     label: '-qmax',
-    value: '-qmax',
+    value: '-qmax'
   },
   {
     label: '-qdiff',
-    value: '-qdiff',
+    value: '-qdiff'
   },
   {
     label: '-qblur',
-    value: '-qblur',
+    value: '-qblur'
   },
   {
     label: '-qcomp',
-    value: '-qcomp',
+    value: '-qcomp'
   },
   {
     label: '-rc_init_cplx',
-    value: '-rc_init_cplx',
+    value: '-rc_init_cplx'
   },
   {
     label: '-b_qfactor',
-    value: '-b_qfactor',
+    value: '-b_qfactor'
   },
   {
     label: '-i_qfactor',
-    value: '-i_qfactor',
+    value: '-i_qfactor'
   },
   {
     label: '-b_qoffset',
-    value: '-b_qoffset',
+    value: '-b_qoffset'
   },
   {
     label: '-i_qoffset',
-    value: '-i_qoffset',
+    value: '-i_qoffset'
   },
   {
     label: '-rc_eq',
-    value: '-rc_eq',
+    value: '-rc_eq'
   },
   {
     label: '-rc_override',
-    value: '-rc_override',
+    value: '-rc_override'
   },
   {
     label: '-me',
-    value: '-me',
+    value: '-me'
   },
   {
     label: '-dct_algo',
-    value: '-dct_algo',
+    value: '-dct_algo'
   },
   {
     label: '-idct_algo',
-    value: '-idct_algo',
+    value: '-idct_algo'
   },
   {
     label: '-er',
-    value: '-er',
+    value: '-er'
   },
   {
     label: '-ec',
-    value: '-ec',
+    value: '-ec'
   },
   {
     label: '-bf',
-    value: '-bf',
+    value: '-bf'
   },
   {
     label: '-mbd',
-    value: '-mbd',
+    value: '-mbd'
   },
   {
     label: '-4mv',
-    value: '-4mv',
+    value: '-4mv'
   },
   {
     label: '-part',
-    value: '-part',
+    value: '-part'
   },
   {
     label: '-bug',
-    value: '-bug',
+    value: '-bug'
   },
   {
     label: '-strict',
-    value: '-strict',
+    value: '-strict'
   },
   {
     label: '-aic',
-    value: '-aic',
+    value: '-aic'
   },
   {
     label: '-umv',
-    value: '-umv',
+    value: '-umv'
   },
   {
     label: '-deinterlace',
-    value: '-deinterlace',
+    value: '-deinterlace'
   },
   {
     label: '-interlace',
-    value: '-interlace',
+    value: '-interlace'
   },
   {
     label: '-psnr',
-    value: '-psnr',
+    value: '-psnr'
   },
   {
     label: '-vstats',
-    value: '-vstats',
+    value: '-vstats'
   },
   {
     label: '-vhook',
-    value: '-vhook',
+    value: '-vhook'
   },
   {
     label: '-map',
-    value: '-map',
+    value: '-map'
   },
   {
     label: '-debug',
-    value: '-debug',
+    value: '-debug'
   },
   {
     label: '-benchmark',
-    value: '-benchmark',
+    value: '-benchmark'
   },
   {
     label: '-hex',
-    value: '-hex',
+    value: '-hex'
   },
   {
     label: '-bitexact',
-    value: '-bitexact',
+    value: '-bitexact'
   },
   {
     label: '-ps',
-    value: '-ps',
+    value: '-ps'
   },
   {
     label: '-re',
-    value: '-re',
+    value: '-re'
   },
   {
     label: '-loop',
-    value: '-loop',
+    value: '-loop'
   },
   {
     label: '-threads',
-    value: '-threads',
-  },
+    value: '-threads'
+  }
 ]

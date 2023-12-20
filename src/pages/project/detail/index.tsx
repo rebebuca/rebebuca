@@ -1,45 +1,20 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { Tabs, Space, Badge, Button, Descriptions, Segmented, Typography } from 'antd'
-import type { DescriptionsProps } from 'antd'
-import { useSearchParams } from 'react-router-dom'
+import { produce } from 'immer'
 import { invoke } from '@tauri-apps/api'
 import { Command } from '@tauri-apps/api/shell'
-import { produce } from 'immer'
+import { useSearchParams } from 'react-router-dom'
 import { ProCard } from '@ant-design/pro-components'
+import { useSelector, useDispatch } from 'react-redux'
+import React, { useRef, useState, useEffect } from 'react'
 import type { ProFormInstance } from '@ant-design/pro-components'
+import { Tabs, Space, Badge, Button, Descriptions, Segmented, Typography } from 'antd'
 
 const { Paragraph } = Typography
 
 import { runFFmpeg } from '../../../utils'
 import { addCommand, updateCommand, resetCommandLog } from '../../../store/commandList'
 
-import { useSelector, useDispatch } from 'react-redux'
-
 import type { CommandItemType } from '../../../store/commandList'
 import type { StateType } from '../../../store'
-
-export interface ILogMapValue {
-  log: string[]
-  statusText: string
-  code: number
-  child?: any
-}
-
-const logMap: Map<string, ILogMapValue> = new Map()
-logMap.set('0', {
-  log: [],
-  statusText: '',
-  code: 1,
-  child: null,
-})
-
-export interface IItem {
-  id: string
-  project_id: string
-  name: string
-  url: string
-  updated_at: string
-}
 
 const initialItems = [{ label: '', key: '', id: '', name: '', url: '' }]
 
@@ -49,8 +24,19 @@ export interface ITabItem {
   id: string
   name: string
   url: string
+  project_id: string
   updated_at: string
+  status: string
+  log: string
 }
+
+export interface IDescItem {
+  key: string
+  label: string
+  span: number
+  children: React.ReactNode
+}
+
 type StatusType = {
   status: 'processing' | 'success' | 'error' | 'default'
   text: string
@@ -66,37 +52,35 @@ const ProjectItemEdit: React.FC = () => {
 
   const dispatch = useDispatch()
 
-  const [descItems, setDescItems] = useState<DescriptionsProps['items']>([
+  const [descItems, setDescItems] = useState<Array<IDescItem>>([
     {
       key: '1',
       label: '接口 URL',
       children: '',
-      span: 3,
+      span: 3
     },
     {
       key: '6',
       label: 'FFMPEG版本',
       children: '16',
-      span: 3,
+      span: 3
     },
     {
       key: '9',
       label: '失败重启次数',
       children: '0',
-      span: 3,
-    },
+      span: 3
+    }
   ])
 
   const formRef = useRef<ProFormInstance>()
 
-  const list = useRef([])
-
   const onChange = (newActiveKey: string) => {
     setItems(
       produce(draft => {
-        let r = draft.find(i => i.key == activeKey)
+        const r = draft.find(i => i.key == activeKey)
         if (r) {
-          let form = formRef.current?.getFieldsValue()
+          const form = formRef.current?.getFieldsValue()
           r.name = form.name
           r.label = form.name
           r.url = form.url
@@ -108,13 +92,11 @@ const ProjectItemEdit: React.FC = () => {
 
   const getProjectDeatailItem = async () => {
     const id = searchParams.get('id') as string
-    const res: Array<IItem> = await invoke('get_project_detail_item', {
-      id,
+    const res: Array<ITabItem> = await invoke('get_project_detail_item', {
+      id
     })
     const { url } = res[0]
     setItems(res)
-    list.current = res
-    console.log(111, list)
     add(res[0])
     setDescItems(
       produce(draft => {
@@ -123,58 +105,44 @@ const ProjectItemEdit: React.FC = () => {
     )
   }
 
-  const add = item => {
+  const add = (item: ITabItem) => {
     dispatch(
       addCommand({
         id: item.id,
         status: item.status,
         log: (item.log && JSON.parse(item.log)) || [''],
         pid: 0,
-        url: '',
-        statusText: '',
+        url: ''
       })
     )
   }
 
-  const updateProjectDeatailItem = async (status: string) => {
-    const item = items[0]
-    if (status == '1' || status == '0' || status == '11') {
-      const projectDetail = {
-        ...item,
-        status: status,
-      }
-      await invoke('update_project_detail', {
-        projectDetail,
-      })
-    } else return
-  }
-
   const getStatus = (commandList: Array<CommandItemType>): StatusType => {
-    let a = commandList[0]
+    const a = commandList[0]
     if (a.status == '12')
       return {
         status: 'processing',
-        text: '运行中',
+        text: '运行中'
       }
     else if (a.status == '0')
       return {
         status: 'success',
-        text: '成功',
+        text: '成功'
       }
     else if (a.status == '1')
       return {
         status: 'error',
-        text: '失败',
+        text: '失败'
       }
     else if (a.status == '-1')
       return {
         status: 'default',
-        text: '未运行',
+        text: '未运行'
       }
     else
       return {
         status: 'default',
-        text: '停止',
+        text: '停止'
       }
   }
 
@@ -214,32 +182,31 @@ const ProjectItemEdit: React.FC = () => {
                     type="primary"
                     key="run"
                     onClick={async () => {
-                      // { commandList[0].status == '12' ? '停止' : '运行' }
-                      let showStop = commandList[0].status == '12'
+                      const showStop = commandList[0].status == '12'
                       if (showStop) {
                         const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
-                        const command = await new Command('ffmpeg', cmd);
+                        const command = await new Command('ffmpeg', cmd)
                         command.spawn()
                         command.on('close', () => {
-                          console.log("进程关闭")
+                          console.log('进程关闭')
                         })
                       } else {
                         dispatch(
                           resetCommandLog({
-                            id: item.id,
+                            id: item.id
                           })
                         )
-                        let argArr = item.url.split(' ')
+                        const argArr = item.url.split(' ')
                         argArr.shift()
                         if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
-                        let s = await runFFmpeg(argArr, (line: string, status: string) => {
+                        const s = await runFFmpeg(argArr, (line: string, status: string) => {
                           dispatch(
                             updateCommand({
                               id: item.id,
                               status: status,
                               pid: s.pid,
                               log: line,
-                              item: items[0],
+                              item: items[0]
                             })
                           )
                         })
@@ -248,48 +215,33 @@ const ProjectItemEdit: React.FC = () => {
                   >
                     {commandList[0].status == '12' ? '停止' : '运行'}
                   </Button>
-                  {/* <Button
-                    type="primary"
-                    key="stop"
-                    onClick={async () => {
-                      console.log(666, commandList[0].status)
-                      const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
-                      const command = await new Command('ffmpeg', cmd);
-                      command.spawn()
-                      command.on('close', () => {
-                        console.log("进程关闭")
-                      })
-                    }}
-                  >
-                    {commandList[0].status == '12' ? '停止' : '运行'}
-                  </Button> */}
                   <Button
                     type="primary"
                     key="runAgain"
                     onClick={async () => {
-                      let showStop = commandList[0].status == '12'
+                      const showStop = commandList[0].status == '12'
                       if (showStop) {
                         const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
-                        const command = await new Command('ffmpeg', cmd);
+                        const command = await new Command('ffmpeg', cmd)
                         command.spawn()
                         command.on('close', async () => {
-                          console.log("进程关闭")
+                          console.log('进程关闭')
                           dispatch(
                             resetCommandLog({
-                              id: item.id,
+                              id: item.id
                             })
                           )
-                          let argArr = item.url.split(' ')
+                          const argArr = item.url.split(' ')
                           argArr.shift()
                           if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
-                          let s = await runFFmpeg(argArr, (line: string, status: string) => {
+                          const s = await runFFmpeg(argArr, (line: string, status: string) => {
                             dispatch(
                               updateCommand({
                                 id: item.id,
                                 status: status,
                                 pid: s.pid,
                                 log: line,
-                                item: items[0],
+                                item: items[0]
                               })
                             )
                           })
@@ -297,20 +249,20 @@ const ProjectItemEdit: React.FC = () => {
                       } else {
                         dispatch(
                           resetCommandLog({
-                            id: item.id,
+                            id: item.id
                           })
                         )
-                        let argArr = item.url.split(' ')
+                        const argArr = item.url.split(' ')
                         argArr.shift()
                         if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
-                        let s = await runFFmpeg(argArr, (line: string, status: string) => {
+                        const s = await runFFmpeg(argArr, (line: string, status: string) => {
                           dispatch(
                             updateCommand({
                               id: item.id,
                               status: status,
                               pid: s.pid,
                               log: line,
-                              item: items[0],
+                              item: items[0]
                             })
                           )
                         })
