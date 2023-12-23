@@ -88,8 +88,13 @@ export default () => {
         ghost={false}
         editable={{}}
         onItem={(record: IItem) => {
+          // console.log(9999);
           return {
+            // onMouseEnter: () => {
+            //   console.log(record);
+            // },
             onClick: () => {
+              console.log(8888)
               nav({
                 pathname: `/project/list`,
                 search: `name=${record.name}&projectId=${record.project_id}`

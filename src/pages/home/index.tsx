@@ -7,7 +7,7 @@ const Home: FC = () => {
   return (
     <div>
       <Title>FFMPEG管理器</Title>
-      <Paragraph>欢迎使用 Rebebuca! </Paragraph>
+      <Paragraph>欢迎使用 Rebebuca ! </Paragraph>
     </div>
   )
 }

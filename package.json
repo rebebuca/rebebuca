@@ -2,6 +2,7 @@
   "name": "rebebuca",
   "private": true,
   "version": "0.1.0",
+  "author": "godkun",
   "type": "module",
   "scripts": {
     "tauri": "tauri",
@@ -15,6 +16,7 @@
     "@ant-design/icons": "^5.2.6",
     "@ant-design/pro-components": "^2.6.28",
     "@ant-design/pro-layout": "^7.6.1",
+    "@ant-design/pro-provider": "^2.13.5",
     "@reduxjs/toolkit": "^2.0.1",
     "@tauri-apps/api": "^1.5.1",
     "antd": "^5.11.0",

@@ -42,7 +42,7 @@ export const commandListSlice = createSlice({
           status: string
           log: string
           pid: number
-          item: object
+          item: { url: string }
         }>
       ) => {
         const { id, status, log, pid, item } = action.payload

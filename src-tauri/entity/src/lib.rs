@@ -2,5 +2,6 @@
 
 pub mod prelude;
 
+pub mod app_setting;
 pub mod project;
 pub mod project_detail;
