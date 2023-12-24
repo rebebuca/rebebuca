@@ -15,17 +15,20 @@ import './index.scss'
 import { event } from '@tauri-apps/api'
 
 import { window as tauriWindow } from '@tauri-apps/api'
-const noDragSelector =
-  'a, img, .ant-pro-global-header-header-actions-item, .ant-layout-content, .ant-modal-content'
+// const noDragSelector =
+//   'a, img, span, .ant-pro-global-header-header-actions-item, .ant-layout-content, .ant-modal-content, .ant-pro-card'
+
+const darag = '.ant-pro-top-nav-header'
+const nodarag = 'a, .ant-pro-global-header-header-actions-item'
 document.addEventListener('mousedown', async e => {
-  console.log(Date.now())
   // @ts-expect-error no error
-  if (e.target.closest(noDragSelector)) {
-    e.stopPropagation()
+  if (e.target.closest(nodarag)) {
     return
   }
-
-  await tauriWindow.appWindow.startDragging()
+  // @ts-expect-error no error
+  if (e.target.closest(darag)) {
+    await tauriWindow.appWindow.startDragging()
+  }
 })
 
 import {
