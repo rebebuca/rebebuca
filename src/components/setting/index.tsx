@@ -162,7 +162,7 @@ export default (props: PropsType) => {
                   <div>{t('Language')}</div>
                   <Select
                     value={appSetting.lang}
-                    style={{ width: 150 }}
+                    style={{ width: 160 }}
                     onChange={e => onChangeAppSetting(e, 'lang')}
                     options={[
                       { value: 'ch', label: t('Chinese') },
@@ -176,7 +176,7 @@ export default (props: PropsType) => {
                   <div>{t('所有窗口关闭时')}</div>
                   <Select
                     value={appSetting.quit_type}
-                    style={{ width: 150 }}
+                    style={{ width: 160 }}
                     onChange={e => onChangeAppSetting(e, 'quit_type')}
                     options={[
                       { value: '1', label: t('提醒我') },
