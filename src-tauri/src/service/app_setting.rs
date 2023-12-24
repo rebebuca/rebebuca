@@ -13,6 +13,7 @@ pub async fn add_app_setting_db(app_setting: Model) -> Result<Vec<Model>, DbErr>
     let model = ActiveModel {
         version: Set(app_setting.version),
         ffmpeg: Set(app_setting.ffmpeg),
+        quit_type: Set(app_setting.quit_type),
         theme: Set(app_setting.theme),
         lang: Set(app_setting.lang),
     };
@@ -26,6 +27,7 @@ pub async fn update_app_setting_db(app_setting: Model) -> Result<Vec<Model>, DbE
     let model = ActiveModel {
         version: Set(app_setting.version),
         ffmpeg: Set(app_setting.ffmpeg),
+        quit_type: Set(app_setting.quit_type),
         theme: Set(app_setting.theme),
         lang: Set(app_setting.lang),
     };

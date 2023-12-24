@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
 import { invoke, shell } from '@tauri-apps/api'
-import { Typography, Button, ConfigProvider, theme } from 'antd'
+import { Typography, Button, ConfigProvider, theme, Modal, Checkbox, Radio, Space, RadioChangeEvent } from 'antd'
 import ProLayout from '@ant-design/pro-layout'
 import { appWindow } from '@tauri-apps/api/window'
 import { PageContainer } from '@ant-design/pro-components'
 import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 import AppSetting from '../components/setting'
+import { useTranslation } from 'react-i18next'
+
+// import { t }  from '../utils/i18n'
+import '../utils/i18n'
 
 import zhCN from 'antd/locale/zh_CN'
-// import enUS from 'antd/locale/en_US'
+import enUS from 'antd/locale/en_US'
 
 import './index.scss'
 
@@ -46,24 +50,28 @@ import {
 const { Paragraph } = Typography
 
 import { useLocationListen } from '../hooks'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 export interface IAppSettingItem {
   lang?: string
   version?: string
   ffmpeg?: string
   theme?: string
+  quit_type?: string
 }
 
 export default () => {
   const location = useLocation()
+  const { t, i18n } = useTranslation()
   const [pathname, setPathname] = useState(location.pathname)
   const [searchParams] = useSearchParams()
   const [open, setOpen] = useState(false)
   const [dark, setDark] = useState(false)
+  const [appSetting, setAppSetting] = useState<IAppSettingItem>({})
 
   const [isMaximize, setIsMaximize] = useState(false)
 
-  const [locale] = useState(zhCN)
+  const [locale, setLocale] = useState(zhCN)
 
   const minimize = async () => {
     await appWindow.minimize()
@@ -80,7 +88,8 @@ export default () => {
   }
 
   const close = async () => {
-    await appWindow.close()
+    // 获取所有正在运行的程序
+    showModal()
   }
 
   useLocationListen(listener => {
@@ -89,9 +98,79 @@ export default () => {
 
   const initAppSetting = async () => {
     const setting: Array<IAppSettingItem> = await invoke('get_app_setting')
-    setDark(setting[0].theme === 'dark')
+    if (setting.length == 0) {
+      const defaultSetting = {
+        lang: 'ch',
+        theme: 'light',
+        ffmpeg: 'default',
+        version: '1.0',
+        quit_type: '1'
+      }
+      await invoke('add_app_setting', {
+        appSetting: defaultSetting
+      })
+      const new_setting: Array<IAppSettingItem> = await invoke('get_app_setting')
+      setDark(new_setting[0].theme === 'dark')
+      setAppSetting(new_setting[0])
+      i18n.changeLanguage(new_setting[0].lang)
+      if (new_setting[0].lang == 'ch') {
+        setLocale(zhCN)
+      } else if (new_setting[0].lang == 'en') {
+        setLocale(enUS)
+      }
+    } else {
+      setAppSetting(setting[0])
+      setDark(setting[0].theme === 'dark')
+      i18n.changeLanguage(setting[0].lang)
+      if (setting[0].lang == 'ch') {
+        setLocale(zhCN)
+      } else if (setting[0].lang == 'en') {
+        setLocale(enUS)
+      }
+    }
   }
 
+  const setLang = (value: string) => {
+    if (value == 'ch') {
+      setLocale(zhCN)
+    } else if (value == 'en') {
+      setLocale(enUS)
+    }
+  }
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const showModal = async () => {
+    const setting: Array<IAppSettingItem> = await invoke('get_app_setting')
+    setAppSetting(setting[0])
+    const quit_type = setting[0].quit_type
+    if (quit_type == '1') setIsModalOpen(true)
+    else if (quit_type == '2') {
+      await appWindow.minimize()
+    } else await appWindow.close()
+  }
+
+  const handleOk = async () => {
+    setIsModalOpen(false)
+    await appWindow.close()
+  }
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+
+  const onChange = async (e: RadioChangeEvent) => {
+    const setting: Array<IAppSettingItem> = await invoke('get_app_setting')
+    const opts = {
+      ...setting[0],
+      quit_type: e.target.value
+    }
+    await invoke('update_app_setting', {
+      appSetting: opts
+    })
+    const res: Array<IAppSettingItem> = await invoke('get_app_setting')
+    setAppSetting(res[0])
+  }
   useEffect(() => {
     if (isMaximize) {
       event.once('tauri://resize', () => {
@@ -112,15 +191,40 @@ export default () => {
         algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm
       }}
     >
-      <AppSetting
-        open={open}
-        setOpen={setOpen}
-        setDark={dark => {
-          setDark(dark)
-        }}
-      ></AppSetting>
+      {appSetting.theme && (
+        <AppSetting
+          open={open}
+          setOpen={setOpen}
+          setLocale={value => {
+            setLang(value)
+          }}
+          setDark={dark => {
+            setDark(dark)
+          }}
+        ></AppSetting>
+      )}
       <div>
+        <Modal
+          title="确定要退出rebebuca吗？"
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <p>{t('退出后，正在运行的程序会自动结束')}</p>
+          <p>{t('下次关闭，希望：')}</p>
+          <Radio.Group onChange={onChange} value={appSetting.quit_type}>
+            <Space direction="vertical">
+              <Radio value="1">{t('提醒我')}</Radio>
+              <Radio value="2">{t('最小化托盘')}</Radio>
+              <Radio value="3">{t('退出')}</Radio>
+            </Space>
+          </Radio.Group>
+          {/* <Checkbox onChange={onChange}>下次不再提示</Checkbox> */}
+        </Modal>
+        {/* * @example 中文 layout="zh-CN"
+         * @example 英文 layout="en-US" */}
         <ProLayout
+          // locale={appSetting.lang == 'en' ? 'en-US' : 'zh-CN'}
           siderWidth={300}
           collapsedButtonRender={false}
           pageTitleRender={false}
@@ -137,24 +241,24 @@ export default () => {
             routes: [
               {
                 path: '/home',
-                name: '首页',
+                name: t('Home'),
                 icon: <HomeOutlined />
               },
               {
                 path: '/project',
-                name: '我的项目',
+                name: t('My Project'),
                 icon: <ProjectOutlined />,
                 routes:
                   pathname != '/project'
                     ? [
                         {
                           path: '/project/list',
-                          name: '接口列表',
+                          name: t('Interface List'),
                           icon: <UnorderedListOutlined />
                         },
                         {
                           path: '/project/new',
-                          name: '接口新建',
+                          name: t('Interface New'),
                           icon: <PlusCircleOutlined />
                         }
                       ]
@@ -186,7 +290,8 @@ export default () => {
                   shell.open('https://rebebuca.com')
                 }}
               >
-                官网
+                {/* 官网 */}
+                {t('Official Website')}
               </Button>,
               <GithubFilled
                 key="github"

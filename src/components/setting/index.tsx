@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Modal, Menu, Radio, Select, Space } from 'antd'
-import { InfoCircleOutlined } from '@ant-design/icons'
+import { InfoCircleOutlined, SettingOutlined } from '@ant-design/icons'
 import { getVersion } from '@tauri-apps/api/app'
 
+import { useTranslation } from 'react-i18next'
+
+// import useLocalStorage from 'react-use/lib/useLocalStorage'
 
 import type { MenuProps } from 'antd'
 type MenuItem = Required<MenuProps>['items'][number]
@@ -31,6 +34,7 @@ export interface IAppSettingItem {
   version?: string
   ffmpeg?: string
   theme?: string
+  quit_type?: string
 }
 
 // ts 自定义类型
@@ -38,15 +42,17 @@ type PropsType = {
   open: boolean
   setOpen: (open: boolean) => void
   setDark: (dark: boolean) => void
+  setLocale: (value: string) => void
 }
 
 export default (props: PropsType) => {
-  const { open, setOpen, setDark } = props
+  const { t, i18n } = useTranslation()
+  const { open, setOpen, setDark, setLocale } = props
 
   // const [open, setOpen] = useState(true)
   const items: MenuProps['items'] = [
     getItem(
-      '外观',
+      t('Appearance'),
       '1',
       <img
         src="/wai-guan.svg"
@@ -56,9 +62,9 @@ export default (props: PropsType) => {
         }}
       />
     ),
-    // getItem('通用', '2', <SettingOutlined></SettingOutlined>),
+    getItem(t('General'), '2', <SettingOutlined></SettingOutlined>),
     // getItem('高级选项', '3', <SettingOutlined></SettingOutlined>),
-    getItem('关于 Rebebuca', '4', <InfoCircleOutlined />)
+    getItem(t('About Rebebuca'), '4', <InfoCircleOutlined />)
   ]
 
   const [currentKey, setCurrentKey] = useState('1')
@@ -79,6 +85,10 @@ export default (props: PropsType) => {
     await invoke('update_app_setting', {
       appSetting: opts
     })
+    if (type == 'lang') {
+      i18n.changeLanguage(value)
+      setLocale(value)
+    }
     initPage()
   }
 
@@ -89,7 +99,8 @@ export default (props: PropsType) => {
         lang: 'ch',
         theme: 'light',
         ffmpeg: 'default',
-        version: '1.0'
+        version: '1.0',
+        quit_type: '1'
       }
       await invoke('add_app_setting', {
         appSetting: defaultSetting
@@ -120,7 +131,7 @@ export default (props: PropsType) => {
       >
         <div className="setting-box">
           <div style={{ marginRight: '20px' }}>
-            <div className="setting-left-title">设置</div>
+            <div className="setting-left-title">{t('Preferences')}</div>
             <Menu
               style={{ width: 256 }}
               defaultSelectedKeys={[currentKey]}
@@ -130,32 +141,47 @@ export default (props: PropsType) => {
           </div>
           {currentKey == '1' && (
             <div>
-              <div className="setting-right-title">外观</div>
+              <div className="setting-right-title">{t('Appearance')}</div>
               <Space>
-                <div>主题：</div>
+                <div>{t('Theme')}：</div>
                 <Radio.Group
                   onChange={e => onChangeAppSetting(e.target.value, 'theme')}
                   value={appSetting.theme}
                 >
-                  <Radio value="light">浅色主题</Radio>
-                  <Radio value="dark">深色主题</Radio>
+                  <Radio value="light">{t('light theme')}</Radio>
+                  <Radio value="dark">{t('dark theme')}</Radio>
                 </Radio.Group>
               </Space>
             </div>
           )}
           {currentKey == '2' && (
             <div>
-              <div className="setting-right-title">通用</div>
+              <div className="setting-right-title">{t('General')}</div>
               <div>
                 <Space>
-                  <div>软件语言</div>
+                  <div>{t('Language')}</div>
                   <Select
                     value={appSetting.lang}
-                    style={{ width: 120 }}
+                    style={{ width: 150 }}
                     onChange={e => onChangeAppSetting(e, 'lang')}
                     options={[
-                      { value: 'ch', label: '中文' },
-                      { value: 'en', label: '英文' }
+                      { value: 'ch', label: t('Chinese') },
+                      { value: 'en', label: t('English') }
+                    ]}
+                  />
+                </Space>
+              </div>
+              <div className="setting-right-item">
+                <Space>
+                  <div>{t('所有窗口关闭时')}</div>
+                  <Select
+                    value={appSetting.quit_type}
+                    style={{ width: 150 }}
+                    onChange={e => onChangeAppSetting(e, 'quit_type')}
+                    options={[
+                      { value: '1', label: t('提醒我') },
+                      { value: '2', label: t('最小化托盘') },
+                      { value: '3', label: t('退出') }
                     ]}
                   />
                 </Space>
@@ -181,10 +207,10 @@ export default (props: PropsType) => {
           )}
           {currentKey == '4' && (
             <div>
-              <div className="setting-right-title">关于 Rebebuca</div>
+              <div className="setting-right-title">{t('About Rebebuca')}</div>
               <div>
                 <Space>
-                  <div>当前版本：</div>
+                  <div>{t('Version')}：</div>
                   <div>{version}</div>
                 </Space>
               </div>

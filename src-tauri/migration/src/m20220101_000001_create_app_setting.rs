@@ -6,6 +6,7 @@ enum AppSetting {
     Version,
     Ffmpeg,
     Theme,
+    QuitType,
     Lang
 }
 
@@ -26,6 +27,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(AppSetting::Version).string().not_null().primary_key())
                     .col(ColumnDef::new(AppSetting::Ffmpeg).string().not_null())
                     .col(ColumnDef::new(AppSetting::Theme).string().not_null())
+                    .col(ColumnDef::new(AppSetting::QuitType).string().not_null())
                     .col(ColumnDef::new(AppSetting::Lang).string().not_null())
                     .to_owned(),
             )

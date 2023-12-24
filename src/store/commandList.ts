@@ -20,7 +20,9 @@ const INIT_STATE: CommandItemType[] = [
   }
 ]
 
-let run12Once = false
+// let run12Once = false
+
+const run12OnceMap = new Map()
 
 export const commandListSlice = createSlice({
   name: 'todoList',
@@ -65,10 +67,11 @@ export const commandListSlice = createSlice({
             invoke('update_project_detail', {
               projectDetail
             })
-            run12Once = false
+            run12OnceMap.set(id, false)
+            // run12Once = false
           }
 
-          if (status == '12' && !run12Once) {
+          if (status == '12' && !run12OnceMap.get(id)) {
             const projectDetail = {
               ...item,
               status: status,
@@ -78,7 +81,7 @@ export const commandListSlice = createSlice({
             invoke('update_project_detail', {
               projectDetail
             })
-            run12Once = true
+            run12OnceMap.set(id, true)
           }
         } else {
           draft.unshift({
@@ -101,7 +104,7 @@ export const commandListSlice = createSlice({
             })
             run12Once = false
           }
-          if (status == '12' && !run12Once) {
+          if (status == '12' && !run12OnceMap.get(id)) {
             const projectDetail = {
               ...item,
               status: status,
@@ -111,7 +114,7 @@ export const commandListSlice = createSlice({
             invoke('update_project_detail', {
               projectDetail
             })
-            run12Once = true
+            run12OnceMap.set(id, true)
           }
         }
       }

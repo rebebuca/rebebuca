@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import React, { useRef, useState, useEffect } from 'react'
 import type { ProFormInstance } from '@ant-design/pro-components'
 import { Tabs, Space, Badge, Button, Descriptions, Segmented, Typography } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 const { Paragraph } = Typography
 
@@ -43,6 +44,7 @@ type StatusType = {
 }
 
 const ProjectItemEdit: React.FC = () => {
+  const { t } = useTranslation()
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
   const [items, setItems] = useState<Array<ITabItem>>([])
   const [searchParams] = useSearchParams()
@@ -55,19 +57,19 @@ const ProjectItemEdit: React.FC = () => {
   const [descItems, setDescItems] = useState<Array<IDescItem>>([
     {
       key: '1',
-      label: '接口 URL',
+      label: t('接口 URL'),
       children: '',
       span: 3
     },
     {
       key: '6',
-      label: 'FFMPEG版本',
+      label: t('FFMPEG版本'),
       children: '16',
       span: 3
     },
     {
       key: '9',
-      label: '失败重启次数',
+      label: t('失败重启次数'),
       children: '0',
       span: 3
     }
@@ -122,27 +124,27 @@ const ProjectItemEdit: React.FC = () => {
     if (a.status == '12')
       return {
         status: 'processing',
-        text: '运行中'
+        text: t('运行中')
       }
     else if (a.status == '0')
       return {
         status: 'success',
-        text: '成功'
+        text: t('成功')
       }
     else if (a.status == '1')
       return {
         status: 'error',
-        text: '失败'
+        text: t('失败')
       }
     else if (a.status == '-1')
       return {
         status: 'default',
-        text: '未运行'
+        text: t('未运行')
       }
     else
       return {
         status: 'default',
-        text: '停止'
+        text: t('停止')
       }
   }
 
@@ -159,15 +161,15 @@ const ProjectItemEdit: React.FC = () => {
             <ProCard title="">
               <Space direction="vertical">
                 <Segmented
-                  options={['接口信息']}
+                  options={[t('接口信息')]}
                   onChange={value => {
                     setSegmentedLeft(value as string)
                   }}
                 />
-                {segmentedLeft == '接口信息' && <Descriptions items={descItems} size="middle" />}
+                {segmentedLeft == t('接口信息') && <Descriptions items={descItems} size="middle" />}
                 <Space direction="vertical" size="large">
                   <div>
-                    运行状态：
+                    {t('运行状态：')}
                     <Badge
                       status={getStatus(commandList).status}
                       text={getStatus(commandList).text}
@@ -175,7 +177,7 @@ const ProjectItemEdit: React.FC = () => {
                   </div>
                 </Space>
                 <Space direction="vertical" style={{ marginTop: '5px' }}>
-                  <div>操作按钮：</div>
+                  <div>{t('操作按钮：')}</div>
                 </Space>
                 <Space size="large" style={{ marginTop: '5px' }}>
                   <Button
@@ -187,9 +189,7 @@ const ProjectItemEdit: React.FC = () => {
                         const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
                         const command = await new Command('ffmpeg', cmd)
                         command.spawn()
-                        command.on('close', () => {
-                          console.log('进程关闭')
-                        })
+                        command.on('close', () => {})
                       } else {
                         dispatch(
                           resetCommandLog({
@@ -213,9 +213,10 @@ const ProjectItemEdit: React.FC = () => {
                       }
                     }}
                   >
-                    {commandList[0].status == '12' ? '停止' : '运行'}
+                    {commandList[0].status == '12' ? t('停止') : t('运行')}
                   </Button>
                   <Button
+                    disabled={commandList[0].status != '12'}
                     type="primary"
                     key="runAgain"
                     onClick={async () => {
@@ -225,7 +226,6 @@ const ProjectItemEdit: React.FC = () => {
                         const command = await new Command('ffmpeg', cmd)
                         command.spawn()
                         command.on('close', async () => {
-                          console.log('进程关闭')
                           dispatch(
                             resetCommandLog({
                               id: item.id
@@ -269,7 +269,7 @@ const ProjectItemEdit: React.FC = () => {
                       }
                     }}
                   >
-                    重启
+                    {t('重启')}
                   </Button>
                 </Space>
                 {segmentedLeft == '其他信息' && <div>敬请期待</div>}
@@ -278,7 +278,7 @@ const ProjectItemEdit: React.FC = () => {
             <ProCard title="" colSpan="50%">
               <Space direction="vertical">
                 <Segmented
-                  options={['运行日志']}
+                  options={[t('运行日志')]}
                   onChange={value => {
                     setSegmentedRight(value as string)
                   }}

@@ -17,6 +17,7 @@ pub struct Model {
     pub version: String,
     pub ffmpeg: String,
     pub theme: String,
+    pub quit_type: String,
     pub lang: String,
 }
 
@@ -25,6 +26,7 @@ pub enum Column {
     Version,
     Ffmpeg,
     Theme,
+    QuitType,
     Lang,
 }
 
@@ -50,6 +52,7 @@ impl ColumnTrait for Column {
             Self::Version => ColumnType::String(None).def(),
             Self::Ffmpeg => ColumnType::String(None).def(),
             Self::Theme => ColumnType::String(None).def(),
+            Self::QuitType => ColumnType::String(None).def(),
             Self::Lang => ColumnType::String(None).def(),
         }
     }

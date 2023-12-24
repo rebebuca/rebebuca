@@ -10,6 +10,7 @@ import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
 import type { ProFormInstance, EditableFormInstance } from '@ant-design/pro-components'
 import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
 import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typography } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import { argKeyList } from '../../../constants/keys'
 
@@ -33,29 +34,6 @@ export interface IItem {
   log: string
 }
 
-const columns: ProColumns<DataSourceType>[] = [
-  {
-    title: '参数key',
-    width: '30%',
-    key: 'key',
-    dataIndex: 'key',
-    valueType: 'select',
-    fieldProps: {
-      showSearch: true,
-      options: argKeyList
-    }
-  },
-  {
-    title: '参数value',
-    dataIndex: 'value',
-    width: '50%'
-  },
-  {
-    title: '操作',
-    valueType: 'option'
-  }
-]
-
 const initialItems = [{ label: '', key: '', id: '', name: '', url: '', arg_list: [] }]
 
 export interface ITabItem {
@@ -77,19 +55,41 @@ export interface IDescItem {
 }
 
 const ProjectItemEdit: React.FC = () => {
+  const { t } = useTranslation()
   const nav = useNavigate()
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
   const [items, setItems] = useState<Array<ITabItem>>([])
   const [searchParams] = useSearchParams()
-  const [segmentedLeft] = useState<string>('编辑模式')
-  const [segmentedRight, setSegmentedRight] = useState<string>('信息面板')
-  // const [argList, setArgList] = useState([])
 
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([])
 
   const editableFormRef = useRef<EditableFormInstance>()
 
   const formRef = useRef<ProFormInstance>()
+
+  const columns: ProColumns<DataSourceType>[] = [
+    {
+      title: t('参数key'),
+      width: '30%',
+      key: 'key',
+      dataIndex: 'key',
+      valueType: 'select',
+      tooltip: t('不能自定义，如果下拉选项没有你想要的key，请写在value中'),
+      fieldProps: {
+        showSearch: true,
+        options: argKeyList
+      }
+    },
+    {
+      title: t('参数value'),
+      dataIndex: 'value',
+      width: '50%'
+    },
+    {
+      title: t('操作'),
+      valueType: 'option'
+    }
+  ]
 
   const [descItems, setDescItems] = useState<Array<IDescItem>>([
     {
@@ -167,7 +167,7 @@ const ProjectItemEdit: React.FC = () => {
       await invoke('update_project_detail', {
         projectDetail
       })
-      message.success('保存成功')
+      message.success(t('保存成功'))
       nav({
         pathname: `/project/list`,
         search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`
@@ -207,6 +207,9 @@ const ProjectItemEdit: React.FC = () => {
           draft.unshift({ label: name, name, key: id, id, url: url, arg_list: argList, pid, log })
       })
     )
+    setTimeout(() => {
+      onValuesChange()
+    }, 300)
   }
 
   const selectFileOrDir = async (row: DataSourceType, type: number) => {
@@ -270,7 +273,7 @@ const ProjectItemEdit: React.FC = () => {
           <ProCard key={item.key} split="vertical">
             <ProCard title="" colSpan="70%">
               <Space direction="vertical">
-                <Segmented options={['编辑模式']} />
+                <Segmented options={[t('编辑模式')]} />
                 <ProForm<{
                   name: string
                   url: string
@@ -290,11 +293,11 @@ const ProjectItemEdit: React.FC = () => {
                             updateProjectDeatailItem(props.form?.getFieldsValue())
                           }}
                         >
-                          保存
-                        </Button>,
-                        <Button type="primary" key="run" onClick={() => {}}>
-                          保存并运行
+                          {t('保存')}
                         </Button>
+                        // <Button type="primary" key="run" onClick={() => {}}>
+                        //   保存并运行
+                        // </Button>
                       ]
                     }
                   }}
@@ -303,83 +306,81 @@ const ProjectItemEdit: React.FC = () => {
                     <ProFormText
                       width="md"
                       name="name"
-                      label="接口名称"
+                      label={t('接口名称')}
                       required
                       initialValue={item.name}
-                      placeholder="请输入名称"
+                      placeholder={t('请输入名称')}
                     />
                   </ProForm.Group>
 
-                  {segmentedLeft == '编辑模式' && (
-                    <ProForm.Item
-                      label="FFMPEG参数设置"
-                      required
-                      name="url"
-                      initialValue={item.arg_list}
-                      trigger="onValuesChange"
-                    >
-                      <EditableProTable<DataSourceType>
-                        rowKey="id"
-                        toolBarRender={false}
-                        columns={columns}
-                        editableFormRef={editableFormRef}
-                        recordCreatorProps={{
-                          newRecordType: 'dataSource',
-                          position: 'bottom',
-                          // @ts-expect-error no error
-                          record: () => ({
-                            id: Date.now(),
-                            key: '',
-                            value: ''
-                          })
-                        }}
-                        editable={{
-                          type: 'multiple',
-                          editableKeys,
-                          onChange: setEditableRowKeys,
-                          actionRender: (row, _, dom) => {
-                            return [
-                              dom.delete,
-                              <Tooltip placement="top" title="选择文件路径" key="file">
-                                <FileOutlined
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={() => {
-                                    selectFileOrDir(row, 1)
-                                  }}
-                                />
-                              </Tooltip>,
-                              <Tooltip placement="top" title="选择文件路径" key="dir">
-                                <FolderOpenOutlined
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={() => {
-                                    selectFileOrDir(row, 2)
-                                  }}
-                                />
-                              </Tooltip>
-                            ]
-                          }
-                        }}
-                      />
-                    </ProForm.Item>
-                  )}
+                  <ProForm.Item
+                    label={t('FFMPEG参数设置')}
+                    required
+                    name="url"
+                    initialValue={item.arg_list}
+                    trigger="onValuesChange"
+                  >
+                    <EditableProTable<DataSourceType>
+                      rowKey="id"
+                      toolBarRender={false}
+                      columns={columns}
+                      editableFormRef={editableFormRef}
+                      recordCreatorProps={{
+                        newRecordType: 'dataSource',
+                        position: 'bottom',
+                        creatorButtonText: <span></span>,
+                        // @ts-expect-error no error
+                        record: () => ({
+                          id: Date.now(),
+                          key: '',
+                          value: ''
+                        })
+                      }}
+                      editable={{
+                        type: 'multiple',
+                        editableKeys,
+                        onChange: setEditableRowKeys,
+                        actionRender: (row, _, dom) => {
+                          return [
+                            dom.delete,
+                            <Tooltip placement="top" title={t('选择文件路径')} key="file">
+                              <FileOutlined
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => {
+                                  selectFileOrDir(row, 1)
+                                }}
+                              />
+                            </Tooltip>,
+                            <Tooltip placement="top" title={t('选择目录路径')} key="dir">
+                              <FolderOpenOutlined
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => {
+                                  selectFileOrDir(row, 2)
+                                }}
+                              />
+                            </Tooltip>
+                          ]
+                        }
+                      }}
+                    />
+                  </ProForm.Item>
                 </ProForm>
               </Space>
             </ProCard>
             <ProCard title="">
               <Space direction="vertical">
-                <Segmented
-                  options={['信息面板']}
-                  onChange={value => {
-                    setSegmentedRight(value as string)
-                  }}
-                />
-                {segmentedRight == '信息面板' && (
-                  <div>
-                    <Descriptions items={descItems.slice(0, 2)} />
-                    <Descriptions items={descItems.slice(2, 3)} layout="vertical" />
-                  </div>
-                )}
-                {segmentedRight == '高级选项' && <div>敬请期待</div>}
+                <Segmented options={[t('信息面板')]} />
+                <div>
+                  <Descriptions
+                    items={descItems.slice(0, 2).map(kk => {
+                      return {
+                        ...kk,
+                        label: t([kk.label])
+                      }
+                    })}
+                  />
+                  <Descriptions items={descItems.slice(2, 3)} layout="vertical" />
+                </div>
               </Space>
             </ProCard>
           </ProCard>

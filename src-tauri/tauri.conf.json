@@ -31,24 +31,6 @@
                 "validator": "\\S+"
               }
             ]
-          },
-          {
-            "name": "run-node-v",
-            "cmd": "node",
-            "args": [
-              {
-                "validator": "\\S+"
-              }
-            ]
-          },
-          {
-            "name": "yarn",
-            "cmd": "yarn",
-            "args": [
-              {
-                "validator": "\\S+"
-              }
-            ]
           }
         ]
       },

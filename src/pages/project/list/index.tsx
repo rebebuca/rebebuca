@@ -1,4 +1,5 @@
 import { ulid } from 'ulid'
+import dayjs from 'dayjs'
 import { produce } from 'immer'
 import { invoke } from '@tauri-apps/api'
 import { useDispatch } from 'react-redux'
@@ -8,9 +9,11 @@ import { useEffect, useState, useRef } from 'react'
 import { ProTable } from '@ant-design/pro-components'
 import type { ProColumns } from '@ant-design/pro-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import { runFFmpeg } from '../../../utils'
 import { updateCommand, resetCommandLog } from '../../../store/commandList'
+import { writeSettingToDownload } from '../../../utils/export'
 
 export type ListItem = {
   id: string
@@ -23,6 +26,7 @@ export type ListItem = {
 }
 
 export default () => {
+  const { t } = useTranslation()
   const [list, setList] = useState<Array<ListItem>>([])
   const actionRef = useRef()
   const [searchParams] = useSearchParams()
@@ -34,7 +38,7 @@ export default () => {
       id: id,
       projectId: searchParams.get('projectId')
     })
-    message.success('刪除成功')
+    message.success(t('successfully deleted'))
     setList(res)
   }
 
@@ -60,45 +64,66 @@ export default () => {
       })
     )
   }
+  // @ts-expect-error no check
+  const copyApi = async row => {
+    const opts = row.props.record
+    const projectDetail = {
+      id: ulid(),
+      status: '-1',
+      project_id: opts.project_id,
+      updated_at: dayjs().format(),
+      name: 'copy-' + opts.name,
+      url: opts.url,
+      log: '',
+      pid: 0,
+      arg_list: opts.arg_list
+    }
+    await invoke('add_project_detail', {
+      projectDetail
+    })
+    getProjectDetail()
+    message.success(t('复制成功'))
+  }
 
   const columns: ProColumns<ListItem>[] = [
     {
-      title: '排序',
+      title: t('排序'),
       dataIndex: 'index',
       valueType: 'indexBorder',
       width: 48,
       key: `${ulid()}_index`
     },
     {
-      title: '接口名称',
+      title: t('接口名称'),
       dataIndex: 'name',
       width: '15%',
       key: `${ulid()}_name`
     },
     {
-      title: '状态',
+      title: t('状态'),
       dataIndex: 'status',
       initialValue: 'stop',
       width: '15%',
       key: `${ulid()}_status`,
       valueEnum: {
-        '-1': { text: '未运行', status: 'Default' },
-        '1': { text: '失败', status: 'Error' },
-        '12': { text: '运行中', status: 'Processing' },
-        '0': { text: '成功', status: 'Success' },
-        '11': { text: '停止', status: 'Default' }
+        '-1': { text: t('未运行'), status: 'Default' },
+        '1': { text: t('失败'), status: 'Error' },
+        '12': { text: t('运行中'), status: 'Processing' },
+        '0': { text: t('成功'), status: 'Success' },
+        '11': { text: t('停止'), status: 'Default' }
       }
     },
     {
-      title: '命令',
+      title: t('命令'),
       dataIndex: 'url',
-      ellipsis: true,
+      // ellipsis: true,
       key: `${ulid()}_url`,
       copyable: true
     },
     {
-      title: '操作',
-      width: 220,
+      title: t('操作'),
+      // width: 220,
+      width: '30%',
       key: `${ulid()}_option`,
       valueType: 'option',
       render: (row: unknown) => [
@@ -113,9 +138,7 @@ export default () => {
               const cmd = `/C taskkill /f /t /pid ${item.pid}`
               const command = await new Command('ffmpeg', cmd)
               command.spawn()
-              command.on('close', () => {
-                // console.log('进程关闭')
-              })
+              command.on('close', () => {})
             } else {
               dispatch(
                 resetCommandLog({
@@ -141,21 +164,44 @@ export default () => {
         >
           {
             // @ts-expect-error no check
-            row.props.record.status == '12' ? '停止' : '运行'
+            row.props.record.status == '12' ? t('停止') : t('运行')
           }
         </a>,
-        <a
-          key="link11"
-          onClick={async () => {
-            // @ts-expect-error no check
-            const item = row.props.record
-            const showStop = item.status == '12'
-            if (showStop) {
-              const cmd = `/C taskkill /f /t /pid ${item.pid}`
-              const command = await new Command('ffmpeg', cmd)
-              command.spawn()
-              command.on('close', async () => {
-                console.log('进程关闭')
+        // @ts-expect-error no check
+        row.props.record.status == '12' && (
+          <a
+            // <a
+            key="link11"
+            onClick={async () => {
+              // @ts-expect-error no check
+              const item = row.props.record
+              const showStop = item.status == '12'
+              if (showStop) {
+                const cmd = `/C taskkill /f /t /pid ${item.pid}`
+                const command = await new Command('ffmpeg', cmd)
+                command.spawn()
+                command.on('close', async () => {
+                  dispatch(
+                    resetCommandLog({
+                      id: item.id
+                    })
+                  )
+                  const argArr = item.url.split(' ')
+                  argArr.shift()
+                  if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
+                  const s = await runFFmpeg(argArr, (line: string, status: string) => {
+                    dispatch(
+                      updateCommand({
+                        id: item.id,
+                        status: status,
+                        pid: s.pid,
+                        log: line,
+                        item: item
+                      })
+                    )
+                  })
+                })
+              } else {
                 dispatch(
                   resetCommandLog({
                     id: item.id
@@ -175,32 +221,12 @@ export default () => {
                     })
                   )
                 })
-              })
-            } else {
-              dispatch(
-                resetCommandLog({
-                  id: item.id
-                })
-              )
-              const argArr = item.url.split(' ')
-              argArr.shift()
-              if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
-              const s = await runFFmpeg(argArr, (line: string, status: string) => {
-                dispatch(
-                  updateCommand({
-                    id: item.id,
-                    status: status,
-                    pid: s.pid,
-                    log: line,
-                    item: item
-                  })
-                )
-              })
-            }
-          }}
-        >
-          重启
-        </a>,
+              }
+            }}
+          >
+            {t('重启')}
+          </a>
+        ),
         <a
           key="link"
           onClick={() => {
@@ -213,11 +239,16 @@ export default () => {
             })
           }}
         >
-          详情
+          {t('Detail')}
         </a>,
         <a
           key="link2"
           onClick={() => {
+            // @ts-expect-error no check
+            if (row.props.record.status == '12') {
+              message.success(t('正在运行中，不可编辑'))
+              return
+            }
             nav({
               pathname: `/project/edit`,
               search: `name=${searchParams.get('name')}&projectId=${searchParams.get(
@@ -227,12 +258,25 @@ export default () => {
             })
           }}
         >
-          编辑
+          {t('Edit')}
+        </a>,
+        <a
+          key="copy"
+          onClick={() => {
+            copyApi(row)
+          }}
+        >
+          {t('Copy')}
         </a>,
         <Popconfirm
-          title="提示"
-          description="确定要删除这个接口吗?"
+          title={t('Prompt')}
+          description={t('Are you sure you want to delete this interface?')}
           onConfirm={() => {
+            // @ts-expect-error no check
+            if (row.props.record.status == '12') {
+              message.success(t('正在运行中，不可删除'))
+              return
+            }
             // @ts-expect-error no check
             delProjectDetail(row.props.record.id)
           }}
@@ -240,11 +284,17 @@ export default () => {
           okText="Yes"
           cancelText="No"
         >
-          <a style={{ opacity: 0.88, color: '#000' }}>删除</a>
+          <a style={{ opacity: 0.88 }}>{t('Delete')}</a>
         </Popconfirm>
       ]
     }
   ]
+
+  const projectExport = async () => {
+    const projectName: string = searchParams.get('name') as string
+    await writeSettingToDownload(list, projectName)
+    message.success(t('当前项目导出成功，请前往电脑下载目录查看文件'))
+  }
 
   useEffect(() => {
     getProjectDetail()
@@ -269,9 +319,22 @@ export default () => {
       search={false}
       dateFormatter="string"
       toolbar={{
-        title: '接口列表'
+        title: t('Interface List')
       }}
       toolBarRender={() => [
+        <Button
+          type="text"
+          key="export"
+          onClick={() => {
+            projectExport()
+            // nav({
+            //   pathname: `/project/new`,
+            //   search: `name=${searchParams.get('name')}&projectId=${searchParams.get('projectId')}`
+            // })
+          }}
+        >
+          {t('项目导出')}
+        </Button>,
         <Button
           type="primary"
           key="primary"
@@ -282,7 +345,7 @@ export default () => {
             })
           }}
         >
-          新建接口
+          {t('New Interface')}
         </Button>
       ]}
     />

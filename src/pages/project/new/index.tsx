@@ -10,6 +10,7 @@ import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
 import type { ProFormInstance, EditableFormInstance } from '@ant-design/pro-components'
 import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
 import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typography } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import { argKeyList } from '../../../constants/keys'
 
@@ -33,31 +34,6 @@ export interface IItem {
   updated_at: string
 }
 
-const columns: ProColumns<DataSourceType>[] = [
-  {
-    title: '参数key',
-    width: '30%',
-    key: 'key',
-    dataIndex: 'key',
-    valueType: 'select',
-    fieldProps: {
-      showSearch: true,
-      options: argKeyList
-    }
-  },
-  {
-    title: '参数value',
-    dataIndex: 'value',
-    width: '50%'
-  },
-  {
-    title: '操作',
-    valueType: 'option'
-  }
-]
-
-const initialItems = [{ label: '新建接口', key: '1000', id: '', name: '', url: '', argList: [] }]
-
 export interface ITabItem {
   label: string
   key: string
@@ -74,11 +50,37 @@ export interface IDescItem {
 }
 
 const ProjectItemNew: React.FC = () => {
+  const { t } = useTranslation()
   const nav = useNavigate()
+  const columns: ProColumns<DataSourceType>[] = [
+    {
+      title: t('参数key'),
+      width: '30%',
+      key: 'key',
+      dataIndex: 'key',
+      valueType: 'select',
+      tooltip: t('不能自定义，如果下拉选项没有你想要的key，请写在value中'),
+      fieldProps: {
+        showSearch: true,
+        options: argKeyList
+      }
+    },
+    {
+      title: t('参数value'),
+      dataIndex: 'value',
+      width: '50%'
+    },
+    {
+      title: t('操作'),
+      valueType: 'option'
+    }
+  ]
+
+  const initialItems = [{ label: '新建接口', key: '1000', id: '', name: '', url: '', argList: [] }]
+
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
   const [items, setItems] = useState<Array<ITabItem>>(initialItems)
   const [searchParams] = useSearchParams()
-  const [segmentedRight, setSegmentedRight] = useState<string>('信息面板')
 
   const editableFormRef = useRef<EditableFormInstance>()
 
@@ -159,7 +161,7 @@ const ProjectItemNew: React.FC = () => {
       await invoke('add_project_detail', {
         projectDetail
       })
-      message.success('新建成功')
+      message.success(t('新建成功'))
       nav({
         pathname: `/project/list`,
         search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`
@@ -174,7 +176,7 @@ const ProjectItemNew: React.FC = () => {
         if (r) {
           const form = formRef.current?.getFieldsValue()
           r.name = form.name
-          r.label = form.name || '新建接口'
+          r.label = form.name || t('新建接口')
           r.url = form.url
         }
       })
@@ -226,14 +228,25 @@ const ProjectItemNew: React.FC = () => {
 
   return (
     <div>
-      <Tabs type="card" onChange={onChange} activeKey={activeKey} items={items} hideAdd />
+      <Tabs
+        type="card"
+        onChange={onChange}
+        activeKey={activeKey}
+        items={items.map(k => {
+          return {
+            ...k,
+            label: t(k.label)
+          }
+        })}
+        hideAdd
+      />
       {items.map(item => {
         if (item.key == activeKey)
           return (
             <ProCard key={item.key} split="vertical">
               <ProCard title="" colSpan="70%">
                 <Space direction="vertical">
-                  <Segmented options={['标准模式']} />
+                  <Segmented options={[t('标准模式')]} />
                   <ProForm<{
                     name: string
                     url: Array<object>
@@ -252,7 +265,7 @@ const ProjectItemNew: React.FC = () => {
                               addProjectDeatail(props.form?.getFieldsValue())
                             }}
                           >
-                            新建
+                            {t('New File')}
                           </Button>,
                           <Button
                             type="primary"
@@ -262,7 +275,7 @@ const ProjectItemNew: React.FC = () => {
                               addProjectDeatail(props.form?.getFieldsValue())
                             }}
                           >
-                            新建并运行
+                            {t('新建并运行')}
                           </Button>
                         ]
                       }
@@ -272,15 +285,15 @@ const ProjectItemNew: React.FC = () => {
                       <ProFormText
                         width="md"
                         name="name"
-                        label="接口名称"
+                        label={t('接口名称')}
                         required
                         initialValue={item.name}
-                        placeholder="请输入名称"
+                        placeholder={t('请输入名称')}
                       />
                     </ProForm.Group>
 
                     <ProForm.Item
-                      label="FFMPEG参数设置"
+                      label={t('FFMPEG参数设置')}
                       required
                       name="url"
                       initialValue={[]}
@@ -294,6 +307,7 @@ const ProjectItemNew: React.FC = () => {
                         recordCreatorProps={{
                           newRecordType: 'dataSource',
                           position: 'bottom',
+                          creatorButtonText: <span></span>,
                           // @ts-expect-error no error
                           record: () => ({
                             id: Date.now(),
@@ -306,7 +320,7 @@ const ProjectItemNew: React.FC = () => {
                           actionRender: (row, _, dom) => {
                             return [
                               dom.delete,
-                              <Tooltip placement="top" title="选择文件路径" key="file-path">
+                              <Tooltip placement="top" title={t('选择文件路径')} key="file-path">
                                 <FileOutlined
                                   style={{ cursor: 'pointer' }}
                                   onClick={() => {
@@ -314,7 +328,7 @@ const ProjectItemNew: React.FC = () => {
                                   }}
                                 />
                               </Tooltip>,
-                              <Tooltip placement="top" title="选择文件路径" key="dir-path">
+                              <Tooltip placement="top" title={t('选择目录路径')} key="dir-path">
                                 <FolderOpenOutlined
                                   style={{ cursor: 'pointer' }}
                                   onClick={() => {
@@ -332,19 +346,18 @@ const ProjectItemNew: React.FC = () => {
               </ProCard>
               <ProCard title="">
                 <Space direction="vertical">
-                  <Segmented
-                    options={['信息面板']}
-                    onChange={value => {
-                      setSegmentedRight(value as string)
-                    }}
-                  />
-                  {segmentedRight == '信息面板' && (
-                    <div>
-                      <Descriptions items={descItems.slice(0, 2)} />
-                      <Descriptions items={descItems.slice(2, 3)} layout="vertical" />
-                    </div>
-                  )}
-                  {segmentedRight == '高级选项' && <div>敬请期待</div>}
+                  <Segmented options={[t('信息面板')]} />
+                  <div>
+                    <Descriptions
+                      items={descItems.slice(0, 2).map(a => {
+                        return {
+                          ...a,
+                          label: t([a.label])
+                        }
+                      })}
+                    />
+                    <Descriptions items={descItems.slice(2, 3)} layout="vertical" />
+                  </div>
                 </Space>
               </ProCard>
             </ProCard>

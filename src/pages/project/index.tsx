@@ -6,6 +6,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import type { ActionType } from '@ant-design/pro-components'
 import { Badge, Button, Form, message, Popconfirm, Space, Col, Row } from 'antd'
 import { ProList, ModalForm, ProForm, ProFormText } from '@ant-design/pro-components'
+import { useTranslation } from 'react-i18next'
 
 const renderBadge = (count: number, active = false) => {
   return (
@@ -30,6 +31,7 @@ export interface IItem {
 }
 
 export default () => {
+  const { t } = useTranslation()
   const nav = useNavigate()
   const action = useRef<ActionType>()
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('tab1')
@@ -71,7 +73,7 @@ export default () => {
     const res: Array<IItem> = await invoke('del_project', {
       projectId: row.project_id
     })
-    message.success('刪除成功')
+    message.success(t('successfully deleted'))
     setList(res)
   }
 
@@ -88,13 +90,8 @@ export default () => {
         ghost={false}
         editable={{}}
         onItem={(record: IItem) => {
-          // console.log(9999);
           return {
-            // onMouseEnter: () => {
-            //   console.log(record);
-            // },
             onClick: () => {
-              console.log(8888)
               nav({
                 pathname: `/project/list`,
                 search: `name=${record.name}&projectId=${record.project_id}`
@@ -124,15 +121,15 @@ export default () => {
             render: (text, row) => (
               <Row style={{ width: '100%' }}>
                 <Col span={8}>
-                  <div style={{ opacity: 1 }}>项目介绍</div>
+                  <div style={{ opacity: 1 }}>{t('Project introduction')}</div>
                   {row.desc}
                 </Col>
                 <Col span={8}>
-                  <div>接口数量</div>
+                  <div>{t('Number of interfaces')}</div>
                   {row.count}
                 </Col>
                 <Col span={8}>
-                  <div>修改日期</div>
+                  <div>{t('Modification date')}</div>
                   <div>{(text as string).split('+')[0].replace('T', ' ').replace('2023-', '')}</div>
                 </Col>
               </Row>
@@ -151,17 +148,17 @@ export default () => {
                     })
                   }}
                 >
-                  详情
+                  {t('Detail')}
                 </a>
                 <ModalForm<{
                   name: string
                   desc: string
                 }>
-                  title="编辑项目"
+                  title={t('Edit project')}
                   autoFocusFirstInput={false}
                   trigger={
                     <a target="_blank" rel="noopener noreferrer">
-                      编辑
+                      {t('Edit')}
                     </a>
                   }
                   modalProps={{
@@ -170,7 +167,7 @@ export default () => {
                   form={form}
                   onFinish={async values => {
                     await updateProject(row, values)
-                    message.success('编辑成功')
+                    message.success(t('Edit success'))
                     return true
                   }}
                 >
@@ -178,7 +175,7 @@ export default () => {
                     <ProFormText
                       width="md"
                       name="name"
-                      label="项目名称"
+                      label={t('Project name')}
                       tooltip=""
                       initialValue={row.name}
                       rules={[
@@ -186,22 +183,22 @@ export default () => {
                           required: true
                         }
                       ]}
-                      placeholder="请输入项目名称"
+                      placeholder={t('Please enter project name')}
                     />
                   </ProForm.Group>
                   <ProForm.Group>
                     <ProFormText
                       width="md"
                       name="desc"
-                      label="项目介绍"
+                      label={t('Project introduction')}
                       initialValue={row.desc}
-                      placeholder="请输入项目介绍"
+                      placeholder={t('Please enter project introduction')}
                     />
                   </ProForm.Group>
                 </ModalForm>
                 <Popconfirm
-                  title="提示"
-                  description="确定要删除这个项目吗?"
+                  title={t('Prompt')}
+                  description={t('Are you sure you want to delete this project?')}
                   onConfirm={() => {
                     delProject(row)
                   }}
@@ -209,7 +206,7 @@ export default () => {
                   okText="Yes"
                   cancelText="No"
                 >
-                  <div style={{ opacity: 0.88 }}>删除</div>
+                  <div style={{ opacity: 0.88 }}>{t('Delete')}</div>
                 </Popconfirm>
               </Space>
             ]
@@ -221,7 +218,12 @@ export default () => {
             items: [
               {
                 key: 'tab1',
-                label: <span>全部项目{renderBadge(list.length, activeKey === 'tab1')}</span>
+                label: (
+                  <span>
+                    {t('All projects')}
+                    {renderBadge(list.length, activeKey === 'tab1')}
+                  </span>
+                )
               }
             ],
             onChange(key) {
@@ -234,16 +236,16 @@ export default () => {
               desc: string
             }>
               key="new-project"
-              title="新建项目"
+              title={t('New project')}
               autoFocusFirstInput={false}
-              trigger={<Button type="primary">新建项目</Button>}
+              trigger={<Button type="primary">{t('New project')}</Button>}
               modalProps={{
                 destroyOnClose: true
               }}
               form={form}
               onFinish={async values => {
                 await newProject(values)
-                message.success('提交成功')
+                message.success(t('Submitted successfully'))
                 return true
               }}
             >
@@ -251,18 +253,23 @@ export default () => {
                 <ProFormText
                   width="md"
                   name="name"
-                  label="项目名称"
+                  label={t('Project name')}
                   tooltip=""
                   rules={[
                     {
                       required: true
                     }
                   ]}
-                  placeholder="请输入项目名称"
+                  placeholder={t('Please enter project name')}
                 />
               </ProForm.Group>
               <ProForm.Group>
-                <ProFormText width="md" name="desc" label="项目介绍" placeholder="请输入项目介绍" />
+                <ProFormText
+                  width="md"
+                  name="desc"
+                  label={t('Project introduction')}
+                  placeholder={t('Please enter project introduction')}
+                />
               </ProForm.Group>
             </ModalForm>
           ]
