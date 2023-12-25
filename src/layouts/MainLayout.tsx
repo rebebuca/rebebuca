@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react'
 import { invoke, shell } from '@tauri-apps/api'
-import { Typography, Button, ConfigProvider, theme, Modal, Checkbox, Radio, Space, RadioChangeEvent } from 'antd'
+import {
+  Typography,
+  Button,
+  ConfigProvider,
+  theme,
+  Modal,
+  Radio,
+  Space,
+  RadioChangeEvent
+} from 'antd'
 import ProLayout from '@ant-design/pro-layout'
 import { appWindow } from '@tauri-apps/api/window'
 import { PageContainer } from '@ant-design/pro-components'
@@ -8,7 +17,6 @@ import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 import AppSetting from '../components/setting'
 import { useTranslation } from 'react-i18next'
 
-// import { t }  from '../utils/i18n'
 import '../utils/i18n'
 
 import zhCN from 'antd/locale/zh_CN'
@@ -19,8 +27,6 @@ import './index.scss'
 import { event } from '@tauri-apps/api'
 
 import { window as tauriWindow } from '@tauri-apps/api'
-// const noDragSelector =
-//   'a, img, span, .ant-pro-global-header-header-actions-item, .ant-layout-content, .ant-modal-content, .ant-pro-card'
 
 const darag = '.ant-pro-top-nav-header'
 const nodarag = 'a, .ant-pro-global-header-header-actions-item'
@@ -50,7 +56,6 @@ import {
 const { Paragraph } = Typography
 
 import { useLocationListen } from '../hooks'
-import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 export interface IAppSettingItem {
   lang?: string

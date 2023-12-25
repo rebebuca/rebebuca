@@ -6,15 +6,29 @@ import { open } from '@tauri-apps/api/dialog'
 import React, { useRef, useState } from 'react'
 import type { ProColumns } from '@ant-design/pro-components'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
-import type { ProFormInstance, EditableFormInstance } from '@ant-design/pro-components'
+import { FileOutlined, FolderOpenOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import type { ProFormInstance, EditableFormInstance, ActionType } from '@ant-design/pro-components'
 import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
-import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typography } from 'antd'
+import {
+  Tabs,
+  Space,
+  Button,
+  Descriptions,
+  Segmented,
+  message,
+  Tooltip,
+  Typography,
+  Input,
+  Modal
+} from 'antd'
 import { useTranslation } from 'react-i18next'
 
 import { argKeyList } from '../../../constants/keys'
+import { parseFFUrl } from '../../../utils/parseFFUrl'
 
 const { Paragraph } = Typography
+
+const { TextArea } = Input
 
 type DataSourceType = {
   id: number
@@ -40,6 +54,7 @@ export interface ITabItem {
   id: string
   name: string
   url: string
+  argList: Array<object>
 }
 
 export interface IDescItem {
@@ -83,6 +98,8 @@ const ProjectItemNew: React.FC = () => {
   const [searchParams] = useSearchParams()
 
   const editableFormRef = useRef<EditableFormInstance>()
+
+  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([])
 
   const formRef = useRef<ProFormInstance>()
 
@@ -226,8 +243,59 @@ const ProjectItemNew: React.FC = () => {
     }
   }
 
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [ffmpegUrl, setFfmpegUurl] = useState('')
+  const actionRef = useRef<ActionType>()
+
+  const showModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const handleOk = () => {
+    const result = parseFFUrl(ffmpegUrl)
+    const res = result?.map(item => {
+      return {
+        ...item,
+        id: ulid()
+      }
+    })
+    // @ts-expect-error no check
+    const idList = res.map((i: { id: string }) => i.id)
+    setEditableRowKeys(idList)
+    formRef.current?.setFieldsValue({
+      name: formRef.current?.getFieldsValue().name,
+      url: res
+    })
+    message.success('导入命令行成功')
+    setIsModalOpen(false)
+  }
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+
+  // @ts-expect-error no check
+  const onChangeNew = e => {
+    setFfmpegUurl(() => e.target.value)
+  }
+
   return (
     <div>
+      <Modal
+        title={t('将ffmpeg命令行复制粘贴到下面文本框中')}
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <TextArea
+          value={ffmpegUrl}
+          placeholder={t('请粘贴以ffmpeg开头的命令行')}
+          onChange={e => {
+            onChangeNew(e)
+          }}
+          rows={4}
+        />
+      </Modal>
       <Tabs
         type="card"
         onChange={onChange}
@@ -250,6 +318,7 @@ const ProjectItemNew: React.FC = () => {
                   <ProForm<{
                     name: string
                     url: Array<object>
+                    argList: Array<object>
                   }>
                     grid
                     formRef={formRef}
@@ -293,13 +362,30 @@ const ProjectItemNew: React.FC = () => {
                     </ProForm.Group>
 
                     <ProForm.Item
-                      label={t('FFMPEG参数设置')}
+                      label={
+                        <div key="555">
+                          {t('FFMPEG参数设置')}{' '}
+                          <Button
+                            type="text"
+                            onClick={() => {
+                              showModal()
+                            }}
+                          >
+                            {t('点击导入ffmpeg命令行')}
+                            <Tooltip placement="top" title={t('导入成功后会清空当前存在的参数')}>
+                              <InfoCircleOutlined />
+                            </Tooltip>
+                          </Button>
+                        </div>
+                      }
                       required
                       name="url"
+                      // initialValue={item.argList}
                       initialValue={[]}
                       trigger="onValuesChange"
                     >
                       <EditableProTable<DataSourceType>
+                        actionRef={actionRef}
                         rowKey="id"
                         toolBarRender={false}
                         columns={columns}
@@ -316,6 +402,7 @@ const ProjectItemNew: React.FC = () => {
                           })
                         }}
                         editable={{
+                          editableKeys,
                           type: 'multiple',
                           actionRender: (row, _, dom) => {
                             return [
