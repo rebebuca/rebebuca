@@ -24,13 +24,18 @@
             "sidecar": true
           },
           {
-            "name": "ffmpeg",
-            "cmd": "cmd",
+            "name": "run-node",
+            "cmd": "node",
             "args": [
               {
                 "validator": "\\S+"
               }
             ]
+          },
+          {
+            "name": "run-ffmpeg",
+            "cmd": "cmd",
+            "args":  ["/C", { "validator": "\\S+" }]
           }
         ]
       },

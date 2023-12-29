@@ -68,7 +68,6 @@ export const commandListSlice = createSlice({
               projectDetail
             })
             run12OnceMap.set(id, false)
-            // run12Once = false
           }
 
           if (status == '12' && !run12OnceMap.get(id)) {
@@ -102,7 +101,6 @@ export const commandListSlice = createSlice({
             invoke('update_project_detail', {
               projectDetail
             })
-            run12Once = false
           }
           if (status == '12' && !run12OnceMap.get(id)) {
             const projectDetail = {

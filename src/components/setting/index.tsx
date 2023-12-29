@@ -12,6 +12,7 @@ type MenuItem = Required<MenuProps>['items'][number]
 
 import './index.scss'
 import { invoke } from '@tauri-apps/api'
+import { Command } from '@tauri-apps/api/shell'
 
 function getItem(
   label: React.ReactNode,
@@ -63,7 +64,7 @@ export default (props: PropsType) => {
       />
     ),
     getItem(t('General'), '2', <SettingOutlined></SettingOutlined>),
-    // getItem('高级选项', '3', <SettingOutlined></SettingOutlined>),
+    getItem(t('高级选项'), '3', <SettingOutlined></SettingOutlined>),
     getItem(t('About Rebebuca'), '4', <InfoCircleOutlined />)
   ]
 
@@ -76,6 +77,55 @@ export default (props: PropsType) => {
   const [appSetting, setAppSetting] = useState<IAppSettingItem>({})
 
   const [version, setVersion] = useState('')
+  const [defaultVersion, setDefaultVersion] = useState('')
+  const [localVersion, setLocalVersion] = useState('')
+  const [disabled, setDisabled] = useState(true)
+  const checkFF = async () => {
+    try {
+      const cmd = await new Command('run-ffmpeg', ['/C', 'ffmpeg -version']).execute()
+      if (cmd.stdout) {
+        console.log('cmd.stdout: ', cmd);
+        // Regular expression to match the version pattern
+        // const versionRegex = /ffmpeg version (n[\d.-]+)-/
+        const versionRegex = /ffmpeg version (\S+)/;
+
+        // Extracting the version
+        const match = cmd.stdout.match(versionRegex)
+        const version = match ? match[1] : 'Version not found'
+        console.log(version) // This will output: n6.1-7
+
+        setDisabled(false)
+        setLocalVersion(version)
+      }
+    } catch (error) {
+      setDisabled(true)
+      console.log('error: ', error)
+    }
+  }
+
+  const runLocalFF = async () => {
+    const cmd = await Command.sidecar('bin/ffmpeg', ['-version']).execute()
+    console.log('cmd: ', cmd);
+    // const  = await new Command('run-ffmpeg', ['/C', 'ffmpeg -version']).execute()
+    if (cmd.stdout) {
+      // Regular expression to match the version pattern
+      const versionRegex = /ffmpeg version (\S+)/;
+      // const versionRegex = /ffmpeg version (n|[\d.-]+)-/
+
+      // Extracting the version
+      const match = cmd.stdout.match(versionRegex)
+      const version = match ? match[1] : 'Version not found'
+      setDefaultVersion(version)
+      console.log('local', version) // This will output: n6.1-7
+    }
+  }
+
+  useEffect(() => {
+    if (open == true) {
+      checkFF()
+      runLocalFF()
+    }
+  }, [open])
 
   const onChangeAppSetting = async (value: string, type: string) => {
     const opts = {
@@ -192,14 +242,20 @@ export default (props: PropsType) => {
             <div>
               <div className="setting-right-title">高级选项</div>
               <div>
-                <Space>
+                <Space align='baseline'>
                   <div>ffmpeg来源</div>
                   <Radio.Group
+
                     onChange={e => onChangeAppSetting(e.target.value, 'ffmpeg')}
                     value={appSetting.ffmpeg}
                   >
-                    <Radio value="default">软件自带</Radio>
-                    <Radio value="local">本机自带</Radio>
+                    <Space direction='vertical'>
+                      <Radio value="default">软件自带({defaultVersion})</Radio>
+                      <Radio disabled={disabled} value="local">
+                        本机自带({ disabled ?  '没有检测到' : localVersion})
+                      </Radio>
+
+                    </Space>
                   </Radio.Group>
                 </Space>
               </div>

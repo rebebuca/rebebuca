@@ -3,7 +3,7 @@ import { ulid } from 'ulid'
 import { produce } from 'immer'
 import { invoke } from '@tauri-apps/api'
 import { open } from '@tauri-apps/api/dialog'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import type { ProColumns } from '@ant-design/pro-components'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { FileOutlined, FolderOpenOutlined, InfoCircleOutlined } from '@ant-design/icons'
@@ -91,7 +91,7 @@ const ProjectItemNew: React.FC = () => {
     }
   ]
 
-  const initialItems = [{ label: '新建接口', key: '1000', id: '', name: '', url: '', argList: [] }]
+  const initialItems = [{ label: '新建接口', key: '1000', id: '-1', name: '', url: '', argList: [] }]
 
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
   const [items, setItems] = useState<Array<ITabItem>>(initialItems)
@@ -279,6 +279,20 @@ const ProjectItemNew: React.FC = () => {
     setFfmpegUurl(() => e.target.value)
   }
 
+  useEffect(() => {
+    formRef.current?.setFieldsValue({
+      name: formRef.current?.getFieldsValue().name,
+      url: [
+        {
+          key: '',
+          value: '',
+          id: '-1'
+        }
+      ]
+    })
+    setEditableRowKeys(['-1'])
+  }, [])
+
   return (
     <div>
       <Modal
@@ -404,6 +418,7 @@ const ProjectItemNew: React.FC = () => {
                         editable={{
                           editableKeys,
                           type: 'multiple',
+                          onChange: setEditableRowKeys,
                           actionRender: (row, _, dom) => {
                             return [
                               dom.delete,
