@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Modal, Menu, Radio, Select, Space } from 'antd'
+import { Modal, Menu, Radio, Select, Space, Tooltip, QRCode } from 'antd'
 import { InfoCircleOutlined, SettingOutlined } from '@ant-design/icons'
 import { getVersion } from '@tauri-apps/api/app'
 
 import { useTranslation } from 'react-i18next'
 
-// import useLocalStorage from 'react-use/lib/useLocalStorage'
+import { useDispatch } from 'react-redux'
+import { setSettings } from '../../store/settingSlice'
 
 import type { MenuProps } from 'antd'
 type MenuItem = Required<MenuProps>['items'][number]
@@ -13,6 +14,7 @@ type MenuItem = Required<MenuProps>['items'][number]
 import './index.scss'
 import { invoke } from '@tauri-apps/api'
 import { Command } from '@tauri-apps/api/shell'
+import Link from 'antd/lib/typography/Link'
 
 function getItem(
   label: React.ReactNode,
@@ -80,19 +82,24 @@ export default (props: PropsType) => {
   const [defaultVersion, setDefaultVersion] = useState('')
   const [localVersion, setLocalVersion] = useState('')
   const [disabled, setDisabled] = useState(true)
+
+  const dispatch = useDispatch()
+
+  const updateSettings = (newSettings: IAppSettingItem) => {
+    dispatch(setSettings(newSettings))
+  }
+
   const checkFF = async () => {
     try {
-      const cmd = await new Command('run-ffmpeg', ['/C', 'ffmpeg -version']).execute()
+      const cmd = await new Command('ffmpeg', '/C ffmpeg -version').execute()
       if (cmd.stdout) {
-        console.log('cmd.stdout: ', cmd);
-        // Regular expression to match the version pattern
-        // const versionRegex = /ffmpeg version (n[\d.-]+)-/
-        const versionRegex = /ffmpeg version (\S+)/;
+        console.log('cmd.stdout: ', cmd)
+        const versionRegex = /ffmpeg version (\S+)/
 
         // Extracting the version
         const match = cmd.stdout.match(versionRegex)
         const version = match ? match[1] : 'Version not found'
-        console.log(version) // This will output: n6.1-7
+        console.log(version)
 
         setDisabled(false)
         setLocalVersion(version)
@@ -105,18 +112,13 @@ export default (props: PropsType) => {
 
   const runLocalFF = async () => {
     const cmd = await Command.sidecar('bin/ffmpeg', ['-version']).execute()
-    console.log('cmd: ', cmd);
-    // const  = await new Command('run-ffmpeg', ['/C', 'ffmpeg -version']).execute()
+    console.log('cmd: ', cmd)
     if (cmd.stdout) {
-      // Regular expression to match the version pattern
-      const versionRegex = /ffmpeg version (\S+)/;
-      // const versionRegex = /ffmpeg version (n|[\d.-]+)-/
-
-      // Extracting the version
+      const versionRegex = /ffmpeg version (\S+)/
       const match = cmd.stdout.match(versionRegex)
       const version = match ? match[1] : 'Version not found'
       setDefaultVersion(version)
-      console.log('local', version) // This will output: n6.1-7
+      console.log('local', version)
     }
   }
 
@@ -132,9 +134,15 @@ export default (props: PropsType) => {
       ...appSetting,
       [type]: value
     }
+    updateSettings({
+      ...opts
+    })
     await invoke('update_app_setting', {
       appSetting: opts
     })
+    if (type == 'ffmpeg') {
+      localStorage.setItem('ffmpeg', value)
+    }
     if (type == 'lang') {
       i18n.changeLanguage(value)
       setLocale(value)
@@ -240,21 +248,25 @@ export default (props: PropsType) => {
           )}
           {currentKey == '3' && (
             <div>
-              <div className="setting-right-title">高级选项</div>
+              <div className="setting-right-title">{t('高级选项')}</div>
               <div>
-                <Space align='baseline'>
-                  <div>ffmpeg来源</div>
+                <Space align="baseline">
+                  <Tooltip title={t('切换来源不会影响正在运行中的命令')}>
+                    <div>
+                      {t('FFMPEG 来源')} <InfoCircleOutlined />
+                    </div>
+                  </Tooltip>
                   <Radio.Group
-
                     onChange={e => onChangeAppSetting(e.target.value, 'ffmpeg')}
                     value={appSetting.ffmpeg}
                   >
-                    <Space direction='vertical'>
-                      <Radio value="default">软件自带({defaultVersion})</Radio>
-                      <Radio disabled={disabled} value="local">
-                        本机自带({ disabled ?  '没有检测到' : localVersion})
+                    <Space direction="vertical">
+                      <Radio value="default">
+                        {t('软件自带')}({defaultVersion})
                       </Radio>
-
+                      <Radio disabled={disabled} value="local">
+                        {t('本机自带')}({disabled ? t('没有检测到') : localVersion})
+                      </Radio>
                     </Space>
                   </Radio.Group>
                 </Space>
@@ -264,24 +276,30 @@ export default (props: PropsType) => {
           {currentKey == '4' && (
             <div>
               <div className="setting-right-title">{t('About Rebebuca')}</div>
-              <div>
+              <div className="setting-right-item">
                 <Space>
                   <div>{t('Version')}：</div>
                   <div>{version}</div>
                 </Space>
               </div>
-              {/* <div>
+              <div className="setting-right-item">
                 <Space>
-                  <div>更新日志：</div>
-                  <div>4</div>
+                  <div>{t('更新日志：')}</div>
+                  <Link href="https://ant.design" target="_blank">
+                    {`https://github.com/rebebuca/rebebuca/releases/tag/${version}`}
+                  </Link>
                 </Space>
               </div>
-              <div>
-                <Space>
-                  <div>官方技术支持群：</div>
-                  <div></div>
+              <div className="setting-right-item">
+                <Space align='start'>
+                  <div>{t('官方技术支持群：')}</div>
+                    <QRCode
+                      errorLevel="H"
+                      value="https://ant.design/"
+                      icon="/rebebuca.ico"
+                    />
                 </Space>
-              </div> */}
+              </div>
             </div>
           )}
         </div>

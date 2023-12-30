@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import commandListReducer, { CommandItemType } from './commandList'
+import settingSlice from './settingSlice';
 
 export type StateType = {
   commandList: CommandItemType[]
@@ -8,6 +9,7 @@ export type StateType = {
 
 export default configureStore({
   reducer: {
-    commandList: commandListReducer
+    commandList: commandListReducer,
+    settings: settingSlice,
   }
 })

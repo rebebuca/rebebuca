@@ -4,14 +4,16 @@ import { Command } from '@tauri-apps/api/shell'
 type FFmpegCallback = (message: string, status: string) => void;
 
 export const runFFmpeg = async (command: Array<string>, callback: FFmpegCallback) => {
-  console.log('command: ',  command.join(' '));
-  // const ffmpeg = Command.sidecar('bin/ffmpeg', command)
-
-  const ffmpeg = new Command('ffmpeg', ['/C', command.join(' ')]);
-
-
+  const ffmpegFrom = localStorage.getItem('ffmpeg')
+  let ffmpeg
+  if (ffmpegFrom == 'local') {
+    ffmpeg = new Command('ffmpeg', '/C ' + 'ffmpeg ' + command.join(' '));
+    console.log('use local')
+  } else {
+    ffmpeg = Command.sidecar('bin/ffmpeg', command)
+    console.log('use default')
+  }
   ffmpeg.on('close', async ({ code }) => {
-    console.log('code: ', code);
     if (code == 0) callback('ffmpeg run success', '0')
     else if (code == 1) callback('ffmpeg run failed', '1')
     else callback('ffmpeg run end', '11')
@@ -32,6 +34,4 @@ export const runFFmpeg = async (command: Array<string>, callback: FFmpegCallback
   } catch (error) {
     callback(`Error spawning ffmpeg process: ${error}`, '99')
   }
-
-
 }

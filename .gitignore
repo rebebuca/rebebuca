@@ -28,3 +28,5 @@ docs
 rb.sqlite
 
 # src-tauri/migration
+
+src-tauri/bin

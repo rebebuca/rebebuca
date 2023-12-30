@@ -17,6 +17,9 @@ import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 import AppSetting from '../components/setting'
 import { useTranslation } from 'react-i18next'
 
+import { useSelector, useDispatch } from 'react-redux'
+import { setSettings } from '../store/settingSlice'
+
 import '../utils/i18n'
 
 import zhCN from 'antd/locale/zh_CN'
@@ -78,6 +81,13 @@ export default () => {
 
   const [locale, setLocale] = useState(zhCN)
 
+  const dispatch = useDispatch()
+  // const settings = useSelector(state => state.settings.settingsData)
+
+  const updateSettings = newSettings => {
+    dispatch(setSettings(newSettings))
+  }
+
   const minimize = async () => {
     await appWindow.minimize()
   }
@@ -103,6 +113,7 @@ export default () => {
 
   const initAppSetting = async () => {
     const setting: Array<IAppSettingItem> = await invoke('get_app_setting')
+    console.log('setting: ', setting);
     if (setting.length == 0) {
       const defaultSetting = {
         lang: 'ch',
@@ -123,6 +134,7 @@ export default () => {
       } else if (new_setting[0].lang == 'en') {
         setLocale(enUS)
       }
+      localStorage.setItem('ffmpeg', 'default')
     } else {
       setAppSetting(setting[0])
       setDark(setting[0].theme === 'dark')
@@ -132,6 +144,10 @@ export default () => {
       } else if (setting[0].lang == 'en') {
         setLocale(enUS)
       }
+      localStorage.setItem('ffmpeg', setting[0].ffmpeg as string)
+      updateSettings({
+        ...setting[0]
+      })
     }
   }
 

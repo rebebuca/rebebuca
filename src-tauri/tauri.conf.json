@@ -33,9 +33,9 @@
             ]
           },
           {
-            "name": "run-ffmpeg",
+            "name": "ffmpeg",
             "cmd": "cmd",
-            "args":  ["/C", { "validator": "\\S+" }]
+            "args":  [{ "validator": "\\S+" }]
           }
         ]
       },

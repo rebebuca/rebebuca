@@ -6,6 +6,7 @@
   "新建接口": "Interface New",
   "Official Website": "Official Website",
   "Copy": "Copy",
+  "高级选项": "Advanced options",
   "All projects": "All projects",
   "Please enter project name": "Please enter project name",
   "Please enter project introduction": "Please enter project introduction",
@@ -85,7 +86,17 @@
   "最小化托盘": "Minimize to pallet",
   "退出后，正在运行的程序会自动结束": "After exiting, the running program will automatically end.",
   "退出": "Quit",
+
+  "FFMPEG 来源": "ffmpeg source",
+  "软件自带": "comes with software",
+  "本机自带": "this machine comes with",
+  "没有检测到": "not detected",
+
+  "更新日志：": "Update log:",
+  "官方技术支持群：": "Official technical support group:",
+
   "下次关闭，希望：": "Next time it closes, I hope:",
+  "切换来源不会影响正在运行中的命令": "Switching sources does not affect running commands",
   "点击导入ffmpeg命令行": "Click to import ffmpeg command line",
   "导入成功后会清空当前存在的参数": "After the import is successful, the currently existing parameters will be cleared.",
   "将ffmpeg命令行复制粘贴到下面文本框中": "Copy and paste the ffmpeg command line into the text box below",

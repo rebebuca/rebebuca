@@ -20,8 +20,6 @@ const INIT_STATE: CommandItemType[] = [
   }
 ]
 
-// let run12Once = false
-
 const run12OnceMap = new Map()
 
 export const commandListSlice = createSlice({
@@ -52,7 +50,7 @@ export const commandListSlice = createSlice({
         if (index !== -1) {
           draft[index].status = status
           draft[index].pid = pid
-          if (draft[index].log.length > 20) {
+          if (draft[index].log.length > 40) {
             draft[index].log.shift()
             draft[index].log.push(log)
           } else draft[index].log.push(log)

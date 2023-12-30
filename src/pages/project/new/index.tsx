@@ -3,6 +3,7 @@ import { ulid } from 'ulid'
 import { produce } from 'immer'
 import { invoke } from '@tauri-apps/api'
 import { open } from '@tauri-apps/api/dialog'
+import { useSelector } from 'react-redux'
 import React, { useEffect, useRef, useState } from 'react'
 import type { ProColumns } from '@ant-design/pro-components'
 import { useSearchParams, useNavigate } from 'react-router-dom'
@@ -91,7 +92,9 @@ const ProjectItemNew: React.FC = () => {
     }
   ]
 
-  const initialItems = [{ label: '新建接口', key: '1000', id: '-1', name: '', url: '', argList: [] }]
+  const initialItems = [
+    { label: '新建接口', key: '1000', id: '-1', name: '', url: '', argList: [] }
+  ]
 
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
   const [items, setItems] = useState<Array<ITabItem>>(initialItems)
@@ -103,19 +106,9 @@ const ProjectItemNew: React.FC = () => {
 
   const formRef = useRef<ProFormInstance>()
 
+  const settings = useSelector(state => state.settings.settingsData)
+
   const [descItems, setDescItems] = useState<Array<IDescItem>>([
-    {
-      key: '6',
-      label: 'FFMPEG版本',
-      children: '16',
-      span: 3
-    },
-    {
-      key: '9',
-      label: '失败重启次数',
-      children: '0',
-      span: 3
-    },
     {
       key: '7',
       label: 'FFMPEG URL',
@@ -451,14 +444,24 @@ const ProjectItemNew: React.FC = () => {
                   <Segmented options={[t('信息面板')]} />
                   <div>
                     <Descriptions
-                      items={descItems.slice(0, 2).map(a => {
+                      items={[
+                        {
+                          key: '6',
+                          label: t('FFMPEG 来源'),
+                          children: settings.ffmpeg == 'default' ? t('软件自带') : t('本机自带'),
+                          span: 3
+                        }
+                      ]}
+                    />
+                    <Descriptions
+                      layout="vertical"
+                      items={descItems.slice(0, 1).map(a => {
                         return {
                           ...a,
                           label: t([a.label])
                         }
                       })}
                     />
-                    <Descriptions items={descItems.slice(2, 3)} layout="vertical" />
                   </div>
                 </Space>
               </ProCard>

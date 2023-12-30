@@ -6,7 +6,7 @@ import { ProCard } from '@ant-design/pro-components'
 import { useSelector, useDispatch } from 'react-redux'
 import React, { useRef, useState, useEffect } from 'react'
 import type { ProFormInstance } from '@ant-design/pro-components'
-import { Tabs, Space, Badge, Button, Descriptions, Segmented, Typography } from 'antd'
+import { Tabs, Space, Badge, Button, Descriptions, Segmented, Typography, FloatButton } from 'antd'
 import { useTranslation } from 'react-i18next'
 
 const { Paragraph } = Typography
@@ -51,6 +51,7 @@ const ProjectItemEdit: React.FC = () => {
   const [segmentedLeft, setSegmentedLeft] = useState<string>('接口信息')
   const [segmentedRight, setSegmentedRight] = useState<string>('运行日志')
   const commandList = useSelector<StateType>(state => state.commandList) as CommandItemType[]
+  const settings = useSelector(state => state.settings.settingsData)
 
   const dispatch = useDispatch()
 
@@ -59,18 +60,6 @@ const ProjectItemEdit: React.FC = () => {
       key: '1',
       label: t('接口 URL'),
       children: '',
-      span: 3
-    },
-    {
-      key: '6',
-      label: t('FFMPEG版本'),
-      children: '16',
-      span: 3
-    },
-    {
-      key: '9',
-      label: t('失败重启次数'),
-      children: '0',
       span: 3
     }
   ])
@@ -119,6 +108,13 @@ const ProjectItemEdit: React.FC = () => {
     )
   }
 
+  // const showFFMPEGFrom = () => {
+  //   const status = commandList[0].status
+  //   if (status != '12') {
+  //     return settings.ffmpeg == 'default' ? t('软件自带') : t('本机自带')
+  //   } else return localStorage.getItem('default') == 'default' ? t('软件自带') : t('本机自带')
+  // }
+
   const getStatus = (commandList: Array<CommandItemType>): StatusType => {
     const a = commandList[0]
     if (a.status == '12')
@@ -166,7 +162,19 @@ const ProjectItemEdit: React.FC = () => {
                     setSegmentedLeft(value as string)
                   }}
                 />
-                {segmentedLeft == t('接口信息') && <Descriptions items={descItems} size="middle" />}
+                {segmentedLeft == t('接口信息') && (
+                  <Descriptions
+                    items={descItems.concat([
+                      {
+                        key: '6',
+                        label: t('FFMPEG 来源'),
+                        children: settings.ffmpeg == 'default' ? t('软件自带') : t('本机自带'),
+                        span: 3
+                      }
+                    ])}
+                    size="middle"
+                  />
+                )}
                 <Space direction="vertical" size="large">
                   <div>
                     {t('运行状态：')}
@@ -284,10 +292,17 @@ const ProjectItemEdit: React.FC = () => {
                     setSegmentedRight(value as string)
                   }}
                 />
-                <div style={{ height: '400px', overflow: 'auto', fontSize: '12px' }}>
+                <div></div>
+                <div id="rizhi" style={{ height: '400px', overflow: 'auto', fontSize: '12px', position: 'relative' }}>
                   {commandList[0].log.map((text, index) => (
                     <div key={index}>{text}</div>
                   ))}
+
+                  <FloatButton.BackTop
+                    visibilityHeight={200}
+                    // @ts-expect-error nocheck
+                    target={() => document.getElementById('rizhi')}
+                  />
                 </div>
 
                 {segmentedRight == '其他操作' && <div>敬请期待</div>}

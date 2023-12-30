@@ -4,6 +4,7 @@ import { invoke } from '@tauri-apps/api'
 import { open } from '@tauri-apps/api/dialog'
 import { useNavigate } from 'react-router-dom'
 import { useSearchParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import React, { useRef, useState, useEffect } from 'react'
 import type { ProColumns } from '@ant-design/pro-components'
 import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
@@ -66,6 +67,7 @@ const ProjectItemEdit: React.FC = () => {
   const editableFormRef = useRef<EditableFormInstance>()
 
   const formRef = useRef<ProFormInstance>()
+  const settings = useSelector(state => state.settings.settingsData)
 
   const columns: ProColumns<DataSourceType>[] = [
     {
@@ -92,18 +94,6 @@ const ProjectItemEdit: React.FC = () => {
   ]
 
   const [descItems, setDescItems] = useState<Array<IDescItem>>([
-    {
-      key: '6',
-      label: 'FFMPEG版本',
-      children: '16',
-      span: 3
-    },
-    {
-      key: '9',
-      label: '失败重启次数',
-      children: '0',
-      span: 3
-    },
     {
       key: '7',
       label: 'FFMPEG URL',
@@ -372,14 +362,24 @@ const ProjectItemEdit: React.FC = () => {
                 <Segmented options={[t('信息面板')]} />
                 <div>
                   <Descriptions
-                    items={descItems.slice(0, 2).map(kk => {
+                    items={[
+                      {
+                        key: '6',
+                        label: t('FFMPEG 来源'),
+                        children: settings.ffmpeg == 'default' ? t('软件自带') : t('本机自带'),
+                        span: 3
+                      }
+                    ]}
+                  />
+                  <Descriptions
+                    layout="vertical"
+                    items={descItems.slice(0, 1).map(a => {
                       return {
-                        ...kk,
-                        label: t([kk.label])
+                        ...a,
+                        label: t([a.label])
                       }
                     })}
                   />
-                  <Descriptions items={descItems.slice(2, 3)} layout="vertical" />
                 </div>
               </Space>
             </ProCard>
