@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # 设置起始，结束日期，作者名字
-start_date="2023-12-23"
-end_date="2023-12-24"
+start_date="2023-12-29"
+end_date="2024-12-24"
 author_name="godkun"
 
 # 验证日期格式
