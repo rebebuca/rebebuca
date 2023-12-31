@@ -1,11 +1,10 @@
 import { FC, useEffect, useState } from 'react'
-// import { Command } from '@tauri-apps/api/shell'
 import { Button, Input, Image, Select, Space, Typography, message } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { invoke } from '@tauri-apps/api'
 import { ulid } from 'ulid'
 import dayjs from 'dayjs'
-import { parseFFUrl } from '../../utils/parseFFUrl'
+import { parseFFUrl } from '@/utils/parseFFUrl'
 import { useNavigate } from 'react-router-dom'
 
 const { Title } = Typography

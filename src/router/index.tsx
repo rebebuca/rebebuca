@@ -1,12 +1,12 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 
-import Home from '../pages/home'
-import ProjectList from '../pages/project'
-import MainLayout from '../layouts/MainLayout'
-import ProjectItemNew from '../pages/project/new'
-import ProjectItemList from '../pages/project/list'
-import ProjectItemEdit from '../pages/project/edit'
-import ProjectItemDetail from '../pages/project/detail'
+import Home from '@/pages/home'
+import ProjectList from '@/pages/project'
+import MainLayout from '@/layouts/MainLayout'
+import ProjectItemNew from '@/pages/project/new'
+import ProjectItemList from '@/pages/project/list'
+import ProjectItemEdit from '@/pages/project/edit'
+import ProjectItemDetail from '@/pages/project/detail'
 
 const router = createBrowserRouter([
   {

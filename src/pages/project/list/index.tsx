@@ -11,9 +11,9 @@ import type { ProColumns } from '@ant-design/pro-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { runFFmpeg } from '../../../utils'
-import { updateCommand, resetCommandLog } from '../../../store/commandList'
-import { writeSettingToDownload } from '../../../utils/export'
+import { runFFmpeg } from '@/utils'
+import { updateCommand, resetCommandLog } from '@/store/commandList'
+import { writeSettingToDownload } from '@/utils/export'
 
 export type ListItem = {
   id: string

@@ -24,9 +24,9 @@ import {
 } from 'antd'
 import { useTranslation } from 'react-i18next'
 
-import { argKeyList } from '../../../constants/keys'
-import { parseFFUrl } from '../../../utils/parseFFUrl'
-import { StateType } from '../../../store'
+import { argKeyList } from '@/constants/keys'
+import { parseFFUrl } from '@/utils/parseFFUrl'
+import { StateType } from '@/store'
 
 const { Paragraph } = Typography
 

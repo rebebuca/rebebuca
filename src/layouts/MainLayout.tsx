@@ -14,13 +14,13 @@ import ProLayout from '@ant-design/pro-layout'
 import { appWindow } from '@tauri-apps/api/window'
 import { PageContainer } from '@ant-design/pro-components'
 import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
-import AppSetting from '../components/setting'
+import AppSetting from '@/components/setting'
 import { useTranslation } from 'react-i18next'
 
 import { useDispatch } from 'react-redux'
-import { setSettings } from '../store/settingSlice'
+import { setSettings } from '@/store/settings'
 
-import '../utils/i18n'
+import '@/utils/i18n'
 
 import zhCN from 'antd/locale/zh_CN'
 import enUS from 'antd/locale/en_US'
@@ -57,7 +57,7 @@ import {
 
 const { Paragraph } = Typography
 
-import { useLocationListen } from '../hooks'
+import { useLocationListen } from '@/hooks'
 
 export interface IAppSettingItem {
   lang?: string

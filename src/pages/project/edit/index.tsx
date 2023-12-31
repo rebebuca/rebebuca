@@ -13,8 +13,8 @@ import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro
 import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 
-import { argKeyList } from '../../../constants/keys'
-import { StateType } from '../../../store'
+import { argKeyList } from '@/constants/keys'
+import { StateType } from '@/store'
 
 const { Paragraph } = Typography
 

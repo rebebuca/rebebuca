@@ -6,7 +6,7 @@ import { getVersion } from '@tauri-apps/api/app'
 import { useTranslation } from 'react-i18next'
 
 import { useDispatch } from 'react-redux'
-import { setSettings } from '../../store/settingSlice'
+import { setSettings } from '@/store/settings'
 
 import type { MenuProps } from 'antd'
 type MenuItem = Required<MenuProps>['items'][number]

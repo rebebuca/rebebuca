@@ -11,11 +11,11 @@ import { useTranslation } from 'react-i18next'
 
 const { Paragraph } = Typography
 
-import { runFFmpeg } from '../../../utils'
-import { addCommand, updateCommand, resetCommandLog } from '../../../store/commandList'
+import { runFFmpeg } from '@/utils'
+import { addCommand, updateCommand, resetCommandLog } from '@/store/commandList'
 
-import type { CommandItemType } from '../../../store/commandList'
-import type { StateType } from '../../../store'
+import type { CommandItemType } from '@/store/commandList'
+import type { StateType } from '@/store'
 
 const initialItems = [{ label: '', key: '', id: '', name: '', url: '' }]
 
