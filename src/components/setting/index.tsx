@@ -100,13 +100,11 @@ export default (props: PropsType) => {
         cmd = await new Command('mac-ffmpeg', '/C ffmpeg -version').execute()
       }
       if (cmd.stdout) {
-        console.log('cmd.stdout: ', cmd)
         const versionRegex = /ffmpeg version (\S+)/
 
         // Extracting the version
         const match = cmd.stdout.match(versionRegex)
         const version = match ? match[1] : 'Version not found'
-        console.log(version)
 
         setDisabled(false)
         setLocalVersion(version)
@@ -119,13 +117,11 @@ export default (props: PropsType) => {
 
   const runLocalFF = async () => {
     const cmd = await Command.sidecar('bin/ffmpeg', ['-version']).execute()
-    console.log('cmd: ', cmd)
     if (cmd.stdout) {
       const versionRegex = /ffmpeg version (\S+)/
       const match = cmd.stdout.match(versionRegex)
       const version = match ? match[1] : 'Version not found'
       setDefaultVersion(version)
-      console.log('local', version)
     }
   }
 

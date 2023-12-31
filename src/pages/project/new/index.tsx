@@ -33,8 +33,8 @@ const { Paragraph } = Typography
 const { TextArea } = Input
 
 type DataSourceType = {
-  id: number
-  index: string
+  id: string | number
+  index?: string
   key?: string
   value?: string
 }
@@ -134,8 +134,7 @@ const ProjectItemNew: React.FC = () => {
             }
             return accumulator
           }, '')
-          // @ts-expect-error no error
-          if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
+          if (url) r!.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
         }
       })
     )
@@ -201,13 +200,12 @@ const ProjectItemNew: React.FC = () => {
         directory: type == 1 ? false : true
       })
       if (selected) {
-        editableFormRef.current?.setRowData?.(row.index, {
+        editableFormRef.current?.setRowData?.(row.index as string, {
           value: selected
         })
         // eslint-disable-next-line no-unsafe-optional-chaining
         const { url } = formRef.current?.getFieldsValue()
         url.forEach((item: { id: string; value: string | unknown }) => {
-          // @ts-expect-error no error
           if (item.id == row.id) item.value = selected
         })
         formRef.current?.setFieldValue('url', url)
@@ -226,8 +224,7 @@ const ProjectItemNew: React.FC = () => {
                 }
                 return accumulator
               }, '')
-              // @ts-expect-error no error
-              if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
+              if (url) r!.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
             }
           })
         )
@@ -253,14 +250,13 @@ const ProjectItemNew: React.FC = () => {
         id: ulid()
       }
     })
-    // @ts-expect-error no check
-    const idList = res.map((i: { id: string }) => i.id)
+    const idList = res!.map((i: { id: string }) => i.id)
     setEditableRowKeys(idList)
     formRef.current?.setFieldsValue({
       name: formRef.current?.getFieldsValue().name,
       url: res
     })
-    message.success('导入命令行成功')
+    message.success(t('导入命令行成功'))
     setIsModalOpen(false)
   }
 
@@ -268,9 +264,8 @@ const ProjectItemNew: React.FC = () => {
     setIsModalOpen(false)
   }
 
-  // @ts-expect-error no check
-  const onChangeNew = e => {
-    setFfmpegUurl(() => e.target.value)
+  const onChangeNew = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFfmpegUurl(e.target.value)
   }
 
   useEffect(() => {
@@ -402,8 +397,7 @@ const ProjectItemNew: React.FC = () => {
                           newRecordType: 'dataSource',
                           position: 'bottom',
                           creatorButtonText: <span></span>,
-                          // @ts-expect-error no error
-                          record: () => ({
+                          record: (): DataSourceType => ({
                             id: Date.now(),
                             key: '',
                             value: ''

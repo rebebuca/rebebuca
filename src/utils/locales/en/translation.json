@@ -110,6 +110,8 @@
   "默认项目": "Default project",
   "默认项目的介绍": "Introduction to the default project",
 
+  "导入命令行成功": "Import command line successful",
+
 
   "导入成功后会清空当前存在的参数": "After the import is successful, the currently existing parameters will be cleared.",
   "将ffmpeg命令行复制粘贴到下面文本框中": "Copy and paste the ffmpeg command line into the text box below",

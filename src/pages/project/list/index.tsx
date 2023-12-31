@@ -23,6 +23,7 @@ export type ListItem = {
   updated_at: string
   status: string
   pid: number
+  arg_list?: string
 }
 
 export default () => {
@@ -64,9 +65,8 @@ export default () => {
       })
     )
   }
-  // @ts-expect-error no check
-  const copyApi = async row => {
-    const opts = row.props.record
+  const copyApi = async (record: ListItem) => {
+    const opts = record
     const projectDetail = {
       id: ulid(),
       status: '-1',
@@ -116,22 +116,19 @@ export default () => {
     {
       title: t('命令'),
       dataIndex: 'url',
-      // ellipsis: true,
       key: `${ulid()}_url`,
       copyable: true
     },
     {
       title: t('操作'),
-      // width: 220,
       width: '30%',
       key: `${ulid()}_option`,
       valueType: 'option',
-      render: (row: unknown) => [
+      render: (_, record: ListItem) => [
         <a
           key="link4"
           onClick={async () => {
-            // @ts-expect-error no check
-            const item = row?.props?.record
+            const item = record
             if (item.status != '12') updateProjectDetailStatus(item, '12')
             const showStop = item.status == '12'
             if (showStop) {
@@ -161,7 +158,7 @@ export default () => {
                   updateCommand({
                     id: item.id,
                     status: status,
-                    pid: s.pid,
+                    pid: s!.pid,
                     log: line,
                     item: item
                   })
@@ -170,19 +167,14 @@ export default () => {
             }
           }}
         >
-          {
-            // @ts-expect-error no check
-            row.props.record.status == '12' ? t('停止') : t('运行')
-          }
+          {record.status == '12' ? t('停止') : t('运行')}
         </a>,
-        // @ts-expect-error no check
-        row.props.record.status == '12' && (
+        record.status == '12' && (
           <a
             // <a
             key="link11"
             onClick={async () => {
-              // @ts-expect-error no check
-              const item = row.props.record
+              const item = record
               const showStop = item.status == '12'
               if (showStop) {
                 let command
@@ -211,7 +203,7 @@ export default () => {
                       updateCommand({
                         id: item.id,
                         status: status,
-                        pid: s.pid,
+                        pid: s!.pid,
                         log: line,
                         item: item
                       })
@@ -232,7 +224,7 @@ export default () => {
                     updateCommand({
                       id: item.id,
                       status: status,
-                      pid: s.pid,
+                      pid: s!.pid,
                       log: line,
                       item: item
                     })
@@ -251,8 +243,7 @@ export default () => {
               pathname: `/project/detail`,
               search: `name=${searchParams.get('name')}&projectId=${searchParams.get(
                 'projectId'
-                // @ts-expect-error no check
-              )}&id=${row.props.record.id}`
+              )}&id=${record.id}`
             })
           }}
         >
@@ -261,8 +252,7 @@ export default () => {
         <a
           key="link2"
           onClick={() => {
-            // @ts-expect-error no check
-            if (row.props.record.status == '12') {
+            if (record.status == '12') {
               message.success(t('正在运行中，不可编辑'))
               return
             }
@@ -270,8 +260,7 @@ export default () => {
               pathname: `/project/edit`,
               search: `name=${searchParams.get('name')}&projectId=${searchParams.get(
                 'projectId'
-                // @ts-expect-error no check
-              )}&id=${row.props.record.id}`
+              )}&id=${record.id}`
             })
           }}
         >
@@ -280,7 +269,7 @@ export default () => {
         <a
           key="copy"
           onClick={() => {
-            copyApi(row)
+            copyApi(record)
           }}
         >
           {t('Copy')}
@@ -289,13 +278,11 @@ export default () => {
           title={t('Prompt')}
           description={t('Are you sure you want to delete this interface?')}
           onConfirm={() => {
-            // @ts-expect-error no check
-            if (row.props.record.status == '12') {
+            if (record.status == '12') {
               message.success(t('正在运行中，不可删除'))
               return
             }
-            // @ts-expect-error no check
-            delProjectDetail(row.props.record.id)
+            delProjectDetail(record.id as string)
           }}
           key="del"
           okText="Yes"

@@ -6,7 +6,6 @@ type FFmpegCallback = (message: string, status: string) => void
 export const runFFmpeg = async (command: Array<string>, callback: FFmpegCallback) => {
   const ffmpegFrom = localStorage.getItem('ffmpeg')
   const os = localStorage.getItem('os')
-  console.log('os: ', os)
   let ffmpeg
   if (ffmpegFrom == 'local') {
     if (os == 'win32') {
@@ -15,10 +14,8 @@ export const runFFmpeg = async (command: Array<string>, callback: FFmpegCallback
       // TODO: mac
       ffmpeg = new Command('ffmpeg', '/C ' + 'ffmpeg ' + command.join(' '))
     }
-    console.log('use local')
   } else {
     ffmpeg = Command.sidecar('bin/ffmpeg', command)
-    console.log('use default')
   }
   ffmpeg.on('close', async ({ code }) => {
     if (code == 0) callback('ffmpeg run success', '0')
@@ -28,7 +25,6 @@ export const runFFmpeg = async (command: Array<string>, callback: FFmpegCallback
 
   // 处理标准输出和错误输出
   const handleOutput = async (line: string) => {
-    console.log('line: ', line)
     callback(line, '12')
   }
 

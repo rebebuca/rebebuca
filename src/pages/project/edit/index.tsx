@@ -19,8 +19,8 @@ import { StateType } from '../../../store'
 const { Paragraph } = Typography
 
 type DataSourceType = {
-  id: number
-  index: string
+  id: string | number
+  index?: string
   key?: string
   value?: string
 }
@@ -119,7 +119,7 @@ const ProjectItemEdit: React.FC = () => {
             }
             return accumulator
           }, '')
-          if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
+          if (url) r!.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
         }
       })
     )
@@ -208,13 +208,11 @@ const ProjectItemEdit: React.FC = () => {
         directory: type == 1 ? false : true
       })
       if (selected) {
-        editableFormRef.current?.setRowData?.(row.index, {
+        editableFormRef.current?.setRowData?.(row.index as string, {
           value: selected
         })
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const { url } = formRef.current?.getFieldsValue()
+        const { url } = formRef.current!.getFieldsValue()
         const newUrl = url.map((k: { id: string }) => {
-          // @ts-expect-error no error
           if (k.id == row.id) {
             return {
               ...k,
@@ -240,8 +238,7 @@ const ProjectItemEdit: React.FC = () => {
                 }
                 return accumulator
               }, '')
-              // @ts-expect-error no error
-              if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
+              if (url) r!.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
             }
           })
         )
@@ -319,8 +316,7 @@ const ProjectItemEdit: React.FC = () => {
                         newRecordType: 'dataSource',
                         position: 'bottom',
                         creatorButtonText: <span></span>,
-                        // @ts-expect-error no error
-                        record: () => ({
+                        record: (): DataSourceType => ({
                           id: Date.now(),
                           key: '',
                           value: ''
