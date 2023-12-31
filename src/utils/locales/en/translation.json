@@ -99,6 +99,18 @@
   "下次关闭，希望：": "Next time it closes, I hope:",
   "切换来源不会影响正在运行中的命令": "Switching sources does not affect running commands",
   "点击导入ffmpeg命令行": "Click to import ffmpeg command line",
+
+  "选择项目": "Choose a project",
+  "一键运行": "Run quickly",
+  "教程文档": "Tutorial documentation",
+  "欢迎使用 Rebebuca ! ": "Welcome to rebebuca!",
+  "30秒完成创建、运行、管理你的 ffmpeg 命令": "Complete the creation, running, and managing your FFMPEG command in 30 seconds",
+  "请复制粘贴你的 ffmpeg 命令行到下面的输入框中": "Please copy your FFMPEG command to the input box below",
+
+  "默认项目": "Default project",
+  "默认项目的介绍": "Introduction to the default project",
+
+
   "导入成功后会清空当前存在的参数": "After the import is successful, the currently existing parameters will be cleared.",
   "将ffmpeg命令行复制粘贴到下面文本框中": "Copy and paste the ffmpeg command line into the text box below",
   "请粘贴以ffmpeg开头的命令行": "Please paste the command line starting with ffmpeg",

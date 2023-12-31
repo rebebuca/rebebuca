@@ -20,6 +20,10 @@ export const argKeyList = [
     value: '-t'
   },
   {
+    label: '-version',
+    value: '-version'
+  },
+  {
     label: '-v',
     value: '-v'
   },

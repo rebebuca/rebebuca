@@ -70,11 +70,17 @@ export default () => {
   }
 
   const delProject = async (row: IItem) => {
-    const res: Array<IItem> = await invoke('del_project', {
-      projectId: row.project_id
-    })
-    message.success(t('successfully deleted'))
-    setList(res)
+    console.log(444, list)
+    if (list.length == 1) {
+      message.error(t('删除失败，至少要存在一个项目'))
+      return
+    } else {
+      const res: Array<IItem> = await invoke('del_project', {
+        projectId: row.project_id
+      })
+      message.success(t('successfully deleted'))
+      setList(res)
+    }
   }
 
   useEffect(() => {

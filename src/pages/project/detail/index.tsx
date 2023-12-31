@@ -53,6 +53,17 @@ const ProjectItemEdit: React.FC = () => {
   const commandList = useSelector<StateType>(state => state.commandList) as CommandItemType[]
   const settings = useSelector(state => state.settings.settingsData)
 
+  // 创建一个引用来指向你想要点击的元素
+  const myElementRef = useRef<HTMLButtonElement | null>(null)
+
+  // 函数来触发点击
+  const triggerClick = () => {
+    // 使用 current 属性来访问 DOM 元素，并触发点击
+    if (myElementRef.current instanceof HTMLButtonElement) {
+      myElementRef.current.click()
+    }
+  }
+
   const dispatch = useDispatch()
 
   const [descItems, setDescItems] = useState<Array<IDescItem>>([
@@ -94,6 +105,12 @@ const ProjectItemEdit: React.FC = () => {
         draft[0].children = <Paragraph copyable>{url}</Paragraph>
       })
     )
+
+    if (searchParams.get('fromHome')) {
+      setTimeout(() => {
+        triggerClick()
+      }, 200)
+    }
   }
 
   const add = (item: ITabItem) => {
@@ -107,13 +124,6 @@ const ProjectItemEdit: React.FC = () => {
       })
     )
   }
-
-  // const showFFMPEGFrom = () => {
-  //   const status = commandList[0].status
-  //   if (status != '12') {
-  //     return settings.ffmpeg == 'default' ? t('软件自带') : t('本机自带')
-  //   } else return localStorage.getItem('default') == 'default' ? t('软件自带') : t('本机自带')
-  // }
 
   const getStatus = (commandList: Array<CommandItemType>): StatusType => {
     const a = commandList[0]
@@ -191,6 +201,7 @@ const ProjectItemEdit: React.FC = () => {
                   <Button
                     type="primary"
                     key="run"
+                    ref={myElementRef}
                     onClick={async () => {
                       const showStop = commandList[0].status == '12'
                       if (showStop) {
@@ -293,7 +304,15 @@ const ProjectItemEdit: React.FC = () => {
                   }}
                 />
                 <div></div>
-                <div id="rizhi" style={{ height: '400px', overflow: 'auto', fontSize: '12px', position: 'relative' }}>
+                <div
+                  id="rizhi"
+                  style={{
+                    height: '400px',
+                    overflow: 'auto',
+                    fontSize: '12px',
+                    position: 'relative'
+                  }}
+                >
                   {commandList[0].log.map((text, index) => (
                     <div key={index}>{text}</div>
                   ))}

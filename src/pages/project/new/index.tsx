@@ -342,17 +342,17 @@ const ProjectItemNew: React.FC = () => {
                             }}
                           >
                             {t('New File')}
-                          </Button>,
-                          <Button
-                            type="primary"
-                            key="run"
-                            onClick={() => {
-                              // eslint-disable-next-line react/prop-types
-                              addProjectDeatail(props.form?.getFieldsValue())
-                            }}
-                          >
-                            {t('新建并运行')}
                           </Button>
+                          // <Button
+                          //   type="primary"
+                          //   key="run"
+                          //   onClick={() => {
+                          //     // eslint-disable-next-line react/prop-types
+                          //     addProjectDeatail(props.form?.getFieldsValue())
+                          //   }}
+                          // >
+                          //   {t('新建并运行')}
+                          // </Button>
                         ]
                       }
                     }}

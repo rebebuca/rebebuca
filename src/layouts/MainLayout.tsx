@@ -17,7 +17,7 @@ import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 import AppSetting from '../components/setting'
 import { useTranslation } from 'react-i18next'
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setSettings } from '../store/settingSlice'
 
 import '../utils/i18n'
@@ -84,7 +84,7 @@ export default () => {
   const dispatch = useDispatch()
   // const settings = useSelector(state => state.settings.settingsData)
 
-  const updateSettings = newSettings => {
+  const updateSettings = (newSettings: IAppSettingItem) => {
     dispatch(setSettings(newSettings))
   }
 
