@@ -12,6 +12,22 @@
   "tauri": {
     "allowlist": {
       "all": true,
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "all": true,
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "copyFile": true,
+        "createDir": true,
+        "removeDir": true,
+        "removeFile": true,
+        "renameFile": true,
+        "exists": true,
+        "scope": ["C:/**/*", "D:/**/*", "E:/**/*", "F:/**/*", "$HOME/**/*", "$APP/**/*", "$DOWNLOAD/**/*", "$DESKTOP/**/*", "$DOCUMENT/**/*"]
+      },
       "shell": {
         "all": true,
         "sidecar": true,
@@ -39,23 +55,15 @@
           },
           {
             "name": "mac-ffmpeg",
-            "cmd": "zsh",
+            "cmd": "ffmpeg",
+            "args":  [{ "validator": "\\S+" }]
+          },
+          {
+            "name": "kill-process",
+            "cmd": "kill",
             "args":  [{ "validator": "\\S+" }]
           }
         ]
-      },
-      "fs": {
-        "all": true,
-        "readFile": true,
-        "writeFile": true,
-        "readDir": true,
-        "copyFile": true,
-        "createDir": true,
-        "removeDir": true,
-        "removeFile": true,
-        "renameFile": true,
-        "exists": true,
-        "scope": ["C:/**/*", "D:/**/*", "E:/**/*", "F:/**/*"]
       },
       "window": {
         "startDragging": true

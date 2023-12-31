@@ -139,8 +139,10 @@ export default () => {
                 command = await new Command('ffmpeg', cmd)
               } else {
                 // TODO: mac
-                const cmd = `/C taskkill /f /t /pid ${item.pid}`
-                command = await new Command('mac-ffmpeg', cmd)
+                // const cmd = `/C taskkill /f /t /pid ${item.pid}`
+                const cmd = `${item.pid}`
+                command = await new Command('kill-process', cmd)
+                // command = await new Command('mac-ffmpeg', cmd)
               }
               command.spawn()
               command.on('close', () => {})
@@ -184,10 +186,11 @@ export default () => {
                   command = await new Command('ffmpeg', cmd)
                 } else {
                   // TODO: mac
-                  const cmd = `/C taskkill /f /t /pid ${item.pid}`
-                  command = await new Command('mac-ffmpeg', cmd)
+                  // const cmd = `/C taskkill /f /t /pid ${item.pid}`
+                  // command = await new Command('mac-ffmpeg', cmd)
+                  const cmd = `${item.pid}`
+                  command = await new Command('kill-process', cmd)
                 }
-
                 command.spawn()
                 command.on('close', async () => {
                   dispatch(

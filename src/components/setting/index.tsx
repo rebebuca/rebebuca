@@ -96,8 +96,7 @@ export default (props: PropsType) => {
       if (os == 'win32') {
         cmd = await new Command('ffmpeg', '/C ffmpeg -version').execute()
       } else {
-        // TODO: mac
-        cmd = await new Command('mac-ffmpeg', '/C ffmpeg -version').execute()
+        cmd = await new Command('mac-ffmpeg', '-version').execute()
       }
       if (cmd.stdout) {
         const versionRegex = /ffmpeg version (\S+)/

@@ -212,8 +212,8 @@ const ProjectItemEdit: React.FC = () => {
                           command = await new Command('ffmpeg', cmd)
                         } else {
                           // TODO: mac
-                          const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
-                          command = await new Command('mac-ffmpeg', cmd)
+                          const cmd = `${commandList[0].pid}`
+                          command = await new Command('kill-process', cmd)
                         }
 
                         command.spawn()
@@ -256,9 +256,10 @@ const ProjectItemEdit: React.FC = () => {
                           const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
                           command = await new Command('ffmpeg', cmd)
                         } else {
-                          // TODO: mac
-                          const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
-                          command = await new Command('mac-ffmpeg', cmd)
+                          const cmd = `${commandList[0].pid}`
+                          command = await new Command('kill-process', cmd)
+                          // const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
+                          // command = await new Command('mac-ffmpeg', cmd)
                         }
                         command.spawn()
                         command.on('close', async () => {
