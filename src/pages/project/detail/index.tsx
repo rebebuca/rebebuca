@@ -51,7 +51,7 @@ const ProjectItemEdit: React.FC = () => {
   const [segmentedLeft, setSegmentedLeft] = useState<string>('接口信息')
   const [segmentedRight, setSegmentedRight] = useState<string>('运行日志')
   const commandList = useSelector<StateType>(state => state.commandList) as CommandItemType[]
-  const settings = useSelector(state => state.settings.settingsData)
+  const settings = useSelector((state: StateType) => state.settings.settingsData)
 
   // 创建一个引用来指向你想要点击的元素
   const myElementRef = useRef<HTMLButtonElement | null>(null)
@@ -205,8 +205,17 @@ const ProjectItemEdit: React.FC = () => {
                     onClick={async () => {
                       const showStop = commandList[0].status == '12'
                       if (showStop) {
-                        const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
-                        const command = await new Command('ffmpeg', cmd)
+                        let command
+                        const os = localStorage.getItem('os')
+                        if (os == 'win32') {
+                          const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
+                          command = await new Command('ffmpeg', cmd)
+                        } else {
+                          // TODO: mac
+                          const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
+                          command = await new Command('mac-ffmpeg', cmd)
+                        }
+
                         command.spawn()
                         command.on('close', () => {})
                       } else {
@@ -223,7 +232,7 @@ const ProjectItemEdit: React.FC = () => {
                             updateCommand({
                               id: item.id,
                               status: status,
-                              pid: s.pid,
+                              pid: s!.pid,
                               log: line,
                               item: items[0]
                             })
@@ -241,8 +250,16 @@ const ProjectItemEdit: React.FC = () => {
                     onClick={async () => {
                       const showStop = commandList[0].status == '12'
                       if (showStop) {
-                        const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
-                        const command = await new Command('ffmpeg', cmd)
+                        let command
+                        const os = localStorage.getItem('os')
+                        if (os == 'win32') {
+                          const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
+                          command = await new Command('ffmpeg', cmd)
+                        } else {
+                          // TODO: mac
+                          const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
+                          command = await new Command('mac-ffmpeg', cmd)
+                        }
                         command.spawn()
                         command.on('close', async () => {
                           dispatch(
@@ -259,7 +276,7 @@ const ProjectItemEdit: React.FC = () => {
                               updateCommand({
                                 id: item.id,
                                 status: status,
-                                pid: s.pid,
+                                pid: s!.pid,
                                 log: line,
                                 item: items[0]
                               })
@@ -280,7 +297,7 @@ const ProjectItemEdit: React.FC = () => {
                             updateCommand({
                               id: item.id,
                               status: status,
-                              pid: s.pid,
+                              pid: s!.pid,
                               log: line,
                               item: items[0]
                             })
@@ -319,8 +336,7 @@ const ProjectItemEdit: React.FC = () => {
 
                   <FloatButton.BackTop
                     visibilityHeight={200}
-                    // @ts-expect-error nocheck
-                    target={() => document.getElementById('rizhi')}
+                    target={() => document.getElementById('rizhi') as HTMLElement}
                   />
                 </div>
 

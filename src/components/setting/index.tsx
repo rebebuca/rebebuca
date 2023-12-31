@@ -91,7 +91,14 @@ export default (props: PropsType) => {
 
   const checkFF = async () => {
     try {
-      const cmd = await new Command('ffmpeg', '/C ffmpeg -version').execute()
+      const os = localStorage.getItem('os')
+      let cmd
+      if (os == 'win32') {
+        cmd = await new Command('ffmpeg', '/C ffmpeg -version').execute()
+      } else {
+        // TODO: mac
+        cmd = await new Command('mac-ffmpeg', '/C ffmpeg -version').execute()
+      }
       if (cmd.stdout) {
         console.log('cmd.stdout: ', cmd)
         const versionRegex = /ffmpeg version (\S+)/
@@ -291,13 +298,9 @@ export default (props: PropsType) => {
                 </Space>
               </div>
               <div className="setting-right-item">
-                <Space align='start'>
+                <Space align="start">
                   <div>{t('官方技术支持群：')}</div>
-                    <QRCode
-                      errorLevel="H"
-                      value="https://ant.design/"
-                      icon="/rebebuca.ico"
-                    />
+                  <QRCode errorLevel="H" value="https://ant.design/" icon="/rebebuca.ico" />
                 </Space>
               </div>
             </div>

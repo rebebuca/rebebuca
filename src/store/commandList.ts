@@ -23,7 +23,7 @@ const INIT_STATE: CommandItemType[] = [
 const run12OnceMap = new Map()
 
 export const commandListSlice = createSlice({
-  name: 'todoList',
+  name: 'commandList',
   initialState: INIT_STATE,
   reducers: {
     addCommand: produce((draft: CommandItemType[], action: PayloadAction<CommandItemType>) => {

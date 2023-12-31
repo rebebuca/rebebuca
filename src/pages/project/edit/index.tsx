@@ -14,6 +14,7 @@ import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typogra
 import { useTranslation } from 'react-i18next'
 
 import { argKeyList } from '../../../constants/keys'
+import { StateType } from '../../../store'
 
 const { Paragraph } = Typography
 
@@ -67,7 +68,7 @@ const ProjectItemEdit: React.FC = () => {
   const editableFormRef = useRef<EditableFormInstance>()
 
   const formRef = useRef<ProFormInstance>()
-  const settings = useSelector(state => state.settings.settingsData)
+  const settings = useSelector((state: StateType) => state.settings.settingsData)
 
   const columns: ProColumns<DataSourceType>[] = [
     {
@@ -118,7 +119,6 @@ const ProjectItemEdit: React.FC = () => {
             }
             return accumulator
           }, '')
-          // @ts-expect-error no error
           if (url) r.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
         }
       })

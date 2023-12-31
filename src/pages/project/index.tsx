@@ -70,7 +70,6 @@ export default () => {
   }
 
   const delProject = async (row: IItem) => {
-    console.log(444, list)
     if (list.length == 1) {
       message.error(t('删除失败，至少要存在一个项目'))
       return

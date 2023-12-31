@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { invoke, shell } from '@tauri-apps/api'
+import { invoke, shell, os } from '@tauri-apps/api'
 import {
   Typography,
   Button,
@@ -31,15 +31,14 @@ import { event } from '@tauri-apps/api'
 
 import { window as tauriWindow } from '@tauri-apps/api'
 
-const darag = '.ant-pro-top-nav-header'
-const nodarag = 'a, .ant-pro-global-header-header-actions-item'
 document.addEventListener('mousedown', async e => {
-  // @ts-expect-error no error
-  if (e.target.closest(nodarag)) {
+  const darag = '.ant-pro-top-nav-header'
+  const nodarag = 'a, .ant-pro-global-header-header-actions-item'
+  const target = e.target as HTMLElement
+  if (target.closest(nodarag)) {
     return
   }
-  // @ts-expect-error no error
-  if (e.target.closest(darag)) {
+  if (target.closest(darag)) {
     await tauriWindow.appWindow.startDragging()
   }
 })
@@ -82,7 +81,6 @@ export default () => {
   const [locale, setLocale] = useState(zhCN)
 
   const dispatch = useDispatch()
-  // const settings = useSelector(state => state.settings.settingsData)
 
   const updateSettings = (newSettings: IAppSettingItem) => {
     dispatch(setSettings(newSettings))
@@ -113,7 +111,6 @@ export default () => {
 
   const initAppSetting = async () => {
     const setting: Array<IAppSettingItem> = await invoke('get_app_setting')
-    console.log('setting: ', setting);
     if (setting.length == 0) {
       const defaultSetting = {
         lang: 'ch',
@@ -192,6 +189,11 @@ export default () => {
     const res: Array<IAppSettingItem> = await invoke('get_app_setting')
     setAppSetting(res[0])
   }
+
+  const setLocalStorage = async () => {
+    const platformName = await os.platform()
+    localStorage.setItem('os', platformName)
+  }
   useEffect(() => {
     if (isMaximize) {
       event.once('tauri://resize', () => {
@@ -202,6 +204,7 @@ export default () => {
 
   useEffect(() => {
     initAppSetting()
+    setLocalStorage()
   }, [])
 
   return (

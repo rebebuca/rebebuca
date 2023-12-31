@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next'
 
 import { argKeyList } from '../../../constants/keys'
 import { parseFFUrl } from '../../../utils/parseFFUrl'
+import { StateType } from '../../../store'
 
 const { Paragraph } = Typography
 
@@ -106,7 +107,7 @@ const ProjectItemNew: React.FC = () => {
 
   const formRef = useRef<ProFormInstance>()
 
-  const settings = useSelector(state => state.settings.settingsData)
+  const settings = useSelector((state: StateType) => state.settings.settingsData)
 
   const [descItems, setDescItems] = useState<Array<IDescItem>>([
     {

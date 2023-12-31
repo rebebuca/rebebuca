@@ -135,8 +135,16 @@ export default () => {
             if (item.status != '12') updateProjectDetailStatus(item, '12')
             const showStop = item.status == '12'
             if (showStop) {
-              const cmd = `/C taskkill /f /t /pid ${item.pid}`
-              const command = await new Command('ffmpeg', cmd)
+              let command
+              const os = localStorage.getItem('os')
+              if (os == 'win32') {
+                const cmd = `/C taskkill /f /t /pid ${item.pid}`
+                command = await new Command('ffmpeg', cmd)
+              } else {
+                // TODO: mac
+                const cmd = `/C taskkill /f /t /pid ${item.pid}`
+                command = await new Command('mac-ffmpeg', cmd)
+              }
               command.spawn()
               command.on('close', () => {})
             } else {
@@ -177,8 +185,17 @@ export default () => {
               const item = row.props.record
               const showStop = item.status == '12'
               if (showStop) {
-                const cmd = `/C taskkill /f /t /pid ${item.pid}`
-                const command = await new Command('ffmpeg', cmd)
+                let command
+                const os = localStorage.getItem('os')
+                if (os == 'win32') {
+                  const cmd = `/C taskkill /f /t /pid ${item.pid}`
+                  command = await new Command('ffmpeg', cmd)
+                } else {
+                  // TODO: mac
+                  const cmd = `/C taskkill /f /t /pid ${item.pid}`
+                  command = await new Command('mac-ffmpeg', cmd)
+                }
+
                 command.spawn()
                 command.on('close', async () => {
                   dispatch(

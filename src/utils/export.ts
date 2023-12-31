@@ -1,17 +1,15 @@
 import dayjs from 'dayjs'
 import { BaseDirectory, writeBinaryFile, exists } from '@tauri-apps/api/fs'
 
-
 function stringToArrayBuffer(data: string): ArrayBuffer {
-  return new TextEncoder().encode(data).buffer;
+  return new TextEncoder().encode(data).buffer
 }
 
 export async function writeFileToDownload(file: string, data: ArrayBuffer) {
-
-  const [baseFileName, ext = ''] = file.lastIndexOf('.') !== -1
-    ? [file.slice(0, file.lastIndexOf('.')), file.slice(file.lastIndexOf('.'))]
-    : [file, ''];
-
+  const [baseFileName, ext = ''] =
+    file.lastIndexOf('.') !== -1
+      ? [file.slice(0, file.lastIndexOf('.')), file.slice(file.lastIndexOf('.'))]
+      : [file, '']
 
   const opt = {
     dir: BaseDirectory.Download
@@ -20,10 +18,10 @@ export async function writeFileToDownload(file: string, data: ArrayBuffer) {
   // 如果有重名的，则数字+1
   for (let i = 0; ; i++) {
     // const file = (i === 0 ? baseFileName : `${baseFileName}-${i}`) + ext
-    const newName = `${baseFileName}${i ? `-${i}` : ''}${ext}`;
-    if (!await exists(newName, opt)) {
-      await writeBinaryFile(newName, data, opt);
-      return;
+    const newName = `${baseFileName}${i ? `-${i}` : ''}${ext}`
+    if (!(await exists(newName, opt))) {
+      await writeBinaryFile(newName, data, opt)
+      return
     }
   }
 }

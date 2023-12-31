@@ -36,6 +36,11 @@
             "name": "ffmpeg",
             "cmd": "cmd",
             "args":  [{ "validator": "\\S+" }]
+          },
+          {
+            "name": "mac-ffmpeg",
+            "cmd": "zsh",
+            "args":  [{ "validator": "\\S+" }]
           }
         ]
       },

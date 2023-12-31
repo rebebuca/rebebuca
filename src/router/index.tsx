@@ -6,7 +6,6 @@ import MainLayout from '../layouts/MainLayout'
 import ProjectItemNew from '../pages/project/new'
 import ProjectItemList from '../pages/project/list'
 import ProjectItemEdit from '../pages/project/edit'
-import ProjectSetting from '../pages/project/setting'
 import ProjectItemDetail from '../pages/project/detail'
 
 const router = createBrowserRouter([
@@ -47,10 +46,6 @@ const router = createBrowserRouter([
       {
         path: 'detail',
         element: <ProjectItemDetail />
-      },
-      {
-        path: 'setting',
-        element: <ProjectSetting />
       }
     ]
   }

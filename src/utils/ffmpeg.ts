@@ -1,13 +1,20 @@
 import { Command } from '@tauri-apps/api/shell'
 
 // 定义回调函数的类型
-type FFmpegCallback = (message: string, status: string) => void;
+type FFmpegCallback = (message: string, status: string) => void
 
 export const runFFmpeg = async (command: Array<string>, callback: FFmpegCallback) => {
   const ffmpegFrom = localStorage.getItem('ffmpeg')
+  const os = localStorage.getItem('os')
+  console.log('os: ', os)
   let ffmpeg
   if (ffmpegFrom == 'local') {
-    ffmpeg = new Command('ffmpeg', '/C ' + 'ffmpeg ' + command.join(' '));
+    if (os == 'win32') {
+      ffmpeg = new Command('ffmpeg', '/C ' + 'ffmpeg ' + command.join(' '))
+    } else {
+      // TODO: mac
+      ffmpeg = new Command('ffmpeg', '/C ' + 'ffmpeg ' + command.join(' '))
+    }
     console.log('use local')
   } else {
     ffmpeg = Command.sidecar('bin/ffmpeg', command)
@@ -21,7 +28,7 @@ export const runFFmpeg = async (command: Array<string>, callback: FFmpegCallback
 
   // 处理标准输出和错误输出
   const handleOutput = async (line: string) => {
-    console.log('line: ', line);
+    console.log('line: ', line)
     callback(line, '12')
   }
 

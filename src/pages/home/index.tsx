@@ -72,8 +72,7 @@ const Home: FC = () => {
       return
     } else {
       const result = parseFFUrl(ffmpegUrl)
-      // @ts-expect-error no check
-      const selectItem: IItem = list.find(item => item.project_id === selectValue)
+      const selectItem: IItem = list.find(item => item.project_id === selectValue) as IItem
 
       const id = ulid()
       const projectDetail = {
@@ -99,12 +98,11 @@ const Home: FC = () => {
   }
 
   const [ffmpegUrl, setFfmpegUurl] = useState('')
-  // @ts-expect-error no check
-  const onChangeValue = e => {
-    setFfmpegUurl(() => e.target.value)
+  const onChangeValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFfmpegUurl(e.target.value)
   }
 
-  const onChangeProject = async (value: string) => {
+  const onChangeProject = (value: string) => {
     setSelectValue(value)
   }
 
@@ -124,7 +122,7 @@ const Home: FC = () => {
           <TextArea
             style={{ width: '500px', height: '150px' }}
             value={ffmpegUrl}
-            onChange={e => {
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
               onChangeValue(e)
             }}
             placeholder="ffmpeg -version"
