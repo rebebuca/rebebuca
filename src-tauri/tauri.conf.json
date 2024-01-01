@@ -12,21 +12,42 @@
   "tauri": {
     "allowlist": {
       "all": true,
+      "fs": {
+        "readDir": true,
+        "readFile": true,
+        "writeFile": true,
+        "exists": true,
+        "scope": [
+          "C:/**/*", "D:/**/*", "E:/**/*", "F:/**/*",
+          "$APP/*",
+          "$APP/*/*",
+          "$DOWNLOAD/*",
+          "$DOWNLOAD/*/*",
+          "$DESKTOP/*",
+          "$DESKTOP/*/*",
+          "$DOCUMENT/*",
+          "$DOCUMENT/*/*"
+        ]
+      },
+      "app": {
+        "all": false,
+        "hide": true,
+        "show": false
+      },
+      "dialog": {
+        "all": true
+      },
+      "os": {
+        "all":true
+      },
       "path": {
         "all": true
       },
-      "fs": {
-        "all": true,
-        "readFile": true,
-        "writeFile": true,
-        "readDir": true,
-        "copyFile": true,
-        "createDir": true,
-        "removeDir": true,
-        "removeFile": true,
-        "renameFile": true,
-        "exists": true,
-        "scope": ["C:/**/*", "D:/**/*", "E:/**/*", "F:/**/*", "$HOME/**/*", "$APP/**/*", "$DOWNLOAD/**/*", "$DESKTOP/**/*", "$DOCUMENT/**/*"]
+      "process": {
+        "all": true
+      },
+      "clipboard": {
+        "all": true
       },
       "shell": {
         "all": true,

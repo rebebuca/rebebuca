@@ -5,15 +5,18 @@ mod command;
 mod connection;
 mod service;
 
+use command::app_setting;
 use command::project;
 use command::project_detail;
-use command::app_setting;
+mod util;
 
 use tauri::Manager;
 
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
+            let dir = app.path_resolver().app_data_dir().unwrap();
+            util::set_app_dir(dir.to_str().unwrap().to_string());
             #[cfg(debug_assertions)] // only include this code on debug builds
             {
                 let window = app.get_window("main").unwrap();
@@ -26,7 +29,6 @@ fn main() {
             app_setting::get_app_setting,
             app_setting::update_app_setting,
             app_setting::add_app_setting,
-
             project::get_project,
             project::add_project,
             project::del_project,

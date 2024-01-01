@@ -1,8 +1,8 @@
 pub use sea_orm_migration::prelude::*;
 
+mod m20220101_000001_create_app_setting;
 mod m20220101_000001_create_project;
 mod m20220101_000001_create_project_detail;
-mod m20220101_000001_create_app_setting;
 
 pub struct Migrator;
 

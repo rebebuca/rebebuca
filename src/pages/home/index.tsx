@@ -50,20 +50,23 @@ const Home: FC = () => {
   }
 
   const getProject = async () => {
-    const res: Array<IItem> = await invoke('get_project')
-    if (res.length == 0) {
-      await newProject()
-    } else setList(res)
-
-    const result: Array<IItem> = await invoke('get_project')
-    setSelectValue(result[0].project_id)
-    const projectSelectList = result.map(item => {
-      return {
-        value: item.project_id,
-        label: item.name
-      }
-    })
-    setProjectSelect(projectSelectList)
+    try {
+      const res: Array<IItem> = await invoke('get_project')
+      if (res.length == 0) {
+        await newProject()
+      } else setList(res)
+      const result: Array<IItem> = await invoke('get_project')
+      setSelectValue(result[0].project_id)
+      const projectSelectList = result.map(item => {
+        return {
+          value: item.project_id,
+          label: item.name
+        }
+      })
+      setProjectSelect(projectSelectList)
+    } catch (error) {
+      console.log('error--: ', error);
+    }
   }
 
   const run = async () => {

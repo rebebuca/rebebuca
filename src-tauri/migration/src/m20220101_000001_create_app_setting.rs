@@ -7,7 +7,7 @@ enum AppSetting {
     Ffmpeg,
     Theme,
     QuitType,
-    Lang
+    Lang,
 }
 
 #[derive(DeriveMigrationName)]
@@ -24,7 +24,12 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(AppSetting::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(AppSetting::Version).string().not_null().primary_key())
+                    .col(
+                        ColumnDef::new(AppSetting::Version)
+                            .string()
+                            .not_null()
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(AppSetting::Ffmpeg).string().not_null())
                     .col(ColumnDef::new(AppSetting::Theme).string().not_null())
                     .col(ColumnDef::new(AppSetting::QuitType).string().not_null())

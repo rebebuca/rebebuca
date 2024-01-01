@@ -21,4 +21,12 @@ export default defineConfig(async () => ({
     port: 1420,
     strictPort: true,
   },
+  build: {
+    sourcemap: true,
+    terserOptions: {
+      compress: {
+        drop_console: false
+      }
+    }
+  }
 }))
