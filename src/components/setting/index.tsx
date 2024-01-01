@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Modal, Menu, Radio, Select, Space, Tooltip, QRCode } from 'antd'
+import { Modal, Menu, Radio, Select, Space, Tooltip } from 'antd'
 import { InfoCircleOutlined, SettingOutlined } from '@ant-design/icons'
 import { getVersion } from '@tauri-apps/api/app'
 
