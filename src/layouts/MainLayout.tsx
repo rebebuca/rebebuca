@@ -227,6 +227,16 @@ export default () => {
           }}
         ></AppSetting>
       )}
+      {/* <AppSetting
+        open={open}
+        setOpen={setOpen}
+        setLocale={value => {
+          setLang(value)
+        }}
+        setDark={dark => {
+          setDark(dark)
+        }}
+      ></AppSetting> */}
       <div>
         <Modal
           title="确定要退出rebebuca吗？"

@@ -40,7 +40,10 @@ const Home: FC = () => {
       name: t('默认项目'),
       desc: t('默认项目的介绍')
     }
-    const res: Array<IItem> = await invoke('add_project', {
+    await invoke('add_project', {
+      project
+    })
+    const res: Array<IItem> = await invoke('get_project', {
       project
     })
     setList(res)
@@ -49,13 +52,12 @@ const Home: FC = () => {
   const getProject = async () => {
     const res: Array<IItem> = await invoke('get_project')
     if (res.length == 0) {
-      newProject()
-    }
-    setList(res)
+      await newProject()
+    } else setList(res)
 
-    setSelectValue(res[0].project_id)
-
-    const projectSelectList = res.map(item => {
+    const result: Array<IItem> = await invoke('get_project')
+    setSelectValue(result[0].project_id)
+    const projectSelectList = result.map(item => {
       return {
         value: item.project_id,
         label: item.name
@@ -129,7 +131,7 @@ const Home: FC = () => {
         </div>
         <Space>
           {t('选择项目')}
-          {list.length && (
+          {list.length != 0 && (
             <Select
               value={selectValue}
               onChange={e => onChangeProject(e)}

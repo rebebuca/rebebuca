@@ -292,12 +292,6 @@ export default (props: PropsType) => {
                   </Link>
                 </Space>
               </div>
-              <div className="setting-right-item">
-                <Space align="start">
-                  <div>{t('官方技术支持群：')}</div>
-                  <QRCode errorLevel="H" value="https://ant.design/" icon="/rebebuca.ico" />
-                </Space>
-              </div>
             </div>
           )}
         </div>
