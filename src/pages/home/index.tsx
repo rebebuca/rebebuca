@@ -72,10 +72,16 @@ const Home: FC = () => {
   const run = async () => {
     const isFFmpegCommand = ffmpegUrl.startsWith('ffmpeg')
     if (!isFFmpegCommand) {
-      message.error(t('请粘贴以ffmpeg开头的命令行'))
+      message.error(t('请粘贴以ffmpeg开头的命令行'), 2)
       return
     } else {
-      const result = parseFFUrl(ffmpegUrl)
+      const res = parseFFUrl(ffmpegUrl)!
+      const result = res?.map(item => {
+        return {
+          ...item,
+          id: ulid()
+        }
+      })
       const selectItem: IItem = list.find(item => item.project_id === selectValue) as IItem
 
       const id = ulid()
@@ -96,7 +102,7 @@ const Home: FC = () => {
 
       nav({
         pathname: `/project/detail`,
-        search: `name=${selectItem.name}&projectId=${selectValue}&id=${id}&fromHome=true`
+        search: `name=${selectItem.name}&projectId=${selectValue}&id=${id}&runNow=true`
       })
     }
   }

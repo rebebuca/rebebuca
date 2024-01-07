@@ -71,13 +71,13 @@ export default () => {
 
   const delProject = async (row: IItem) => {
     if (list.length == 1) {
-      message.error(t('删除失败，至少要存在一个项目'))
+      message.error(t('删除失败，至少要存在一个项目'), 2)
       return
     } else {
       const res: Array<IItem> = await invoke('del_project', {
         projectId: row.project_id
       })
-      message.success(t('successfully deleted'))
+      message.success(t('successfully deleted'), 2)
       setList(res)
     }
   }
@@ -172,7 +172,7 @@ export default () => {
                   form={form}
                   onFinish={async values => {
                     await updateProject(row, values)
-                    message.success(t('Edit success'))
+                    message.success(t('Edit success'), 2)
                     return true
                   }}
                 >
@@ -250,7 +250,7 @@ export default () => {
               form={form}
               onFinish={async values => {
                 await newProject(values)
-                message.success(t('Submitted successfully'))
+                message.success(t('Submitted successfully'), 2)
                 return true
               }}
             >

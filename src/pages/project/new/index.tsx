@@ -155,43 +155,36 @@ const ProjectItemNew: React.FC = () => {
     return 'ffmpeg' + url
   }
 
-  const addProjectDeatail = async (opts: { name: string; url: string }) => {
-    if (opts.name && opts.url) {
-      const projectDetail = {
-        id: ulid(),
-        status: '-1',
-        project_id: searchParams.get('projectId'),
-        updated_at: dayjs().format(),
-        name: opts.name,
-        url: getUrl(),
-        log: '',
-        pid: 0,
-        arg_list: JSON.stringify(opts.url)
-      }
-      await invoke('add_project_detail', {
-        projectDetail
-      })
-      message.success(t('新建成功'))
-      nav({
-        pathname: `/project/list`,
-        search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`
-      })
-    } else return
-  }
-
-  const onChange = (newActiveKey: string) => {
-    setItems(
-      produce(draft => {
-        const r = draft.find(i => i.key == activeKey)
-        if (r) {
-          const form = formRef.current?.getFieldsValue()
-          r.name = form.name
-          r.label = form.name || t('新建接口')
-          r.url = form.url
-        }
-      })
-    )
-    setActiveKey(newActiveKey)
+  const addProjectDeatail = async (opts: { name: string; url: Array<DataSourceType> }) => {
+    const name = (opts.name).trim()
+    if (!name) {
+      message.error(t('请输入名称'), 2)
+      return
+    }
+    const pass = opts.url.findIndex(item => (item.key!).trim() || (item.value!).trim())
+    if (pass == -1) {
+      message.error(t('请设置参数'), 2)
+      return
+    }
+    const projectDetail = {
+      id: ulid(),
+      status: '-1',
+      project_id: searchParams.get('projectId'),
+      updated_at: dayjs().format(),
+      name: opts.name,
+      url: getUrl(),
+      log: '',
+      pid: 0,
+      arg_list: JSON.stringify(opts.url)
+    }
+    await invoke('add_project_detail', {
+      projectDetail
+    })
+    message.success(t('新建成功'), 2)
+    nav({
+      pathname: `/project/list`,
+      search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`
+    })
   }
 
   const selectFileOrDir = async (row: DataSourceType, type: number) => {
@@ -256,7 +249,7 @@ const ProjectItemNew: React.FC = () => {
       name: formRef.current?.getFieldsValue().name,
       url: res
     })
-    message.success(t('导入命令行成功'))
+    message.success(t('导入命令行成功'), 2)
     setIsModalOpen(false)
   }
 
@@ -301,7 +294,6 @@ const ProjectItemNew: React.FC = () => {
       </Modal>
       <Tabs
         type="card"
-        onChange={onChange}
         activeKey={activeKey}
         items={items.map(k => {
           return {
@@ -361,6 +353,7 @@ const ProjectItemNew: React.FC = () => {
                         required
                         initialValue={item.name}
                         placeholder={t('请输入名称')}
+                      // rules={[{ required: true, message: t('请输入名称') }]}
                       />
                     </ProForm.Group>
 

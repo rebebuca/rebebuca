@@ -157,27 +157,12 @@ const ProjectItemEdit: React.FC = () => {
       await invoke('update_project_detail', {
         projectDetail
       })
-      message.success(t('保存成功'))
+      message.success(t('保存成功'), 2)
       nav({
         pathname: `/project/list`,
         search: `projectId=${searchParams.get('projectId')}&name=${searchParams.get('name')}`
       })
     } else return
-  }
-
-  const onChange = (newActiveKey: string) => {
-    setItems(
-      produce(draft => {
-        const r = draft.find(i => i.key == activeKey)
-        if (r) {
-          const form = formRef.current?.getFieldsValue()
-          r.name = form.name
-          r.label = form.name
-          r.url = form.url
-        }
-      })
-    )
-    setActiveKey(newActiveKey)
   }
 
   const getProjectDeatailItem = async () => {
@@ -188,14 +173,10 @@ const ProjectItemEdit: React.FC = () => {
     const { name, url, arg_list, log, pid } = res[0]
     const argList = JSON.parse(arg_list)
     const idList = argList.map((i: { id: string }) => i.id)
+    setActiveKey(res[0].id)
     setEditableRowKeys(idList)
     setItems(
-      produce(draft => {
-        const r = draft.find(i => i.id == id)
-        if (r) setActiveKey(r.key)
-        else
-          draft.unshift({ label: name, name, key: id, id, url: url, arg_list: argList, pid, log })
-      })
+      [{ label: name, name, key: id, id, url: url, arg_list: argList, pid, log }]
     )
     setTimeout(() => {
       onValuesChange()
@@ -254,7 +235,7 @@ const ProjectItemEdit: React.FC = () => {
 
   return (
     <div>
-      <Tabs type="card" onChange={onChange} activeKey={activeKey} items={items} hideAdd />
+      <Tabs type="card" activeKey={activeKey} items={items} hideAdd />
       {items.map(item => {
         return (
           <ProCard key={item.key} split="vertical">
@@ -281,7 +262,7 @@ const ProjectItemEdit: React.FC = () => {
                           }}
                         >
                           {t('保存')}
-                        </Button>
+                        </Button>,
                         // <Button type="primary" key="run" onClick={() => {}}>
                         //   保存并运行
                         // </Button>

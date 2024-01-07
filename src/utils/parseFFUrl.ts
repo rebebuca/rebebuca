@@ -9,7 +9,7 @@ export function parseFFUrl(ffmpegCmd: string): FFmpegArgument[] | undefined {
   ffmpegCmd = ffmpegCmd.trim()
   const isFFmpegCommand = ffmpegCmd.startsWith('ffmpeg')
   if (!isFFmpegCommand) {
-    message.error('粘贴内容不符合ffmpeg命令行格式')
+    message.error('请粘贴以ffmpeg开头的命令行', 2)
     return
   }
 

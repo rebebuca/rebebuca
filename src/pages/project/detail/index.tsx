@@ -5,7 +5,6 @@ import { useSearchParams } from 'react-router-dom'
 import { ProCard } from '@ant-design/pro-components'
 import { useSelector, useDispatch } from 'react-redux'
 import React, { useRef, useState, useEffect } from 'react'
-import type { ProFormInstance } from '@ant-design/pro-components'
 import { Tabs, Space, Badge, Button, Descriptions, Segmented, Typography, FloatButton } from 'antd'
 import { useTranslation } from 'react-i18next'
 
@@ -75,29 +74,15 @@ const ProjectItemEdit: React.FC = () => {
     }
   ])
 
-  const formRef = useRef<ProFormInstance>()
-
-  const onChange = (newActiveKey: string) => {
-    setItems(
-      produce(draft => {
-        const r = draft.find(i => i.key == activeKey)
-        if (r) {
-          const form = formRef.current?.getFieldsValue()
-          r.name = form.name
-          r.label = form.name
-          r.url = form.url
-        }
-      })
-    )
-    setActiveKey(newActiveKey)
-  }
-
   const getProjectDeatailItem = async () => {
     const id = searchParams.get('id') as string
     const res: Array<ITabItem> = await invoke('get_project_detail_item', {
       id
     })
     const { url } = res[0]
+    res[0].label = res[0].name
+    res[0].key = res[0].id
+    setActiveKey(res[0].key)
     setItems(res)
     add(res[0])
     setDescItems(
@@ -106,7 +91,7 @@ const ProjectItemEdit: React.FC = () => {
       })
     )
 
-    if (searchParams.get('fromHome')) {
+    if (searchParams.get('runNow')) {
       setTimeout(() => {
         triggerClick()
       }, 200)
@@ -160,7 +145,7 @@ const ProjectItemEdit: React.FC = () => {
 
   return (
     <div>
-      <Tabs type="card" onChange={onChange} activeKey={activeKey} items={items} hideAdd />
+      <Tabs type="card" activeKey={activeKey} items={items} hideAdd />
       {items.map(item => {
         return (
           <ProCard key={item.id} split="vertical" style={{ height: '500px' }}>

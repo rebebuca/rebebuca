@@ -115,12 +115,16 @@ export default (props: PropsType) => {
   }
 
   const runLocalFF = async () => {
-    const cmd = await Command.sidecar('bin/ffmpeg', ['-version']).execute()
-    if (cmd.stdout) {
-      const versionRegex = /ffmpeg version (\S+)/
-      const match = cmd.stdout.match(versionRegex)
-      const version = match ? match[1] : 'Version not found'
-      setDefaultVersion(version)
+    try {
+      const cmd = await Command.sidecar('bin/ffmpeg', ['-version']).execute()
+      if (cmd.stdout) {
+        const versionRegex = /ffmpeg version (\S+)/
+        const match = cmd.stdout.match(versionRegex)
+        const version = match ? match[1] : 'Version not found'
+        setDefaultVersion(version)
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 

@@ -11,7 +11,7 @@ import {
   RadioChangeEvent
 } from 'antd'
 import ProLayout from '@ant-design/pro-layout'
-import { appWindow } from '@tauri-apps/api/window'
+import { LogicalPosition, PhysicalSize, appWindow } from '@tauri-apps/api/window'
 import { PageContainer } from '@ant-design/pro-components'
 import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 import AppSetting from '@/components/setting'
@@ -27,8 +27,6 @@ import enUS from 'antd/locale/en_US'
 
 import './index.scss'
 
-import { event } from '@tauri-apps/api'
-
 import { window as tauriWindow } from '@tauri-apps/api'
 
 document.addEventListener('mousedown', async e => {
@@ -42,6 +40,13 @@ document.addEventListener('mousedown', async e => {
     await tauriWindow.appWindow.startDragging()
   }
 })
+
+// 存储窗口最大化前的大小
+appWindow.innerSize().then(size => {
+  const has = localStorage.getItem('originalSize')
+  if (!has) localStorage.setItem('originalSize', JSON.stringify(size))
+  else return
+});
 
 import {
   UnorderedListOutlined,
@@ -96,8 +101,11 @@ export default () => {
   }
 
   const unmaximize = async () => {
-    await appWindow.unmaximize()
     setIsMaximize(false)
+    const originalSizeStr = localStorage.getItem('originalSize')!
+    const originalSize = JSON.parse(originalSizeStr)
+    await appWindow.setPosition(new LogicalPosition(20, 0));
+    await appWindow.setSize(new PhysicalSize(originalSize.width, originalSize.height))
   }
 
   const close = async () => {
@@ -194,13 +202,6 @@ export default () => {
     const platformName = await os.platform()
     localStorage.setItem('os', platformName)
   }
-  useEffect(() => {
-    if (isMaximize) {
-      event.once('tauri://resize', () => {
-        unmaximize()
-      })
-    }
-  }, [isMaximize])
 
   useEffect(() => {
     initAppSetting()
@@ -211,7 +212,6 @@ export default () => {
     <ConfigProvider
       locale={locale}
       theme={{
-        // 1. 单独使用暗色算法
         algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm
       }}
     >
@@ -227,17 +227,8 @@ export default () => {
           }}
         ></AppSetting>
       )}
-      {/* <AppSetting
-        open={open}
-        setOpen={setOpen}
-        setLocale={value => {
-          setLang(value)
-        }}
-        setDark={dark => {
-          setDark(dark)
-        }}
-      ></AppSetting> */}
       <div>
+        {/* <div className={isMaximize ? '' : 'custom-pro-layout'}> */}
         <Modal
           title="确定要退出rebebuca吗？"
           open={isModalOpen}
@@ -253,12 +244,8 @@ export default () => {
               <Radio value="3">{t('退出')}</Radio>
             </Space>
           </Radio.Group>
-          {/* <Checkbox onChange={onChange}>下次不再提示</Checkbox> */}
         </Modal>
-        {/* * @example 中文 layout="zh-CN"
-         * @example 英文 layout="en-US" */}
         <ProLayout
-          // locale={appSetting.lang == 'en' ? 'en-US' : 'zh-CN'}
           siderWidth={300}
           collapsedButtonRender={false}
           pageTitleRender={false}
@@ -285,17 +272,17 @@ export default () => {
                 routes:
                   pathname != '/project'
                     ? [
-                        {
-                          path: '/project/list',
-                          name: t('Interface List'),
-                          icon: <UnorderedListOutlined />
-                        },
-                        {
-                          path: '/project/new',
-                          name: t('Interface New'),
-                          icon: <PlusCircleOutlined />
-                        }
-                      ]
+                      {
+                        path: '/project/list',
+                        name: t('Interface List'),
+                        icon: <UnorderedListOutlined />
+                      },
+                      {
+                        path: '/project/new',
+                        name: t('Interface New'),
+                        icon: <PlusCircleOutlined />
+                      }
+                    ]
                     : []
               }
             ]

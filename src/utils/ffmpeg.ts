@@ -20,6 +20,7 @@ export const runFFmpeg = async (command: Array<string>, callback: FFmpegCallback
   ffmpeg.on('close', async ({ code }) => {
     if (code == 0) callback('ffmpeg run success', '0')
     else if (code == 1) callback('ffmpeg run failed', '1')
+    else if (code == 254) callback('ffmpeg run failed', '1')
     else callback('ffmpeg run end', '11')
   })
 

@@ -39,7 +39,7 @@ export default () => {
       id: id,
       projectId: searchParams.get('projectId')
     })
-    message.success(t('successfully deleted'))
+    message.success(t('successfully deleted'), 2)
     setList(res)
   }
 
@@ -72,7 +72,7 @@ export default () => {
       status: '-1',
       project_id: opts.project_id,
       updated_at: dayjs().format(),
-      name: 'copy-' + opts.name,
+      name: opts.name,
       url: opts.url,
       log: '',
       pid: 0,
@@ -82,7 +82,7 @@ export default () => {
       projectDetail
     })
     getProjectDetail()
-    message.success(t('复制成功'))
+    message.success(t('复制成功'), 2)
   }
 
   const columns: ProColumns<ListItem>[] = [
@@ -256,7 +256,7 @@ export default () => {
           key="link2"
           onClick={() => {
             if (record.status == '12') {
-              message.success(t('正在运行中，不可编辑'))
+              message.success(t('正在运行中，不可编辑'), 2)
               return
             }
             nav({
@@ -282,7 +282,7 @@ export default () => {
           description={t('Are you sure you want to delete this interface?')}
           onConfirm={() => {
             if (record.status == '12') {
-              message.success(t('正在运行中，不可删除'))
+              message.success(t('正在运行中，不可删除'), 2)
               return
             }
             delProjectDetail(record.id as string)
@@ -300,7 +300,7 @@ export default () => {
   const projectExport = async () => {
     const projectName: string = searchParams.get('name') as string
     await writeSettingToDownload(list, projectName)
-    message.success(t('当前项目导出成功，请前往电脑下载目录查看文件'))
+    message.success(t('当前项目导出成功，请前往电脑下载目录查看文件'), 2)
   }
 
   useEffect(() => {
@@ -320,7 +320,8 @@ export default () => {
       dataSource={list}
       rowKey="id"
       pagination={{
-        showQuickJumper: true
+        pageSize: 8,
+        // showQuickJumper: true
       }}
       options={false}
       search={false}

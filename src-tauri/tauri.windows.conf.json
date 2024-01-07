@@ -12,6 +12,15 @@
   "tauri": {
     "allowlist": {
       "all": true,
+      "fs": {
+        "readDir": true,
+        "readFile": true,
+        "writeFile": true,
+        "exists": true,
+        "scope": [
+          "C:/**/*", "D:/**/*", "E:/**/*", "F:/**/*"
+        ]
+      },
       "app": {
         "all": false,
         "hide": true,
@@ -36,7 +45,19 @@
         "all": true,
         "sidecar": true,
         "execute": true,
-        "open": true
+        "open": true,
+        "scope": [
+          {
+            "name": "bin/ffmpeg",
+            "args": true,
+            "sidecar": true
+          },
+          {
+            "name": "ffmpeg",
+            "cmd": "cmd",
+            "args":  [{ "validator": "\\S+" }]
+          }
+        ]
       },
       "window": {
         "startDragging": true
@@ -77,13 +98,12 @@
     "security": {
       "csp": null
     },
+    "macOSPrivateApi": true,
     "windows": [
       {
         "fullscreen": false,
         "resizable": false,
         "title": "Rebebuca",
-        "width": 1280,
-        "height": 770,
         "minHeight": 770,
         "minWidth": 1280,
         "decorations": false,
