@@ -320,7 +320,7 @@ export default () => {
       dataSource={list}
       rowKey="id"
       pagination={{
-        pageSize: 8,
+        pageSize: 8
         // showQuickJumper: true
       }}
       options={false}

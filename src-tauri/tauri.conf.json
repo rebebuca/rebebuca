@@ -86,8 +86,7 @@
         "height": 770,
         "minHeight": 770,
         "minWidth": 1280,
-        "decorations": false,
-        "transparent": false
+        "decorations": false
       }
     ]
   }

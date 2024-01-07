@@ -65,7 +65,7 @@ const Home: FC = () => {
       })
       setProjectSelect(projectSelectList)
     } catch (error) {
-      console.log('error--: ', error);
+      console.log('error--: ', error)
     }
   }
 

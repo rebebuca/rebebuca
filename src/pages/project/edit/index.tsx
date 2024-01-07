@@ -175,9 +175,7 @@ const ProjectItemEdit: React.FC = () => {
     const idList = argList.map((i: { id: string }) => i.id)
     setActiveKey(res[0].id)
     setEditableRowKeys(idList)
-    setItems(
-      [{ label: name, name, key: id, id, url: url, arg_list: argList, pid, log }]
-    )
+    setItems([{ label: name, name, key: id, id, url: url, arg_list: argList, pid, log }])
     setTimeout(() => {
       onValuesChange()
     }, 300)
@@ -262,7 +260,7 @@ const ProjectItemEdit: React.FC = () => {
                           }}
                         >
                           {t('保存')}
-                        </Button>,
+                        </Button>
                         // <Button type="primary" key="run" onClick={() => {}}>
                         //   保存并运行
                         // </Button>

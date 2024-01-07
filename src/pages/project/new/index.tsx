@@ -97,8 +97,8 @@ const ProjectItemNew: React.FC = () => {
     { label: '新建接口', key: '1000', id: '-1', name: '', url: '', argList: [] }
   ]
 
-  const [activeKey, setActiveKey] = useState(initialItems[0].key)
-  const [items, setItems] = useState<Array<ITabItem>>(initialItems)
+  const [activeKey] = useState(initialItems[0].key)
+  const [items] = useState<Array<ITabItem>>(initialItems)
   const [searchParams] = useSearchParams()
 
   const editableFormRef = useRef<EditableFormInstance>()
@@ -156,12 +156,12 @@ const ProjectItemNew: React.FC = () => {
   }
 
   const addProjectDeatail = async (opts: { name: string; url: Array<DataSourceType> }) => {
-    const name = (opts.name).trim()
+    const name = opts.name.trim()
     if (!name) {
       message.error(t('请输入名称'), 2)
       return
     }
-    const pass = opts.url.findIndex(item => (item.key!).trim() || (item.value!).trim())
+    const pass = opts.url.findIndex(item => item.key!.trim() || item.value!.trim())
     if (pass == -1) {
       message.error(t('请设置参数'), 2)
       return
@@ -353,7 +353,7 @@ const ProjectItemNew: React.FC = () => {
                         required
                         initialValue={item.name}
                         placeholder={t('请输入名称')}
-                      // rules={[{ required: true, message: t('请输入名称') }]}
+                        // rules={[{ required: true, message: t('请输入名称') }]}
                       />
                     </ProForm.Group>
 

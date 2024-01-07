@@ -11,7 +11,7 @@ import {
   RadioChangeEvent
 } from 'antd'
 import ProLayout from '@ant-design/pro-layout'
-import { LogicalPosition, PhysicalSize, appWindow } from '@tauri-apps/api/window'
+import { PhysicalPosition, PhysicalSize, appWindow } from '@tauri-apps/api/window'
 import { PageContainer } from '@ant-design/pro-components'
 import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 import AppSetting from '@/components/setting'
@@ -46,7 +46,7 @@ appWindow.innerSize().then(size => {
   const has = localStorage.getItem('originalSize')
   if (!has) localStorage.setItem('originalSize', JSON.stringify(size))
   else return
-});
+})
 
 import {
   UnorderedListOutlined,
@@ -96,15 +96,19 @@ export default () => {
   }
 
   const maximize = async () => {
+    const position = await appWindow.innerPosition()
+    localStorage.setItem('position', JSON.stringify(position))
     await appWindow.maximize()
     setIsMaximize(true)
   }
 
   const unmaximize = async () => {
     setIsMaximize(false)
+    const positionStr = localStorage.getItem('position')!
     const originalSizeStr = localStorage.getItem('originalSize')!
     const originalSize = JSON.parse(originalSizeStr)
-    await appWindow.setPosition(new LogicalPosition(20, 0));
+    const position = JSON.parse(positionStr)
+    await appWindow.setPosition(new PhysicalPosition(position.x, position.y))
     await appWindow.setSize(new PhysicalSize(originalSize.width, originalSize.height))
   }
 
@@ -272,17 +276,17 @@ export default () => {
                 routes:
                   pathname != '/project'
                     ? [
-                      {
-                        path: '/project/list',
-                        name: t('Interface List'),
-                        icon: <UnorderedListOutlined />
-                      },
-                      {
-                        path: '/project/new',
-                        name: t('Interface New'),
-                        icon: <PlusCircleOutlined />
-                      }
-                    ]
+                        {
+                          path: '/project/list',
+                          name: t('Interface List'),
+                          icon: <UnorderedListOutlined />
+                        },
+                        {
+                          path: '/project/new',
+                          name: t('Interface New'),
+                          icon: <PlusCircleOutlined />
+                        }
+                      ]
                     : []
               }
             ]

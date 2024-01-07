@@ -51,6 +51,7 @@ const ProjectItemEdit: React.FC = () => {
   const [segmentedRight, setSegmentedRight] = useState<string>('运行日志')
   const commandList = useSelector<StateType>(state => state.commandList) as CommandItemType[]
   const settings = useSelector((state: StateType) => state.settings.settingsData)
+  const [commandIndex, setCommandIndex] = useState(0)
 
   // 创建一个引用来指向你想要点击的元素
   const myElementRef = useRef<HTMLButtonElement | null>(null)
@@ -108,10 +109,13 @@ const ProjectItemEdit: React.FC = () => {
         url: ''
       })
     )
+    const index = commandList.findIndex(k => item.id == k.id)
+    if (index == -1) setCommandIndex(0)
+    else setCommandIndex(index)
   }
 
   const getStatus = (commandList: Array<CommandItemType>): StatusType => {
-    const a = commandList[0]
+    const a = commandList[commandIndex]
     if (a.status == '12')
       return {
         status: 'processing',
@@ -188,16 +192,15 @@ const ProjectItemEdit: React.FC = () => {
                     key="run"
                     ref={myElementRef}
                     onClick={async () => {
-                      const showStop = commandList[0].status == '12'
+                      const showStop = commandList[commandIndex].status == '12'
                       if (showStop) {
                         let command
                         const os = localStorage.getItem('os')
                         if (os == 'win32') {
-                          const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
+                          const cmd = `/C taskkill /f /t /pid ${commandList[commandIndex].pid}`
                           command = await new Command('ffmpeg', cmd)
                         } else {
-                          // TODO: mac
-                          const cmd = `${commandList[0].pid}`
+                          const cmd = `${commandList[commandIndex].pid}`
                           command = await new Command('kill-process', cmd)
                         }
 
@@ -226,22 +229,22 @@ const ProjectItemEdit: React.FC = () => {
                       }
                     }}
                   >
-                    {commandList[0].status == '12' ? t('停止') : t('运行')}
+                    {commandList[commandIndex].status == '12' ? t('停止') : t('运行')}
                   </Button>
                   <Button
-                    disabled={commandList[0].status != '12'}
+                    disabled={commandList[commandIndex].status != '12'}
                     type="primary"
                     key="runAgain"
                     onClick={async () => {
-                      const showStop = commandList[0].status == '12'
+                      const showStop = commandList[commandIndex].status == '12'
                       if (showStop) {
                         let command
                         const os = localStorage.getItem('os')
                         if (os == 'win32') {
-                          const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
+                          const cmd = `/C taskkill /f /t /pid ${commandList[commandIndex].pid}`
                           command = await new Command('ffmpeg', cmd)
                         } else {
-                          const cmd = `${commandList[0].pid}`
+                          const cmd = `${commandList[commandIndex].pid}`
                           command = await new Command('kill-process', cmd)
                           // const cmd = `/C taskkill /f /t /pid ${commandList[0].pid}`
                           // command = await new Command('mac-ffmpeg', cmd)
@@ -316,7 +319,7 @@ const ProjectItemEdit: React.FC = () => {
                     position: 'relative'
                   }}
                 >
-                  {commandList[0].log.map((text, index) => (
+                  {commandList[commandIndex].log.map((text, index) => (
                     <div key={index}>{text}</div>
                   ))}
 
