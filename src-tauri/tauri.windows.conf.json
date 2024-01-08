@@ -1,14 +1,4 @@
 {
-  "build": {
-    "beforeDevCommand": "pnpm dev",
-    "beforeBuildCommand": "pnpm build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist"
-  },
-  "package": {
-    "productName": "Rebebuca",
-    "version": "0.1.0"
-  },
   "tauri": {
     "allowlist": {
       "all": true,
