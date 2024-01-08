@@ -17,6 +17,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -85,7 +92,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install app dependencies and build web
-        run: yarn install
+        run: pnpm install
 
       - name: Build the app
         uses: tauri-apps/tauri-action@dev
