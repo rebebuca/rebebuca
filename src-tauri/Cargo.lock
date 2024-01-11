@@ -4901,7 +4901,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-app"
-version = "0.0.0"
+version = "0.1.4"
 dependencies = [
  "entity",
  "migration",
