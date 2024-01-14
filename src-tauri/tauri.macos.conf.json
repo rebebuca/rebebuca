@@ -112,8 +112,9 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": false,
+        "resizable": true,
         "title": "Rebebuca",
+        "hiddenTitle": true,
         "width": 1280,
         "height": 800,
         "minHeight": 770,
