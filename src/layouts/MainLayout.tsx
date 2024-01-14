@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import ProLayout from '@ant-design/pro-layout'
 import { PhysicalPosition, PhysicalSize, appWindow } from '@tauri-apps/api/window'
-import { PageContainer } from '@ant-design/pro-components'
+// import { PageContainer } from '@ant-design/pro-components'
 import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 import AppSetting from '@/components/setting'
 import { useTranslation } from 'react-i18next'
@@ -42,11 +42,12 @@ document.addEventListener('mousedown', async e => {
 })
 
 // 存储窗口最大化前的大小
-appWindow.innerSize().then(size => {
-  const has = localStorage.getItem('originalSize')
-  if (!has) localStorage.setItem('originalSize', JSON.stringify(size))
-  else return
-})
+// appWindow.innerSize().then(size => {
+//   localStorage.setItem('originalSize', JSON.stringify(size))
+//   const has = localStorage.getItem('originalSize')
+//   if (!has) localStorage.setItem('originalSize', JSON.stringify(size))
+//   else return
+// })
 
 import {
   UnorderedListOutlined,
@@ -98,7 +99,9 @@ export default () => {
 
   const maximize = async () => {
     const position = await appWindow.innerPosition()
+    const innerSize = await appWindow.innerSize()
     localStorage.setItem('position', JSON.stringify(position))
+    localStorage.setItem('originalSize', JSON.stringify(innerSize))
     await appWindow.maximize()
     setIsMaximize(true)
   }
@@ -386,9 +389,9 @@ export default () => {
             </Link>
           )}
         >
-          <PageContainer>
+          {/* <PageContainer> */}
             <Outlet />
-          </PageContainer>
+          {/* </PageContainer> */}
         </ProLayout>
       </div>
     </ConfigProvider>
