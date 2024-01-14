@@ -29,4 +29,4 @@ rb.sqlite
 
 # src-tauri/migration
 
-# src-tauri/bin
+src-tauri/bin

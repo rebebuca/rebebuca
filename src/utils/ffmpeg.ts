@@ -5,14 +5,14 @@ type FFmpegCallback = (message: string, status: string) => void
 
 export const runFFmpeg = async (command: Array<string>, callback: FFmpegCallback) => {
   const ffmpegFrom = localStorage.getItem('ffmpeg')
+  const localFFPath = localStorage.getItem('localFFPath')
   const os = localStorage.getItem('os')
   let ffmpeg
   if (ffmpegFrom == 'local') {
     if (os == 'win32') {
-      ffmpeg = new Command('ffmpeg', '/C ' + 'ffmpeg ' + command.join(' '))
+      ffmpeg = new Command('ffmpeg', '/C ' + localFFPath + ' ' + command.join(' '))
     } else {
-      // TODO: mac
-      ffmpeg = new Command('ffmpeg', '/C ' + 'ffmpeg ' + command.join(' '))
+      ffmpeg = new Command('mac-ffmpeg', localFFPath + ' ' + command.join(' '))
     }
   } else {
     ffmpeg = Command.sidecar('bin/ffmpeg', command)

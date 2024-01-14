@@ -90,13 +90,16 @@ export default (props: PropsType) => {
   }
 
   const checkFF = async () => {
+    const localFFPath = localStorage.getItem('localFFPath')
+
     try {
       const os = localStorage.getItem('os')
       let cmd
       if (os == 'win32') {
-        cmd = await new Command('ffmpeg', '/C ffmpeg -version').execute()
+        const cmdStr = `/C ${localFFPath} -version`
+        cmd = await new Command('ffmpeg', cmdStr).execute()
       } else {
-        cmd = await new Command('mac-ffmpeg', '-version').execute()
+        cmd = await new Command('mac-ffmpeg', `${localFFPath} -version`).execute()
       }
       if (cmd.stdout) {
         const versionRegex = /ffmpeg version (\S+)/
@@ -291,8 +294,8 @@ export default (props: PropsType) => {
               <div className="setting-right-item">
                 <Space>
                   <div>{t('更新日志：')}</div>
-                  <Link href="https://ant.design" target="_blank">
-                    {`https://github.com/rebebuca/rebebuca/releases/tag/${version}`}
+                  <Link href={`https://github.com/rebebuca/rebebuca/releases/tag/v${version}`} target="_blank">
+                    {`https://github.com/rebebuca/rebebuca/releases/tag/v${version}`}
                   </Link>
                 </Space>
               </div>

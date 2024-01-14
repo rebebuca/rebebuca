@@ -63,6 +63,7 @@ import {
 const { Paragraph } = Typography
 
 import { useLocationListen } from '@/hooks'
+import { getLocalFFPath } from '@/utils/getLocalFFPath'
 
 export interface IAppSettingItem {
   lang?: string
@@ -207,9 +208,15 @@ export default () => {
     localStorage.setItem('os', platformName)
   }
 
+  const setLocalFFPath = async () => {
+    const path = await getLocalFFPath() || ''
+    localStorage.setItem('localFFPath', path)
+  }
+
   useEffect(() => {
     initAppSetting()
     setLocalStorage()
+    setLocalFFPath()
   }, [])
 
   return (
