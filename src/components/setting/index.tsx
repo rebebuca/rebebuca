@@ -91,7 +91,6 @@ export default (props: PropsType) => {
 
   const checkFF = async () => {
     const localFFPath = localStorage.getItem('localFFPath')
-
     try {
       const os = localStorage.getItem('os')
       let cmd
@@ -99,7 +98,7 @@ export default (props: PropsType) => {
         const cmdStr = `/C ${localFFPath} -version`
         cmd = await new Command('ffmpeg', cmdStr).execute()
       } else {
-        cmd = await new Command('mac-ffmpeg', `${localFFPath} -version`).execute()
+        cmd = await new Command('mac-ffmpeg', `-version`).execute()
       }
       if (cmd.stdout) {
         const versionRegex = /ffmpeg version (\S+)/

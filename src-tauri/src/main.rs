@@ -13,6 +13,7 @@ mod util;
 use tauri::Manager;
 
 fn main() {
+    let _ = fix_path_env::fix();
     tauri::Builder::default()
         .setup(|app| {
             let dir = app.path_resolver().app_data_dir().unwrap();

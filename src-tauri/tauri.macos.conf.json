@@ -3,15 +3,21 @@
     "allowlist": {
       "all": true,
       "fs": {
-        "readDir": true,
-        "readFile": true,
-        "writeFile": true,
         "exists": true,
+        "readFile": true,
+        "writeFile": false,
+        "readDir": true,
+        "copyFile": false,
+        "createDir": false,
+        "removeDir": false,
+        "removeFile": false,
+        "renameFile": false,
         "scope": [
-          "$APP/*",
-          "$DOWNLOAD/*",
+          "**",
+          "$HOME/*",
           "$DESKTOP/*",
-          "$DOCUMENT/*"
+          "$DOCUMENT/*",
+          "$DOWNLOAD/*"
         ]
       },
       "app": {
