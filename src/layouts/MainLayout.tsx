@@ -212,7 +212,7 @@ export default () => {
   }
 
   const setLocalFFPath = async () => {
-    const path = await getLocalFFPath() || ''
+    const path = (await getLocalFFPath()) || ''
     localStorage.setItem('localFFPath', path)
   }
 
@@ -390,7 +390,7 @@ export default () => {
           )}
         >
           {/* <PageContainer> */}
-            <Outlet />
+          <Outlet />
           {/* </PageContainer> */}
         </ProLayout>
       </div>

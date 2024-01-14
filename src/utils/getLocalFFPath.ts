@@ -1,4 +1,4 @@
-import { Command } from "@tauri-apps/api/shell"
+import { Command } from '@tauri-apps/api/shell'
 
 export const getLocalFFPath = async () => {
   const isDev = process.env.NODE_ENV === 'development'
