@@ -288,7 +288,7 @@ export default (props: PropsType) => {
               <div className="setting-right-item">
                 <Space>
                   <div>{t('Version')}：</div>
-                  <div>{version}</div>
+                  <div>v{version}</div>
                 </Space>
               </div>
               <div className="setting-right-item">
