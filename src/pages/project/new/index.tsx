@@ -28,7 +28,7 @@ import { argKeyList } from '@/constants/keys'
 import { parseFFUrl } from '@/utils/parseFFUrl'
 import { StateType } from '@/store'
 
-const { Paragraph } = Typography
+const { Paragraph, Text } = Typography
 
 const { TextArea } = Input
 
@@ -134,7 +134,7 @@ const ProjectItemNew: React.FC = () => {
             }
             return accumulator
           }, '')
-          if (url) r!.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
+          if (url) r!.children = <Text copyable style={{ whiteSpace: 'pre-wrap' }}>ffmpeg {url}</Text>
         }
       })
     )
@@ -189,10 +189,12 @@ const ProjectItemNew: React.FC = () => {
 
   const selectFileOrDir = async (row: DataSourceType, type: number) => {
     try {
-      const selected = await open({
+      let selected = await open({
         directory: type == 1 ? false : true
       })
       if (selected) {
+        // 给选择的文件和目录加上双引号
+        selected = `"${selected}"`
         editableFormRef.current?.setRowData?.(row.index as string, {
           value: selected
         })

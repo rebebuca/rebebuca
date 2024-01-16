@@ -8,9 +8,9 @@ import React, { useRef, useState, useEffect } from 'react'
 import { Tabs, Space, Badge, Button, Descriptions, Segmented, Typography, FloatButton } from 'antd'
 import { useTranslation } from 'react-i18next'
 
-const { Paragraph } = Typography
+const { Text } = Typography
 
-import { runFFmpeg } from '@/utils'
+import { runFFmpeg, splitStringWithQuotes } from '@/utils'
 import { addCommand, updateCommand, resetCommandLog } from '@/store/commandList'
 
 import type { CommandItemType } from '@/store/commandList'
@@ -88,7 +88,7 @@ const ProjectItemEdit: React.FC = () => {
     add(res[0])
     setDescItems(
       produce(draft => {
-        draft[0].children = <Paragraph copyable>{url}</Paragraph>
+        draft[0].children = <Text copyable style={{ whiteSpace: 'pre-wrap' }}>{url}</Text>
       })
     )
 
@@ -205,14 +205,14 @@ const ProjectItemEdit: React.FC = () => {
                         }
 
                         command.spawn()
-                        command.on('close', () => {})
+                        command.on('close', () => { })
                       } else {
                         dispatch(
                           resetCommandLog({
                             id: item.id
                           })
                         )
-                        const argArr = item.url.split(' ')
+                        const argArr = splitStringWithQuotes(item.url)
                         argArr.shift()
                         if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
                         const s = await runFFmpeg(argArr, (line: string, status: string) => {
@@ -256,8 +256,7 @@ const ProjectItemEdit: React.FC = () => {
                               id: item.id
                             })
                           )
-                          // TODO:
-                          const argArr = item.url.split(' ')
+                          const argArr = splitStringWithQuotes(item.url)
                           argArr.shift()
                           if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
                           const s = await runFFmpeg(argArr, (line: string, status: string) => {
@@ -278,7 +277,7 @@ const ProjectItemEdit: React.FC = () => {
                             id: item.id
                           })
                         )
-                        const argArr = item.url.split(' ')
+                        const argArr = splitStringWithQuotes(item.url)
                         argArr.shift()
                         if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
                         const s = await runFFmpeg(argArr, (line: string, status: string) => {

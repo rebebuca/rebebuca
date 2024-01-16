@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next'
 import { argKeyList } from '@/constants/keys'
 import { StateType } from '@/store'
 
-const { Paragraph } = Typography
+const { Paragraph, Text } = Typography
 
 type DataSourceType = {
   id: string | number
@@ -119,7 +119,7 @@ const ProjectItemEdit: React.FC = () => {
             }
             return accumulator
           }, '')
-          if (url) r!.children = <Paragraph copyable>ffmpeg {url}</Paragraph>
+          if (url) r!.children = <Text copyable style={{ whiteSpace: 'pre-wrap' }}>ffmpeg {url}</Text>
         }
       })
     )

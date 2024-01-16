@@ -4,16 +4,18 @@ import { produce } from 'immer'
 import { invoke } from '@tauri-apps/api'
 import { useDispatch } from 'react-redux'
 import { Command } from '@tauri-apps/api/shell'
-import { Button, Popconfirm, message } from 'antd'
+import { Button, Popconfirm, message, Typography } from 'antd'
 import { useEffect, useState, useRef } from 'react'
 import { ProTable } from '@ant-design/pro-components'
 import type { ProColumns } from '@ant-design/pro-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { runFFmpeg } from '@/utils'
+import { runFFmpeg, splitStringWithQuotes } from '@/utils'
 import { updateCommand, resetCommandLog } from '@/store/commandList'
 import { writeSettingToDownload } from '@/utils/export'
+
+const { Text } = Typography
 
 export type ListItem = {
   id: string
@@ -117,7 +119,12 @@ export default () => {
       title: t('命令'),
       dataIndex: 'url',
       key: `${ulid()}_url`,
-      copyable: true
+      render: (_, record: ListItem) =>
+        <Text copyable style={{ whiteSpace: 'pre-wrap' }}>
+          {
+            record.url
+          }
+        </Text>
     },
     {
       title: t('操作'),
@@ -138,21 +145,18 @@ export default () => {
                 const cmd = `/C taskkill /f /t /pid ${item.pid}`
                 command = await new Command('ffmpeg', cmd)
               } else {
-                // TODO: mac
-                // const cmd = `/C taskkill /f /t /pid ${item.pid}`
                 const cmd = `${item.pid}`
                 command = await new Command('kill-process', cmd)
-                // command = await new Command('mac-ffmpeg', cmd)
               }
               command.spawn()
-              command.on('close', () => {})
+              command.on('close', () => { })
             } else {
               dispatch(
                 resetCommandLog({
                   id: item.id
                 })
               )
-              const argArr = item.url.split(' ')
+              const argArr = splitStringWithQuotes(item.url)
               argArr.shift()
               if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
               const s = await runFFmpeg(argArr, (line: string, status: string) => {
@@ -185,9 +189,6 @@ export default () => {
                   const cmd = `/C taskkill /f /t /pid ${item.pid}`
                   command = await new Command('ffmpeg', cmd)
                 } else {
-                  // TODO: mac
-                  // const cmd = `/C taskkill /f /t /pid ${item.pid}`
-                  // command = await new Command('mac-ffmpeg', cmd)
                   const cmd = `${item.pid}`
                   command = await new Command('kill-process', cmd)
                 }
@@ -198,7 +199,7 @@ export default () => {
                       id: item.id
                     })
                   )
-                  const argArr = item.url.split(' ')
+                  const argArr = splitStringWithQuotes(item.url)
                   argArr.shift()
                   if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
                   const s = await runFFmpeg(argArr, (line: string, status: string) => {
@@ -219,7 +220,7 @@ export default () => {
                     id: item.id
                   })
                 )
-                const argArr = item.url.split(' ')
+                const argArr = splitStringWithQuotes(item.url)
                 argArr.shift()
                 if (!argArr.includes('-y') && !argArr.includes('-n')) argArr.push('-y')
                 const s = await runFFmpeg(argArr, (line: string, status: string) => {
