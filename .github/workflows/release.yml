@@ -15,38 +15,15 @@ jobs:
       with:
           fetch-depth: 1
 
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
-
-    - name: Setup Rust
-      uses: dtolnay/rust-toolchain@stable
-
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      id: pnpm-install
-      with:
-        version: 8
-        run_install: false
-
     - name: Download rebebuca repo
       run: |
           git clone --depth 1 https://github.com/rebebuca/rebebuca.git
-          mv /bin/ffmpeg-darwin-arm64  src-tauri/bin/
-          mv /bin/ffmpeg-aarch64-apple-darwin  src-tauri/bin/
-          mv /bin/ffmpeg-x86_64-pc-windows-msvc.exe  src-tauri/bin/
-          pnpm install
 
-    - name: R2 Release
-      uses: shallwefootball/upload-s3-action@v1.3.3
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
       with:
-        aws_key_id:  ${{ secrets.R2_KEY }}
-        aws_secret_access_key:  ${{ secrets.R2_SECRET }}
-        aws_bucket: monibuca
-        source_dir: rb/
-        destination_dir: rebebuca
-        endpoint: https://${{ secrets.R2_DOMAIN }}
+        name: repo
+        path: rebebuca
 
   build-tauri-windows:
     needs: build
@@ -65,10 +42,25 @@ jobs:
         profile: minimal
         toolchain: stable
         target: x86_64-pc-windows-msvc
+
     - name: Download Artifact
       uses: actions/download-artifact@v4
       with:
-        name: binaries
+        name: repo
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      id: pnpm-install
+      with:
+        version: 8
+        run_install: false
+
+    - name: test
+      run: |
+          pnpm i
+          cd src-tauri/bin/
+          Invoke-WebRequest -Uri https://download.m7s.live/bin/ffmpeg-x86_64-pc-windows-msvc.exe -OutFile .\ffmpeg-x86_64-pc-windows-msvc.exe
+
     - uses: JonasKruckenberg/tauri-build@v1
       id: tauri_build
       env:
@@ -77,72 +69,17 @@ jobs:
         target: x86_64-pc-windows-msvc
         projectPath: src-tauri
         debug: true
+
     - name: copy ouputs
       run: |
-        mkdir -p dist
-        $files =  "${{ join(fromJSON(steps.tauri_build.outputs.artifacts),'","') }}"
-        Copy-Item -Path $files -Destination dist
+        mkdir -p rb_build
+        cp ${{ join(fromJSON(steps.tauri_build.outputs.artifacts),' ') }} rb_build/
     - name: R2 Release
       uses: shallwefootball/upload-s3-action@v1.3.3
       with:
         aws_key_id:  ${{ secrets.R2_KEY }}
         aws_secret_access_key:  ${{ secrets.R2_SECRET }}
         aws_bucket: monibuca
-        source_dir: dist
+        source_dir: rb_build
         destination_dir: rb
         endpoint: https://${{ secrets.R2_DOMAIN }}
-  
-
-  build-tauri-mac:
-    needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        rust_target:
-          - x86_64-apple-darwin
-          - aarch64-apple-darwin
-    runs-on:  macos-latest
-    steps:
-    - name: setup node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
-
-    - name: install Rust stable
-      uses: actions-rs/toolchain@v1
-      with:
-        default: true
-        override: true
-        profile: minimal
-        toolchain: stable
-        target: ${{ matrix.rust_target }}
-
-    - name: Download Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: binaries
-    - name: chmod
-      run: |
-        chmod 777 src-tauri/rb-${{ matrix.rust_target }}
-    - uses: JonasKruckenberg/tauri-build@v1
-      id: tauri_build
-      env:
-        TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-      with:
-        target: ${{ matrix.rust_target }}
-        projectPath: src-tauri
-        debug: true
-    - name: copy ouputs
-      run: |
-        mkdir -p dist
-        cp ${{ join(fromJSON(steps.tauri_build.outputs.artifacts),' ') }} dist/
-    - name: R2 Release
-      uses: shallwefootball/upload-s3-action@v1.3.3
-      with:
-        aws_key_id:  ${{ secrets.R2_KEY }}
-        aws_secret_access_key:  ${{ secrets.R2_SECRET }}
-        aws_bucket: monibuca
-        source_dir: dist
-        destination_dir: rb
-        endpoint: https://${{ secrets.R2_DOMAIN }}
-
