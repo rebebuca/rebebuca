@@ -25,23 +25,88 @@ jobs:
         name: repo
         path: rebebuca
 
-  build-tauri-windows:
+  # build-tauri-windows:
+  #   needs: build
+  #   runs-on: windows-latest
+  #   steps:
+  #   - name: setup node
+  #     uses: actions/setup-node@v3
+  #     with:
+  #       node-version: 20
+
+  #   - name: install Rust stable windows
+  #     uses: actions-rs/toolchain@v1
+  #     with:
+  #       default: true
+  #       override: true
+  #       profile: minimal
+  #       toolchain: stable
+  #       target: x86_64-pc-windows-msvc
+
+  #   - name: Download Artifact
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       name: repo
+
+  #   - name: Install pnpm
+  #     uses: pnpm/action-setup@v2
+  #     id: pnpm-install
+  #     with:
+  #       version: 8
+  #       run_install: false
+
+  #   - name: download-ffmpeg
+  #     run: |
+  #         pnpm i
+  #         cd src-tauri/bin/
+  #         Invoke-WebRequest -Uri https://download.m7s.live/bin/ffmpeg-x86_64-pc-windows-msvc.exe -OutFile .\ffmpeg-x86_64-pc-windows-msvc.exe
+
+  #   - uses: JonasKruckenberg/tauri-build@v1
+  #     id: tauri_build
+  #     env:
+  #       TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+  #     with:
+  #       target: x86_64-pc-windows-msvc
+  #       projectPath: src-tauri
+  #       debug: true
+
+  #   - name: copy ouputs
+  #     run: |
+  #       mkdir -p rb_build
+  #       cp ${{ join(fromJSON(steps.tauri_build.outputs.artifacts),' ') }} rb_build/
+  #   - name: R2 Release
+  #     uses: shallwefootball/upload-s3-action@v1.3.3
+  #     with:
+  #       aws_key_id:  ${{ secrets.R2_KEY }}
+  #       aws_secret_access_key:  ${{ secrets.R2_SECRET }}
+  #       aws_bucket: monibuca
+  #       source_dir: rb_build
+  #       destination_dir: rb
+  #       endpoint: https://${{ secrets.R2_DOMAIN }}
+
+  build-tauri-mac:
     needs: build
-    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rust_target:
+          # - x86_64-apple-darwin
+          - aarch64-apple-darwin
+    runs-on:  macos-latest
     steps:
     - name: setup node
       uses: actions/setup-node@v3
       with:
         node-version: 20
 
-    - name: install Rust stable windows
+    - name: install Rust stable
       uses: actions-rs/toolchain@v1
       with:
         default: true
         override: true
         profile: minimal
         toolchain: stable
-        target: x86_64-pc-windows-msvc
+        target: ${{ matrix.rust_target }}
 
     - name: Download Artifact
       uses: actions/download-artifact@v4
@@ -55,18 +120,21 @@ jobs:
         version: 8
         run_install: false
 
-    - name: test
+    - name: download-ffmpeg
       run: |
           pnpm i
           cd src-tauri/bin/
-          Invoke-WebRequest -Uri https://download.m7s.live/bin/ffmpeg-x86_64-pc-windows-msvc.exe -OutFile .\ffmpeg-x86_64-pc-windows-msvc.exe
+          curl -O https://download.m7s.live/bin/ffmpeg-aarch64-apple-darwin
 
+    - name: chmod
+      run: |
+        chmod 777 src-tauri/rb-${{ matrix.rust_target }}
     - uses: JonasKruckenberg/tauri-build@v1
       id: tauri_build
       env:
         TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
       with:
-        target: x86_64-pc-windows-msvc
+        target: ${{ matrix.rust_target }}
         projectPath: src-tauri
         debug: true
 
@@ -83,3 +151,4 @@ jobs:
         source_dir: rb_build
         destination_dir: rb
         endpoint: https://${{ secrets.R2_DOMAIN }}
+
