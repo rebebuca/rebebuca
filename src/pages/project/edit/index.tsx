@@ -272,7 +272,7 @@ const ProjectItemEdit: React.FC = () => {
                     <ProFormText
                       width="md"
                       name="name"
-                      label={t('接口名称')}
+                      label={t('命令名称')}
                       required
                       initialValue={item.name}
                       placeholder={t('请输入名称')}

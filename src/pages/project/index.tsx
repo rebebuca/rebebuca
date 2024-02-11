@@ -130,7 +130,7 @@ export default () => {
                   {row.desc}
                 </Col>
                 <Col span={8}>
-                  <div>{t('Number of interfaces')}</div>
+                  <div>{t('Number of commands')}</div>
                   {row.count}
                 </Col>
                 <Col span={8}>

@@ -96,7 +96,7 @@ export default () => {
       key: `${ulid()}_index`
     },
     {
-      title: t('接口名称'),
+      title: t('命令名称'),
       dataIndex: 'name',
       width: '15%',
       key: `${ulid()}_name`
@@ -280,7 +280,7 @@ export default () => {
         </a>,
         <Popconfirm
           title={t('Prompt')}
-          description={t('Are you sure you want to delete this interface?')}
+          description={t('Are you sure you want to delete this command?')}
           onConfirm={() => {
             if (record.status == '12') {
               message.success(t('正在运行中，不可删除'), 2)
@@ -328,7 +328,7 @@ export default () => {
       search={false}
       dateFormatter="string"
       toolbar={{
-        title: t('Interface List')
+        title: t('Command List')
       }}
       toolBarRender={() => [
         <Button
@@ -354,7 +354,7 @@ export default () => {
             })
           }}
         >
-          {t('New Interface')}
+          {t('New Command')}
         </Button>
       ]}
     />

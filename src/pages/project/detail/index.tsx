@@ -47,7 +47,7 @@ const ProjectItemEdit: React.FC = () => {
   const [activeKey, setActiveKey] = useState(initialItems[0].key)
   const [items, setItems] = useState<Array<ITabItem>>([])
   const [searchParams] = useSearchParams()
-  const [segmentedLeft, setSegmentedLeft] = useState<string>('接口信息')
+  const [segmentedLeft, setSegmentedLeft] = useState<string>('命令信息')
   const [segmentedRight, setSegmentedRight] = useState<string>('运行日志')
   const commandList = useSelector<StateType>(state => state.commandList) as CommandItemType[]
   const settings = useSelector((state: StateType) => state.settings.settingsData)
@@ -69,7 +69,7 @@ const ProjectItemEdit: React.FC = () => {
   const [descItems, setDescItems] = useState<Array<IDescItem>>([
     {
       key: '1',
-      label: t('接口 URL'),
+      label: t('命令 URL'),
       children: '',
       span: 3
     }
@@ -156,12 +156,12 @@ const ProjectItemEdit: React.FC = () => {
             <ProCard title="">
               <Space direction="vertical">
                 <Segmented
-                  options={[t('接口信息')]}
+                  options={[t('命令信息')]}
                   onChange={value => {
                     setSegmentedLeft(value as string)
                   }}
                 />
-                {segmentedLeft == t('接口信息') && (
+                {segmentedLeft == t('命令信息') && (
                   <Descriptions
                     items={descItems.concat([
                       {

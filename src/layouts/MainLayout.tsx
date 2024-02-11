@@ -288,12 +288,12 @@ export default () => {
                     ? [
                         {
                           path: '/project/list',
-                          name: t('Interface List'),
+                          name: t('Command List'),
                           icon: <UnorderedListOutlined />
                         },
                         {
                           path: '/project/new',
-                          name: t('Interface New'),
+                          name: t('Command New'),
                           icon: <PlusCircleOutlined />
                         }
                       ]

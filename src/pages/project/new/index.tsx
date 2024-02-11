@@ -94,7 +94,7 @@ const ProjectItemNew: React.FC = () => {
   ]
 
   const initialItems = [
-    { label: '新建接口', key: '1000', id: '-1', name: '', url: '', argList: [] }
+    { label: '新建命令', key: '1000', id: '-1', name: '', url: '', argList: [] }
   ]
 
   const [activeKey] = useState(initialItems[0].key)
@@ -351,7 +351,7 @@ const ProjectItemNew: React.FC = () => {
                       <ProFormText
                         width="md"
                         name="name"
-                        label={t('接口名称')}
+                        label={t('命令名称')}
                         required
                         initialValue={item.name}
                         placeholder={t('请输入名称')}
