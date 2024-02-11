@@ -14,7 +14,6 @@ mod util;
 use app::menu;
 
 use tauri::api::path;
-use tauri::Manager;
 
 use tauri_plugin_log::LogTarget;
 
