@@ -1,6 +1,6 @@
 <h1 align="center">Rebebuca</h1>
 
-> 一个好用的 ffmpeg 管理器
+> 30秒完成创建、运行、管理你的 ffmpeg 命令
 
 ## FAQ
 
