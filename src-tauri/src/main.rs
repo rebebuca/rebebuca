@@ -5,25 +5,34 @@ mod command;
 mod connection;
 mod service;
 
+mod app;
+
 use command::app_setting;
 use command::project;
 use command::project_detail;
 mod util;
+use app::menu;
 
+use tauri::api::path;
 use tauri::Manager;
+
+use tauri_plugin_log::LogTarget;
 
 fn main() {
     let _ = fix_path_env::fix();
     tauri::Builder::default()
+        .plugin(
+            tauri_plugin_log::Builder::default()
+                .targets([
+                    LogTarget::Folder(path::home_dir().unwrap().join(".rebebuca")),
+                    LogTarget::Stdout,
+                    LogTarget::Webview,
+                ])
+                .build(),
+        )
         .setup(|app| {
             let dir = app.path_resolver().app_data_dir().unwrap();
             util::set_app_dir(dir.to_str().unwrap().to_string());
-            #[cfg(debug_assertions)] // only include this code on debug builds
-            {
-                let window = app.get_window("main").unwrap();
-                window.open_devtools();
-                // window.close_devtools();
-            }
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -40,6 +49,8 @@ fn main() {
             project_detail::update_project_detail,
             project_detail::get_project_detail_item,
         ])
+        .menu(menu::init())
+        .on_menu_event(menu::menu_handler)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
