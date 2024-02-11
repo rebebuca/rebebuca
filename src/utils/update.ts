@@ -20,7 +20,7 @@ try {
     // You could use this step to display another confirmation dialog.
     await relaunch()
   }
-} catch (error) { 
+} catch (error) {
   console.error(error)
 }
 

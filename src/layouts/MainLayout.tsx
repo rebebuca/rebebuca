@@ -12,7 +12,6 @@ import {
 } from 'antd'
 import ProLayout from '@ant-design/pro-layout'
 import { PhysicalPosition, PhysicalSize, appWindow } from '@tauri-apps/api/window'
-// import { PageContainer } from '@ant-design/pro-components'
 import { Link, useLocation, Outlet, useSearchParams } from 'react-router-dom'
 import AppSetting from '@/components/setting'
 import { useTranslation } from 'react-i18next'
@@ -40,14 +39,6 @@ document.addEventListener('mousedown', async e => {
     await tauriWindow.appWindow.startDragging()
   }
 })
-
-// 存储窗口最大化前的大小
-// appWindow.innerSize().then(size => {
-//   localStorage.setItem('originalSize', JSON.stringify(size))
-//   const has = localStorage.getItem('originalSize')
-//   if (!has) localStorage.setItem('originalSize', JSON.stringify(size))
-//   else return
-// })
 
 import {
   UnorderedListOutlined,
@@ -242,7 +233,6 @@ export default () => {
         ></AppSetting>
       )}
       <div>
-        {/* <div className={isMaximize ? '' : 'custom-pro-layout'}> */}
         <Modal
           title="确定要退出rebebuca吗？"
           open={isModalOpen}
@@ -260,7 +250,7 @@ export default () => {
           </Radio.Group>
         </Modal>
         <ProLayout
-          siderWidth={300}
+          siderWidth={200}
           collapsedButtonRender={false}
           pageTitleRender={false}
           breadcrumbRender={false}
@@ -389,9 +379,7 @@ export default () => {
             </Link>
           )}
         >
-          {/* <PageContainer> */}
           <Outlet />
-          {/* </PageContainer> */}
         </ProLayout>
       </div>
     </ConfigProvider>

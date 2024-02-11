@@ -105,7 +105,7 @@ export default () => {
       title: t('状态'),
       dataIndex: 'status',
       initialValue: 'stop',
-      width: '15%',
+      width: '10%',
       key: `${ulid()}_status`,
       valueEnum: {
         '-1': { text: t('未运行'), status: 'Default' },
@@ -114,6 +114,18 @@ export default () => {
         '0': { text: t('成功'), status: 'Success' },
         '11': { text: t('停止'), status: 'Default' }
       }
+    },
+    {
+      title: t('更新时间'),
+      dataIndex: 'updated_at',
+      width: '15%',
+      key: `${ulid()}_updated_at`,
+      render: (_, record: ListItem) =>
+      <Text>
+        {
+          dayjs(record.updated_at).format('MM-DD HH:mm:ss')
+        }
+      </Text>
     },
     {
       title: t('命令'),
@@ -322,7 +334,6 @@ export default () => {
       rowKey="id"
       pagination={{
         pageSize: 8
-        // showQuickJumper: true
       }}
       options={false}
       search={false}
@@ -336,10 +347,6 @@ export default () => {
           key="export"
           onClick={() => {
             projectExport()
-            // nav({
-            //   pathname: `/project/new`,
-            //   search: `name=${searchParams.get('name')}&projectId=${searchParams.get('projectId')}`
-            // })
           }}
         >
           {t('项目导出')}
