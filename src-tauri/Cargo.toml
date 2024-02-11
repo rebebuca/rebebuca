@@ -1,13 +1,11 @@
 [package]
-name = "tauri-app"
-version = "0.1.4"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+name = "Rebebuca"
+version = "0.1.0"
+description = "ffmpeg desktop manager"
+authors = ["godkun"]
+license = "Apache License"
+repository = "https://github.com/rebebuca/rebebuca"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [workspace]
 members = [".", "entity", "migration"]

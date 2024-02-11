@@ -1,9 +1,10 @@
 {
-  "name": "rebebuca",
+  "name": "Rebebuca",
   "private": true,
-  "version": "0.1.4",
+  "version": "0.1.0",
   "author": "godkun",
   "type": "module",
+  "license": "Apache License",
   "scripts": {
     "tauri": "tauri",
     "dev": "vite",

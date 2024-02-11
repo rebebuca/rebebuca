@@ -1,14 +1,33 @@
 <h1 align="center">Rebebuca</h1>
 
-> 30秒完成创建、运行、管理你的 ffmpeg 命令
+## Rebebuca 是什么 ？
 
-## FAQ
+- Rebebuca 是一个使用 Rust 开发的 桌面端 FFMPEG 管理器
+- **可以在30秒内完成创建、运行、管理你的 ffmpeg 命令**
+- 帮助我们更好的管理繁多复杂的 ffmpeg 参数和 ffmpeg 命令运行状态
 
-### 1. macOS 系统安装完后显示「文件已损坏」或者安装完打开没有反应
+## 功能特性
 
-因为 Rebebuca 没有签名，所以会被 macOS 的安全检查所拦下。
+- 基于项目列表 + 项目详情的交互模式，拥有更好的用户体验
+- 支持对 ffmpeg 命令进行增删改查、对命令参数可视化配置、输入联想、手动选择、一键复制等操作
+- 支持对 ffmpeg 执行进程进行运行、停止、重启等操作
+- 支持对 ffmpeg 命令进行导入导出
+- 拥有数据库储存能力，支持数据长期保存
+- 支持软件自动更新
+- 支持中英语言、深色浅色主题切换
+- 支持 mac 和 window 平台
 
-1. 安装后打开遇到「文件已损坏」的情况，请按如下方式操作：
+## 下载安装
+
+- Windows 下载地址：[rebebuca.msi](https://download.m7s.live/rb/Rebebuca_0.1.0_x64_en-US.msi)
+- Mac 安装下载地址：[rebebuca.dmg](https://download.m7s.live/rb/Rebebuca_0.1.0_x64.dmg)
+- Mac(arm64) 安装下载地址：[rebebuca.dmg](https://download.m7s.live/rb/Rebebuca_0.1.0_aarch64.dmg)
+
+## 启动软件
+
+下载安装完成后，启动 rebebuca ，如果是 macOS 系统，启动后可能会出现显示「文件已损坏」现象，
+
+这是因为 Rebebuca 没有签名，会被 macOS 的安全检查所拦下，请按如下方式操作：
 
 信任开发者，会要求输入密码:
 
@@ -60,3 +79,4 @@ xattr -c /Applications/Rebebuca.app/*
 sudo xattr -d com.apple.quarantine /Applications/Rebebuca.app/
 ```
 
+成功启动后，会出现下图所示界面：
