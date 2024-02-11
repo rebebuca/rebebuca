@@ -125,6 +125,7 @@ jobs:
           pnpm i
           cd src-tauri/bin/
           curl -O https://download.m7s.live/bin/ffmpeg-aarch64-apple-darwin
+          chmod 777 ffmpeg-aarch64-apple-darwin
 
     - uses: JonasKruckenberg/tauri-build@v1
       id: tauri_build
