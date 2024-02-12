@@ -1,6 +1,8 @@
 <h1 align="center">Rebebuca</h1>
 
-## Rebebuca 是什么 ？
+https://rebebuca.com
+
+## Rebebuca 是什么
 
 - Rebebuca 是一个使用 Rust 开发的 桌面端 FFMPEG 管理器
 - **可以在30秒内完成创建、运行、管理你的 ffmpeg 命令**
