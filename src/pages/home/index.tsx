@@ -1,13 +1,14 @@
 import { FC, useEffect, useState } from 'react'
 import { Button, Input, Image, Select, Space, Typography, message } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { invoke } from '@tauri-apps/api'
+import { invoke, shell } from '@tauri-apps/api'
 import { ulid } from 'ulid'
 import dayjs from 'dayjs'
 import { parseFFUrl } from '@/utils/parseFFUrl'
 import { useNavigate } from 'react-router-dom'
 
-const { Title } = Typography
+const { Title, Text } = Typography
+const { TextArea } = Input
 
 export interface IItem {
   project_id: string
@@ -24,7 +25,6 @@ export interface IProjectSelect {
 
 const Home: FC = () => {
   const nav = useNavigate()
-  const { TextArea } = Input
   const { t } = useTranslation()
 
   const [list, setList] = useState<Array<IItem>>([])
@@ -109,6 +109,7 @@ const Home: FC = () => {
 
   const [ffmpegUrl, setFfmpegUurl] = useState('')
   const onChangeValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    console.log(e.target.value)
     setFfmpegUurl(e.target.value)
   }
 
@@ -124,10 +125,10 @@ const Home: FC = () => {
     <div>
       <Space direction="vertical" size="middle">
         <Title level={4}>{t('欢迎使用 Rebebuca ! ')}</Title>
-        <div style={{ fontWeight: 'bold', color: '' }}>
+        <Text style={{ fontWeight: 'bold' }}>
           {t('30秒完成创建、运行、管理你的 ffmpeg 命令')}
-        </div>
-        <div>{t('请复制粘贴你的 ffmpeg 命令行到下面的输入框中')}</div>
+        </Text>
+        <Text>{t('请复制粘贴你的 ffmpeg 命令行到下面的输入框中')}</Text>
         <div>
           <TextArea
             style={{ width: '500px', height: '150px' }}
@@ -139,7 +140,7 @@ const Home: FC = () => {
           ></TextArea>
         </div>
         <Space>
-          {t('选择项目')}
+          <Text>{t('选择项目')}</Text>
           {list.length != 0 && (
             <Select
               value={selectValue}
@@ -153,9 +154,16 @@ const Home: FC = () => {
           <Button type="primary" onClick={run}>
             {t('一键运行')}
           </Button>
-          <Button type="primary">{t('教程文档')}</Button>
-          <Button type="primary">{t('官方技术支持群')}</Button>
-          <Image width={180} src="/wx.jpg" />
+          <Button
+            type="primary"
+            onClick={() => {
+              shell.open('https://rebebuca.com')
+            }}
+          >
+            {t('教程文档')}
+          </Button>
+          <Button type="primary">{t('官方技术支持群 👉')}</Button>
+          <Image width={180} preview={false} src="/wx.jpg" />
         </Space>
       </Space>
     </div>

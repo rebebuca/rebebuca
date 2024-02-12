@@ -20,21 +20,31 @@ pub fn init() -> Menu {
             ),
     );
 
+    let edit_menu = Submenu::new(
+        "Edit",
+        Menu::new()
+            .add_native_item(MenuItem::Undo)
+            .add_native_item(MenuItem::Redo)
+            .add_native_item(MenuItem::Separator)
+            .add_native_item(MenuItem::Cut)
+            .add_native_item(MenuItem::Copy)
+            .add_native_item(MenuItem::Paste)
+            .add_native_item(MenuItem::SelectAll),
+    );
+
     let help_menu = Submenu::new(
         "帮助",
         Menu::new()
             .add_item(CustomMenuItem::new("rebebuca_log".to_string(), "运行日志"))
             .add_native_item(MenuItem::Separator)
             .add_item(CustomMenuItem::new("report_bug".to_string(), "反馈Bug"))
-            .add_item(CustomMenuItem::new("document".to_string(), "官方文档"))
-            .add_native_item(MenuItem::Separator)
-            .add_item(
-                CustomMenuItem::new("dev_tools".to_string(), "Toggle Developer Tools")
-                    .accelerator("CmdOrCtrl+Shift+I"),
-            ),
+            .add_item(CustomMenuItem::new("document".to_string(), "官方文档")), // .add_native_item(MenuItem::Separator)
     );
 
-    Menu::new().add_submenu(app_menu).add_submenu(help_menu)
+    Menu::new()
+        .add_submenu(app_menu)
+        .add_submenu(help_menu)
+        .add_submenu(edit_menu)
 }
 
 // --- Menu Event

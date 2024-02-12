@@ -4,7 +4,7 @@ import { produce } from 'immer'
 import { invoke } from '@tauri-apps/api'
 import { useDispatch } from 'react-redux'
 import { Command } from '@tauri-apps/api/shell'
-import { Button, Popconfirm, message, Typography } from 'antd'
+import { Button, Popconfirm, message, Typography, Tooltip } from 'antd'
 import { useEffect, useState, useRef } from 'react'
 import { ProTable } from '@ant-design/pro-components'
 import type { ProColumns } from '@ant-design/pro-components'
@@ -120,27 +120,25 @@ export default () => {
       dataIndex: 'updated_at',
       width: '15%',
       key: `${ulid()}_updated_at`,
-      render: (_, record: ListItem) =>
-      <Text>
-        {
-          dayjs(record.updated_at).format('MM-DD HH:mm:ss')
-        }
-      </Text>
+      render: (_, record: ListItem) => (
+        <Tooltip title={dayjs(record.updated_at).format('YYYY年MM月DD日 HH:mm:ss')}>
+          <Text>{dayjs(record.updated_at).format('MM-DD HH:mm:ss')}</Text>
+        </Tooltip>
+      )
     },
     {
       title: t('命令'),
       dataIndex: 'url',
       key: `${ulid()}_url`,
-      render: (_, record: ListItem) =>
+      render: (_, record: ListItem) => (
         <Text copyable style={{ whiteSpace: 'pre-wrap' }}>
-          {
-            record.url
-          }
+          {record.url}
         </Text>
+      )
     },
     {
       title: t('操作'),
-      width: '30%',
+      width: '25%',
       key: `${ulid()}_option`,
       valueType: 'option',
       render: (_, record: ListItem) => [
@@ -161,7 +159,7 @@ export default () => {
                 command = await new Command('kill-process', cmd)
               }
               command.spawn()
-              command.on('close', () => { })
+              command.on('close', () => {})
             } else {
               dispatch(
                 resetCommandLog({
@@ -304,7 +302,7 @@ export default () => {
           okText="Yes"
           cancelText="No"
         >
-          <a style={{ opacity: 0.88 }}>{t('Delete')}</a>
+          <a style={{ opacity: 0.88, color: 'red' }}>{t('Delete')}</a>
         </Popconfirm>
       ]
     }
