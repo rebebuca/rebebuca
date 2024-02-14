@@ -76,7 +76,8 @@ jobs:
     - name: copy ouputs
       run: |
         mkdir -p rb_build
-        cp ${{ join(fromJSON(steps.tauri_build.outputs.artifacts),' ') }} rb_build/
+        $files =  "${{ join(fromJSON(steps.tauri_build.outputs.artifacts),'","') }}"
+        Copy-Item -Path $files -Destination rb_build
     - name: R2 Release
       uses: shallwefootball/upload-s3-action@v1.3.3
       with:
