@@ -34,3 +34,7 @@ https://rebebuca.com
 请点击下方官方文档链接进行查看：
 
 https://rebebuca.com/guide/startup.html
+
+## 技术支持
+
+<img src="https://rebebuca.com/author.jpg" alt="author" width="200" height="200">
