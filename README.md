@@ -1,7 +1,7 @@
 <h1 align="center">Rebebuca</h1>
 
 <p align="center">
-<a href="https://github.com/rebebuca/rebebuca/blob/main/README.en.md"> English </a> | <b> 简体中文 </b>
+<b> 简体中文 </b> | <a href="https://github.com/rebebuca/rebebuca/blob/main/README.en.md"> English </a>
 </p>
 
 https://rebebuca.com
