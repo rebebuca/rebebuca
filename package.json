@@ -11,6 +11,7 @@
     "build": "tsc && vite build",
     "lint": " eslint src/**/*.{js,ts,jsx,tsx} ",
     "format": " prettier --write src/**/*.{ts,tsx}",
+    "preinstall": "npx only-allow pnpm && node ./scripts/check.mjs",
     "gen": "rm -rf rb.sqlite && sea-orm-cli migrate refresh -d src-tauri/migration && sea-orm-cli generate entity -l -o src-tauri/entity/src --expanded-format --with-serde both"
   },
   "dependencies": {
@@ -48,6 +49,7 @@
     "react-use": "^17.4.2",
     "sass": "^1.69.5",
     "typescript": "^5.0.2",
-    "vite": "^4.4.4"
+    "vite": "^4.4.4",
+    "zx": "^7.2.3"
   }
 }

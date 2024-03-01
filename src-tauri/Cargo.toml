@@ -19,7 +19,7 @@ migration = { path = "migration" }
 once_cell = "1.18.0"
 fix-path-env = { git = "https://github.com/tauri-apps/fix-path-env-rs" }
 
-tauri = { version = "1.5", features = [ "updater", "api-all", "devtools"] }
+tauri = { version = "1.5", features = [ "macos-private-api", "updater", "api-all", "devtools"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1.28.2", features = ["full"] }
