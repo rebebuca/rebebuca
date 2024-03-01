@@ -35,6 +35,22 @@ Please click on the official document link below to view:
 
 https://rebebuca.com/guide/startup.html
 
+## Sponsor
+
+<table>
+<tr>
+<td>Alipay</td>
+<td>WeChat</td>
+</tr>
+<tr>
+<td>
+<img src="./docs/zfb-pay.jpg" width="180" height="180" alt="Alipay appreciation code">
+</td>
+<td>
+<img src="./docs/wx-pay.jpg" width="180" height="180" alt="WeChat Appreciation Code"></td>
+</tr>
+</table>
+
 ## Technical Support
 
 <img src="https://rebebuca.com/author.jpg" alt="author" width="200" height="200">
