@@ -54,3 +54,17 @@ https://rebebuca.com/guide/startup.html
 ## Technical Support
 
 <img src="https://rebebuca.com/author.jpg" alt="author" width="200" height="200">
+
+## Contribute code
+
+## Contribute code
+
+- Build environment:
+   - cargo version >= 1.70.0
+   - pnpm version >= 8
+   - node version >= 20
+
+- Pull code: `git clone git@github.com:rebebuca/rebebuca.git`
+- Install dependencies: `pnpm i`
+   - After executing `pnpm i`, the `preintsall` command will be automatically executed to check whether the environment meets the requirements and download the `ffmpeg` binary file to the `src-tauri/bin` directory.
+- Start Rebebuca: `pnpm tauri dev`

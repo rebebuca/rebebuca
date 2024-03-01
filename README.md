@@ -39,6 +39,7 @@ https://rebebuca.com
 
 https://rebebuca.com/guide/startup.html
 
+
 ## 赞助作者
 
 <table>
@@ -58,3 +59,21 @@ https://rebebuca.com/guide/startup.html
 ## 技术支持
 
 <img src="https://rebebuca.com/author.jpg" alt="author" width="200" height="200">
+
+
+## 贡献代码
+
+- 搭建环境：
+  - cargo version >= 1.70.0
+  - pnpm version >= 8
+  - node version >= 20
+
+- 拉取代码：`git clone git@github.com:rebebuca/rebebuca.git`
+- 安装依赖：`pnpm i`
+  - 执行完 `pnpm i` 后，会自动执行 `preintsall` 命令，检测环境是否符合要求以及下载 `ffmpeg` 二进制文件到 `src-tauri/bin` 目录下
+- 启动 Rebebuca ：`pnpm tauri dev`
+
+
+
+
+
