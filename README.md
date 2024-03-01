@@ -1,5 +1,9 @@
 <h1 align="center">Rebebuca</h1>
 
+<p align="center">
+<a href="https://github.com/rebebuca/rebebuca/blob/main/README.en.md"> English </a> | <b> 简体中文 </b>
+</p>
+
 https://rebebuca.com
 
 ## Rebebuca 是什么
