@@ -15,4 +15,10 @@
 
 .setting-right-item {
   margin-top: 20px;
+  .ai {
+    width: 600px;
+    &-form {
+      margin-top: 20px;
+    }
+  }
 }

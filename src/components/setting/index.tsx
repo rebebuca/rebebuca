@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Modal, Menu, Radio, Select, Space, Tooltip } from 'antd'
+import { Modal, Menu, Radio, Select, Space, Tooltip, Form, Input, Button, Checkbox } from 'antd'
 import { InfoCircleOutlined, SettingOutlined } from '@ant-design/icons'
 import { getVersion } from '@tauri-apps/api/app'
 
@@ -15,6 +15,12 @@ import './index.scss'
 import { invoke } from '@tauri-apps/api'
 import { Command } from '@tauri-apps/api/shell'
 import Link from 'antd/lib/typography/Link'
+
+const { TextArea } = Input
+
+const formItemLayout = { labelCol: { span: 4 }, wrapperCol: { span: 14 } }
+
+const buttonItemLayout = { wrapperCol: { span: 14, offset: 4 } }
 
 function getItem(
   label: React.ReactNode,
@@ -36,6 +42,9 @@ export interface IAppSettingItem {
   lang?: string
   version?: string
   ffmpeg?: string
+  ai: {
+    type: string
+  }
   theme?: string
   quit_type?: string
 }
@@ -67,21 +76,29 @@ export default (props: PropsType) => {
     ),
     getItem(t('General'), '2', <SettingOutlined></SettingOutlined>),
     getItem(t('高级选项'), '3', <SettingOutlined></SettingOutlined>),
+    // getItem(t('AI'), '5', <SettingOutlined></SettingOutlined>),
     getItem(t('About Rebebuca'), '4', <InfoCircleOutlined />)
   ]
 
-  const [currentKey, setCurrentKey] = useState('1')
+  // const [currentKey, setCurrentKey] = useState('1')
+  const [currentKey, setCurrentKey] = useState('3')
 
   const onClick: MenuProps['onClick'] = e => {
     setCurrentKey(e.key)
   }
 
-  const [appSetting, setAppSetting] = useState<IAppSettingItem>({})
+  const [appSetting, setAppSetting] = useState<IAppSettingItem>({
+    ai: {
+      type: '2'
+    }
+  })
 
   const [version, setVersion] = useState('')
   const [defaultVersion, setDefaultVersion] = useState('')
   const [localVersion, setLocalVersion] = useState('')
   const [disabled, setDisabled] = useState(true)
+
+  const [componentDisabled, setComponentDisabled] = useState<boolean>(true)
 
   const dispatch = useDispatch()
 
@@ -165,6 +182,9 @@ export default (props: PropsType) => {
         lang: 'ch',
         theme: 'light',
         ffmpeg: 'default',
+        ai: {
+          type: '2'
+        },
         version: '1.0',
         quit_type: '1'
       }
@@ -173,6 +193,9 @@ export default (props: PropsType) => {
       })
       setAppSetting(data[0])
     } else {
+      data[0].ai = {
+        type: '2'
+      }
       setAppSetting(data[0])
     }
     const appVersion = await getVersion()
@@ -279,6 +302,60 @@ export default (props: PropsType) => {
                   </Radio.Group>
                 </Space>
               </div>
+              <div className="setting-right-item">
+                <Space align="baseline">
+                  <div>{t('AI')}</div>
+                  <div className="ai">
+                    <Radio.Group
+                      onChange={e => onChangeAppSetting(e.target.value, 'ai')}
+                      value={appSetting.ai.type}
+                    >
+                      <Space>
+                        <Radio value="1">{t('none')}</Radio>
+                        <Radio disabled={disabled} value="2">
+                          {t('deepseek')}
+                        </Radio>
+                      </Space>
+                    </Radio.Group>
+                    <div className="ai-form">
+                      <Form
+                        // disabled={componentDisabled}
+                        {...formItemLayout}
+                        layout="horizontal"
+                        style={{ maxWidth: 600 }}
+                      >
+                        {/* sk-3bd52ee65d594a5fbfcea97f48e9be53 */}
+                        <Form.Item label="Key">
+                          <Input.Password placeholder="input deepseek key" />
+                        </Form.Item>
+                        <Form.Item label="Prompt">
+                          <TextArea autoSize={{ minRows: 5, maxRows: 5 }} />
+                          {/* <Input placeholder="input placeholder" /> */}
+                        </Form.Item>
+                        <Form.Item {...buttonItemLayout}>
+                          <Button type="primary">Submit</Button>
+                        </Form.Item>
+
+                        {/* <Form.Item label="key">
+                          <Input />
+                        </Form.Item>
+                        <Form.Item label="prompt">
+                          <TextArea rows={3} />
+                        </Form.Item>
+                        <Form.Item>
+                          <Button type="primary">保存</Button>
+                        </Form.Item> */}
+                      </Form>
+                      {/* <Checkbox
+                        checked={componentDisabled}
+                        onChange={e => setComponentDisabled(e.target.checked)}
+                      >
+                        Form disabled
+                      </Checkbox> */}
+                    </div>
+                  </div>
+                </Space>
+              </div>
             </div>
           )}
           {currentKey == '4' && (
@@ -293,7 +370,10 @@ export default (props: PropsType) => {
               <div className="setting-right-item">
                 <Space>
                   <div>{t('更新日志：')}</div>
-                  <Link href={`https://github.com/rebebuca/rebebuca/releases/tag/v${version}`} target="_blank">
+                  <Link
+                    href={`https://github.com/rebebuca/rebebuca/releases/tag/v${version}`}
+                    target="_blank"
+                  >
                     {`https://github.com/rebebuca/rebebuca/releases/tag/v${version}`}
                   </Link>
                 </Space>

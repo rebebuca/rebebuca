@@ -12,7 +12,7 @@
     "lint": " eslint src/**/*.{js,ts,jsx,tsx} ",
     "format": " prettier --write src/**/*.{ts,tsx}",
     "preinstall": "npx only-allow pnpm && node ./scripts/check.mjs",
-    "gen": "rm -rf rb.sqlite && sea-orm-cli migrate refresh -d src-tauri/migration && sea-orm-cli generate entity -l -o src-tauri/entity/src --expanded-format --with-serde both"
+    "gen": "sea-orm-cli migrate refresh -d src-tauri/migration && sea-orm-cli generate entity -l -o src-tauri/entity/src --expanded-format --with-serde both"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
