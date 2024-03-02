@@ -65,7 +65,6 @@ if (nodeVersion >= 'v20.0.0' && pnpmVersion >= '8.0.0' && cargoVersion >= '1.70.
     }
     if (arch == 'arm64') {
       const exist = await fs.pathExists('./src-tauri/bin/ffmpeg-aarch64-apple-darwin')
-      console.log('exist: ', exist)
       if (!exist)
         $`curl -o ./src-tauri/bin/ffmpeg-aarch64-apple-darwin https://download.m7s.live/bin/ffmpeg-aarch64-apple-darwin`
       echo(chalk.green(`check success! please execute "pnpm tauri dev" to open rebebuca.`))
