@@ -134,7 +134,12 @@ const ProjectItemNew: React.FC = () => {
             }
             return accumulator
           }, '')
-          if (url) r!.children = <Text copyable style={{ whiteSpace: 'pre-wrap' }}>ffmpeg {url}</Text>
+          if (url)
+            r!.children = (
+              <Text copyable style={{ whiteSpace: 'pre-wrap' }}>
+                ffmpeg {url}
+              </Text>
+            )
         }
       })
     )

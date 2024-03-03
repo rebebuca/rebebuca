@@ -70,8 +70,8 @@ export default () => {
   const { t, i18n } = useTranslation()
   const [pathname, setPathname] = useState(location.pathname)
   const [searchParams] = useSearchParams()
-  const [open, setOpen] = useState(true)
-  // const [open, setOpen] = useState(false)
+  // const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [dark, setDark] = useState(false)
   const [appSetting, setAppSetting] = useState<IAppSettingItem>({})
 

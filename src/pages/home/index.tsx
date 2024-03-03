@@ -125,9 +125,7 @@ const Home: FC = () => {
     <div>
       <Space direction="vertical" size="middle">
         <Title level={4}>{t('欢迎使用 Rebebuca ! ')}</Title>
-        <Text style={{ fontWeight: 'bold' }}>
-          {t('30秒完成创建、运行、管理你的 ffmpeg 命令')}
-        </Text>
+        <Text style={{ fontWeight: 'bold' }}>{t('30秒完成创建、运行、管理你的 ffmpeg 命令')}</Text>
         <Text>{t('请复制粘贴你的 ffmpeg 命令行到下面的输入框中')}</Text>
         <div>
           <TextArea

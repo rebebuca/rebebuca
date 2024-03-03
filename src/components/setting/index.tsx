@@ -328,30 +328,13 @@ export default (props: PropsType) => {
                         <Form.Item label="Key">
                           <Input.Password placeholder="input deepseek key" />
                         </Form.Item>
-                        <Form.Item label="Prompt">
+                        {/* <Form.Item label="Prompt">
                           <TextArea autoSize={{ minRows: 5, maxRows: 5 }} />
-                          {/* <Input placeholder="input placeholder" /> */}
                         </Form.Item>
                         <Form.Item {...buttonItemLayout}>
-                          <Button type="primary">Submit</Button>
-                        </Form.Item>
-
-                        {/* <Form.Item label="key">
-                          <Input />
-                        </Form.Item>
-                        <Form.Item label="prompt">
-                          <TextArea rows={3} />
-                        </Form.Item>
-                        <Form.Item>
-                          <Button type="primary">保存</Button>
+                          <Button type="primary">{t('保存')}</Button>
                         </Form.Item> */}
                       </Form>
-                      {/* <Checkbox
-                        checked={componentDisabled}
-                        onChange={e => setComponentDisabled(e.target.checked)}
-                      >
-                        Form disabled
-                      </Checkbox> */}
                     </div>
                   </div>
                 </Space>

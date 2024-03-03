@@ -88,7 +88,11 @@ const ProjectItemEdit: React.FC = () => {
     add(res[0])
     setDescItems(
       produce(draft => {
-        draft[0].children = <Text copyable style={{ whiteSpace: 'pre-wrap' }}>{url}</Text>
+        draft[0].children = (
+          <Text copyable style={{ whiteSpace: 'pre-wrap' }}>
+            {url}
+          </Text>
+        )
       })
     )
 
@@ -205,7 +209,7 @@ const ProjectItemEdit: React.FC = () => {
                         }
 
                         command.spawn()
-                        command.on('close', () => { })
+                        command.on('close', () => {})
                       } else {
                         dispatch(
                           resetCommandLog({
