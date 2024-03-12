@@ -52,7 +52,7 @@ const FFmpegParamTable: React.FC = () => {
     {
       title: t('参数注释'),
       dataIndex: 'label',
-      render: (value: string) => (
+      render: (value: string, record) => (
         <div className="param-zs">
           {value}
           <img
@@ -61,7 +61,7 @@ const FFmpegParamTable: React.FC = () => {
             alt=""
             onClick={() => {
               shell.open(
-                'https://rebebuca.com/guide/%E6%A1%88%E4%BE%8B-%E5%B8%B8%E8%A7%81ffmpeg%E5%91%BD%E4%BB%A4.html#-i'
+                `https://rebebuca.com/guide/ffmpeg%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0%E5%A4%A7%E5%85%A8.html#${record.value.replace('-', '')}`
               )
             }}
           />
