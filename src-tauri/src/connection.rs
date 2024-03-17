@@ -7,6 +7,7 @@ use std::{
 };
 
 pub async fn establish_connection() -> Result<DbConn, DbErr> {
+
     let dir = Path::new(util::get_app_dir());
     let file = dir.join("rb_prod.sqlite");
     fs::create_dir_all(dir).unwrap();
@@ -17,7 +18,14 @@ pub async fn establish_connection() -> Result<DbConn, DbErr> {
         .open(file.clone())
         .unwrap();
 
-    let database_url = format!("sqlite://{}", file.into_os_string().into_string().unwrap());
+    let database_url = if cfg!(debug_assertions) {
+        format!("sqlite://{}", "../rb-dev.sqlite?mode=rwc")
+    } else {
+        format!("sqlite://{}", file.into_os_string().into_string().unwrap())
+    };
+        
+    // let database_url = format!("sqlite://{}", file.into_os_string().into_string().unwrap());
+    println!("1111{}", database_url);
 
     let db = Database::connect(&database_url)
         .await

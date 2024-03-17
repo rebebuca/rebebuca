@@ -2,11 +2,11 @@ import { ulid } from 'ulid'
 import dayjs from 'dayjs'
 import { produce } from 'immer'
 import { invoke } from '@tauri-apps/api'
-import { useDispatch } from 'react-redux'
 import { Command } from '@tauri-apps/api/shell'
 import { Button, Popconfirm, message, Typography, Tooltip, Drawer, Space, Divider } from 'antd'
 import { useEffect, useState, useRef } from 'react'
 import { ProTable } from '@ant-design/pro-components'
+import { useSelector, useDispatch } from 'react-redux'
 import type { ProColumns } from '@ant-design/pro-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -15,8 +15,9 @@ import i18next from 'i18next'
 import { runFFmpeg, splitStringWithQuotes } from '@/utils'
 import { updateCommand, resetCommandLog } from '@/store/commandList'
 import { writeSettingToDownload } from '@/utils/export'
-import { parseStreaming } from '@/utils/parse-streaming'
+import { requestDeepseek } from '@/utils/request-deepseek'
 import Anwser from '@/components/anwser/index'
+import type { StateType } from '@/store'
 
 const { Text } = Typography
 
@@ -44,6 +45,7 @@ export default () => {
   // 0运行中 1是完成
   const [runState, setRunState] = useState(1)
   const [abortController, setAbortController] = useState<AbortController>()
+  const settings = useSelector((state: StateType) => state.settings.settingsData)
 
   const onClose = () => {
     if (runState == 0) {
@@ -52,6 +54,26 @@ export default () => {
     } else {
       setOpen(false)
     }
+  }
+  const reRun = () => {
+    let query = ''
+    if (i18next.language == 'ch') {
+      query = '请用中文解释' + clickFFmpegUrl
+    } else query = clickFFmpegUrl
+    requestDeepseek(query, {
+      setAbortController,
+      onData(data) {
+        setRunState(0)
+        setAnswer(data)
+      },
+      onEnd(data) {
+        localStorage.setItem(query, data)
+        setRunState(1)
+      },
+      onAborted() {
+        setRunState(1)
+      }
+    })
   }
 
   const delProjectDetail = async (id: string) => {
@@ -306,42 +328,42 @@ export default () => {
         >
           {t('Copy')}
         </a>,
-        <a
-          key="ai"
-          onClick={() => {
-            setOpen(true)
-            setClickFFmpegUrl(record.url)
-            let query = ''
-            if (i18next.language == 'ch') {
-              query = '请用中文解释' + record.url
-            } else query = record.url
+        settings.ai.type != '1' && (
+          <a
+            key="ai"
+            onClick={() => {
+              setOpen(true)
+              setClickFFmpegUrl(record.url)
+              let query = ''
+              if (i18next.language == 'ch') {
+                query = '请用中文解释' + record.url
+              } else query = record.url
 
-            const answered = localStorage.getItem(query)
-            if (answered) {
-              setAnswer(answered)
-              return
-            }
-
-            parseStreaming(query, {
-              setAbortController,
-              onData(data) {
-                setRunState(0)
-                setAnswer(data)
-              },
-              onEnd(data) {
-                console.log('结束喽----', data)
-                localStorage.setItem(query, data)
-                setRunState(1)
-              },
-              onAborted() {
-                setRunState(1)
-                console.log('终止')
+              const answered = localStorage.getItem(query)
+              if (answered) {
+                setAnswer(answered)
+                return
               }
-            })
-          }}
-        >
-          {t('AI')}
-        </a>,
+
+              requestDeepseek(query, {
+                setAbortController,
+                onData(data) {
+                  setRunState(0)
+                  setAnswer(data)
+                },
+                onEnd(data) {
+                  localStorage.setItem(query, data)
+                  setRunState(1)
+                },
+                onAborted() {
+                  setRunState(1)
+                }
+              })
+            }}
+          >
+            {t('AI')}
+          </a>
+        ),
         <Popconfirm
           title={t('Prompt')}
           description={t('Are you sure you want to delete this command?')}
@@ -429,8 +451,10 @@ export default () => {
         keyboard={false}
         maskClosable={false}
         closeIcon={false}
+        destroyOnClose={true}
         extra={
           <Space>
+            {runState == 1 && <Button onClick={reRun}>Re-Run</Button>}
             <Button type="primary" onClick={onClose}>
               {['Stop', 'Ok'][runState]}
             </Button>

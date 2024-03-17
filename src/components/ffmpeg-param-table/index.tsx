@@ -61,7 +61,10 @@ const FFmpegParamTable: React.FC = () => {
             alt=""
             onClick={() => {
               shell.open(
-                `https://rebebuca.com/guide/ffmpeg%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0%E5%A4%A7%E5%85%A8.html#${record.value.replace('-', '')}`
+                `https://rebebuca.com/guide/ffmpeg%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0%E5%A4%A7%E5%85%A8.html#${record.value.replace(
+                  '-',
+                  ''
+                )}`
               )
             }}
           />

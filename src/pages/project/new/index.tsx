@@ -23,7 +23,9 @@ import {
   Modal
 } from 'antd'
 import { useTranslation } from 'react-i18next'
-
+import FFmpegParamTable from '@/components/ffmpeg-param-table/'
+import { argKeyListEn } from '@/constants/keys-en'
+import i18next from 'i18next'
 import { argKeyList } from '@/constants/keys'
 import { parseFFUrl } from '@/utils/parseFFUrl'
 import { StateType } from '@/store'
@@ -69,29 +71,6 @@ export interface IDescItem {
 const ProjectItemNew: React.FC = () => {
   const { t } = useTranslation()
   const nav = useNavigate()
-  const columns: ProColumns<DataSourceType>[] = [
-    {
-      title: t('参数key'),
-      width: '30%',
-      key: 'key',
-      dataIndex: 'key',
-      valueType: 'select',
-      tooltip: t('不能自定义，如果下拉选项没有你想要的key，请写在value中'),
-      fieldProps: {
-        showSearch: true,
-        options: argKeyList
-      }
-    },
-    {
-      title: t('参数value'),
-      dataIndex: 'value',
-      width: '50%'
-    },
-    {
-      title: t('操作'),
-      valueType: 'option'
-    }
-  ]
 
   const initialItems = [
     { label: '新建命令', key: '1000', id: '-1', name: '', url: '', argList: [] }
@@ -108,6 +87,43 @@ const ProjectItemNew: React.FC = () => {
   const formRef = useRef<ProFormInstance>()
 
   const settings = useSelector((state: StateType) => state.settings.settingsData)
+  const [rightSegmented, setRightSegmented] = useState<string | number>(1)
+
+  const [options, setOptions] = useState(argKeyList)
+
+  i18next.on('languageChanged', lng => {
+    if (lng == 'en') {
+      setOptions(argKeyListEn)
+    } else {
+      setOptions(argKeyList)
+    }
+  })
+
+  const columns: ProColumns<DataSourceType>[] = [
+    {
+      title: t('参数key'),
+      width: '25%',
+      key: 'key',
+      dataIndex: 'key',
+      valueType: 'select',
+      tooltip: t('不能自定义，如果下拉选项没有你想要的key，请写在value中'),
+      fieldProps: {
+        showSearch: true,
+        options: options,
+        optionLabelProp: 'value',
+        optionRender: option => <Space>{option.data.value}</Space>
+      }
+    },
+    {
+      title: t('参数value'),
+      dataIndex: 'value',
+      width: '57%'
+    },
+    {
+      title: t('操作'),
+      valueType: 'option'
+    }
+  ]
 
   const [descItems, setDescItems] = useState<Array<IDescItem>>([
     {
@@ -314,7 +330,7 @@ const ProjectItemNew: React.FC = () => {
         if (item.key == activeKey)
           return (
             <ProCard key={item.key} split="vertical">
-              <ProCard title="" colSpan="70%">
+              <ProCard title="" colSpan="62%">
                 <Space direction="vertical">
                   <Segmented options={[t('标准模式')]} />
                   <ProForm<{
@@ -436,28 +452,48 @@ const ProjectItemNew: React.FC = () => {
               </ProCard>
               <ProCard title="">
                 <Space direction="vertical">
-                  <Segmented options={[t('信息面板')]} />
-                  <div>
-                    <Descriptions
-                      items={[
-                        {
-                          key: '6',
-                          label: t('FFMPEG 来源'),
-                          children: settings.ffmpeg == 'default' ? t('软件自带') : t('本机自带'),
-                          span: 3
-                        }
-                      ]}
-                    />
-                    <Descriptions
-                      layout="vertical"
-                      items={descItems.slice(0, 1).map(a => {
-                        return {
-                          ...a,
-                          label: t([a.label])
-                        }
-                      })}
-                    />
-                  </div>
+                  <Segmented
+                    value={rightSegmented}
+                    onChange={setRightSegmented}
+                    options={[
+                      {
+                        label: t('信息面板'),
+                        value: 1
+                      },
+                      {
+                        label: t('参数注释表'),
+                        value: 2
+                      }
+                    ]}
+                  />
+                  {rightSegmented == 1 && (
+                    <div>
+                      <Descriptions
+                        items={[
+                          {
+                            key: '6',
+                            label: t('FFMPEG 来源'),
+                            children: settings.ffmpeg == 'default' ? t('软件自带') : t('本机自带'),
+                            span: 3
+                          }
+                        ]}
+                      />
+                      <Descriptions
+                        layout="vertical"
+                        items={descItems.slice(0, 1).map(a => {
+                          return {
+                            ...a,
+                            label: t([a.label])
+                          }
+                        })}
+                      />
+                    </div>
+                  )}
+                  {rightSegmented == 2 && (
+                    <div style={{ width: '100%' }}>
+                      <FFmpegParamTable></FFmpegParamTable>
+                    </div>
+                  )}
                 </Space>
               </ProCard>
             </ProCard>

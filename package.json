@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": " eslint src/**/*.{js,ts,jsx,tsx} ",
-    "format": " prettier --write src/**/*.{ts,tsx}",
+    "format": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "preinstall": "npx only-allow pnpm && node ./scripts/check.mjs",
     "gen": "sea-orm-cli migrate refresh -d src-tauri/migration && sea-orm-cli generate entity -l -o src-tauri/entity/src --expanded-format --with-serde both"
   },

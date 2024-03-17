@@ -15,6 +15,7 @@ pub async fn add_app_setting_db(app_setting: Model) -> Result<Vec<Model>, DbErr>
         ffmpeg: Set(app_setting.ffmpeg),
         quit_type: Set(app_setting.quit_type),
         theme: Set(app_setting.theme),
+        ai: Set(app_setting.ai),
         lang: Set(app_setting.lang),
     };
     model.insert(&db).await?;
@@ -29,6 +30,7 @@ pub async fn update_app_setting_db(app_setting: Model) -> Result<Vec<Model>, DbE
         ffmpeg: Set(app_setting.ffmpeg),
         quit_type: Set(app_setting.quit_type),
         theme: Set(app_setting.theme),
+        ai: Set(app_setting.ai),
         lang: Set(app_setting.lang),
     };
     model.update(&db).await?;

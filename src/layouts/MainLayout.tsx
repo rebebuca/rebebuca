@@ -62,6 +62,7 @@ export interface IAppSettingItem {
   version?: string
   ffmpeg?: string
   theme?: string
+  ai: string
   quit_type?: string
 }
 
@@ -125,7 +126,11 @@ export default () => {
         theme: 'light',
         ffmpeg: 'default',
         version: '1.0',
-        quit_type: '1'
+        quit_type: '1',
+        ai: JSON.stringify({
+          type: '2',
+          key: 'sk-f5b754a7d80849fa91aa02e3c9eba6174b'
+        })
       }
       await invoke('add_app_setting', {
         appSetting: defaultSetting
@@ -140,6 +145,8 @@ export default () => {
         setLocale(enUS)
       }
       localStorage.setItem('ffmpeg', 'default')
+      localStorage.setItem('ai-type', '2')
+      localStorage.setItem('ai-key', 'sk-f5b754a7d80849fa91aa02e3c9eba6174b')
     } else {
       setAppSetting(setting[0])
       setDark(setting[0].theme === 'dark')
@@ -150,6 +157,11 @@ export default () => {
         setLocale(enUS)
       }
       localStorage.setItem('ffmpeg', setting[0].ffmpeg as string)
+      localStorage.setItem('ai-type', JSON.parse(setting[0].ai).type)
+      localStorage.setItem(
+        'ai-key',
+        JSON.parse(setting[0].ai).key || 'sk-f5b754a7d80849fa91aa02e3c9eba6174b'
+      )
       updateSettings({
         ...setting[0]
       })

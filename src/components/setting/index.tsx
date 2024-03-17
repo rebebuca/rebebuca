@@ -39,8 +39,8 @@ export interface IAppSettingItem {
   version?: string
   ffmpeg?: string
   ai: {
-    type?: string
-    key?: string
+    type: string
+    key: string
   }
   theme?: string
   quit_type?: string
@@ -87,7 +87,7 @@ export default (props: PropsType) => {
   const [appSetting, setAppSetting] = useState<IAppSettingItem>({
     ai: {
       type: '2',
-      key: ''
+      key: 'sk-f5b754a7d80849fa91aa02e3c9eba6174b'
     }
   })
 
@@ -172,35 +172,39 @@ export default (props: PropsType) => {
   }
 
   const onChangeAppAiSetting = async (value: string, type: string) => {
-    console.log(55555, value, type)
     const opts = {
       ...appSetting,
       ai: {
-        ...appSetting.ai,
+        type: appSetting.ai.type,
+        key: appSetting.ai.key || '',
         [type]: value
       }
     }
     updateSettings({
       ...opts
     })
-    return
     await invoke('update_app_setting', {
-      appSetting: opts
+      appSetting: {
+        ...opts,
+        ai: JSON.stringify(opts.ai)
+      }
     })
+    localStorage.setItem('ai-type', type)
+    localStorage.setItem('ai-key', value)
     initPage()
   }
 
   const initPage = async () => {
-    const data: Array<IAppSettingItem> = await invoke('get_app_setting')
+    const data: Array<any> = await invoke('get_app_setting')
     if (data.length == 0) {
       const defaultSetting = {
         lang: 'ch',
         theme: 'light',
         ffmpeg: 'default',
-        ai: {
+        ai: JSON.stringify({
           type: '2',
-          key: ''
-        },
+          key: 'sk-f5b754a7d80849fa91aa02e3c9eba6174b'
+        }),
         version: '1.0',
         quit_type: '1'
       }
@@ -209,10 +213,7 @@ export default (props: PropsType) => {
       })
       setAppSetting(data[0])
     } else {
-      data[0].ai = {
-        type: '2',
-        key: ''
-      }
+      data[0].ai = JSON.parse(data[0].ai)
       setAppSetting(data[0])
     }
     const appVersion = await getVersion()
@@ -329,23 +330,24 @@ export default (props: PropsType) => {
                     >
                       <Space>
                         <Radio value={'1'}>{t('none')}</Radio>
-                        <Radio disabled={disabled} value="2">
+                        <Radio disabled={disabled} value={'2'}>
                           {t('deepseek')}
                         </Radio>
                       </Space>
                     </Radio.Group>
-                    <div className="ai-form">
-                      <Form {...formItemLayout} layout="horizontal" style={{ maxWidth: 600 }}>
-                        <Form.Item label="key">
-                          <Input.Password
-                            placeholder="input deepseek key"
-                            value={appSetting.ai.key || 'sk-015d8ea28d544c9e8b741c514272db3c4b'}
-                            onChange={e => onChangeAppAiSetting(e.target.value, 'key')}
-                          />
-                          {/* <Input.Password placeholder="input deepseek key" value="sk-015d8ea28d544c9e8b741c514272db3c4b" /> */}
-                        </Form.Item>
-                      </Form>
-                    </div>
+                    {appSetting.ai.type != '1' && (
+                      <div className="ai-form">
+                        <Form {...formItemLayout} layout="horizontal" style={{ maxWidth: 600 }}>
+                          <Form.Item label="key">
+                            <Input.Password
+                              placeholder="input deepseek key"
+                              value={appSetting.ai.key}
+                              onChange={e => onChangeAppAiSetting(e.target.value, 'key')}
+                            />
+                          </Form.Item>
+                        </Form>
+                      </div>
+                    )}
                   </div>
                 </Space>
               </div>
