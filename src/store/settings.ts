@@ -6,6 +6,10 @@ export type SettingType = {
   ffmpeg: string
   version: string
   quit_type: string
+  ai: {
+    type: string
+    key: string
+  }
 }
 
 export type SettingStateType = {
@@ -18,7 +22,11 @@ const INIT_STATE: SettingStateType = {
     theme: 'light',
     ffmpeg: 'default',
     version: '1.0',
-    quit_type: '1'
+    quit_type: '1',
+    ai: {
+      type: '2',
+      key: ''
+    }
   }
 }
 

@@ -4,16 +4,19 @@ import { produce } from 'immer'
 import { invoke } from '@tauri-apps/api'
 import { useDispatch } from 'react-redux'
 import { Command } from '@tauri-apps/api/shell'
-import { Button, Popconfirm, message, Typography, Tooltip } from 'antd'
+import { Button, Popconfirm, message, Typography, Tooltip, Drawer, Space, Divider } from 'antd'
 import { useEffect, useState, useRef } from 'react'
 import { ProTable } from '@ant-design/pro-components'
 import type { ProColumns } from '@ant-design/pro-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 
 import { runFFmpeg, splitStringWithQuotes } from '@/utils'
 import { updateCommand, resetCommandLog } from '@/store/commandList'
 import { writeSettingToDownload } from '@/utils/export'
+import { parseStreaming } from '@/utils/parse-streaming'
+import Anwser from '@/components/anwser/index'
 
 const { Text } = Typography
 
@@ -35,6 +38,21 @@ export default () => {
   const [searchParams] = useSearchParams()
   const nav = useNavigate()
   const dispatch = useDispatch()
+  const [answer, setAnswer] = useState('')
+  const [open, setOpen] = useState(false)
+  const [clickFFmpegUrl, setClickFFmpegUrl] = useState('')
+  // 0运行中 1是完成
+  const [runState, setRunState] = useState(1)
+  const [abortController, setAbortController] = useState<AbortController>()
+
+  const onClose = () => {
+    if (runState == 0) {
+      setOpen(false)
+      abortController?.abort()
+    } else {
+      setOpen(false)
+    }
+  }
 
   const delProjectDetail = async (id: string) => {
     const res: Array<ListItem> = await invoke('del_project_detail', {
@@ -288,6 +306,42 @@ export default () => {
         >
           {t('Copy')}
         </a>,
+        <a
+          key="ai"
+          onClick={() => {
+            setOpen(true)
+            setClickFFmpegUrl(record.url)
+            let query = ''
+            if (i18next.language == 'ch') {
+              query = '请用中文解释' + record.url
+            } else query = record.url
+
+            const answered = localStorage.getItem(query)
+            if (answered) {
+              setAnswer(answered)
+              return
+            }
+
+            parseStreaming(query, {
+              setAbortController,
+              onData(data) {
+                setRunState(0)
+                setAnswer(data)
+              },
+              onEnd(data) {
+                console.log('结束喽----', data)
+                localStorage.setItem(query, data)
+                setRunState(1)
+              },
+              onAborted() {
+                setRunState(1)
+                console.log('终止')
+              }
+            })
+          }}
+        >
+          {t('AI')}
+        </a>,
         <Popconfirm
           title={t('Prompt')}
           description={t('Are you sure you want to delete this command?')}
@@ -325,43 +379,68 @@ export default () => {
   }, [])
 
   return (
-    <ProTable<ListItem>
-      columns={columns}
-      actionRef={actionRef}
-      dataSource={list}
-      rowKey="id"
-      pagination={{
-        pageSize: 8
-      }}
-      options={false}
-      search={false}
-      dateFormatter="string"
-      toolbar={{
-        title: t('Command List')
-      }}
-      toolBarRender={() => [
-        <Button
-          type="text"
-          key="export"
-          onClick={() => {
-            projectExport()
-          }}
-        >
-          {t('项目导出')}
-        </Button>,
-        <Button
-          type="primary"
-          key="primary"
-          onClick={() => {
-            nav({
-              pathname: `/project/new`,
-              search: `name=${searchParams.get('name')}&projectId=${searchParams.get('projectId')}`
-            })
-          }}
-        >
-          {t('New Command')}
-        </Button>
-      ]}
-    />
+    <div>
+      <ProTable<ListItem>
+        columns={columns}
+        actionRef={actionRef}
+        dataSource={list}
+        rowKey="id"
+        pagination={{
+          pageSize: 8
+        }}
+        options={false}
+        search={false}
+        dateFormatter="string"
+        toolbar={{
+          title: t('Command List')
+        }}
+        toolBarRender={() => [
+          <Button
+            type="text"
+            key="export"
+            onClick={() => {
+              projectExport()
+            }}
+          >
+            {t('项目导出')}
+          </Button>,
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => {
+              nav({
+                pathname: `/project/new`,
+                search: `name=${searchParams.get('name')}&projectId=${searchParams.get(
+                  'projectId'
+                )}`
+              })
+            }}
+          >
+            {t('New Command')}
+          </Button>
+        ]}
+      />
+      <Drawer
+        title="FFMPEG-AI"
+        placement={'left'}
+        width={600}
+        open={open}
+        onClose={onClose}
+        keyboard={false}
+        maskClosable={false}
+        closeIcon={false}
+        extra={
+          <Space>
+            <Button type="primary" onClick={onClose}>
+              {['Stop', 'Ok'][runState]}
+            </Button>
+          </Space>
+        }
+      >
+        <div>{clickFFmpegUrl}</div>
+        <Divider />
+        <Anwser answer={answer}></Anwser>
+      </Drawer>
+    </div>
   )
 }

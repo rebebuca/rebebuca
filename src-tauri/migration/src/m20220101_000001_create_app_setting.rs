@@ -7,6 +7,7 @@ enum AppSetting {
     Ffmpeg,
     Theme,
     QuitType,
+    Ai,
     Lang,
 }
 
@@ -31,6 +32,7 @@ impl MigrationTrait for Migration {
                             .primary_key(),
                     )
                     .col(ColumnDef::new(AppSetting::Ffmpeg).string().not_null())
+                    .col(ColumnDef::new(AppSetting::Ai).string().not_null())
                     .col(ColumnDef::new(AppSetting::Theme).string().not_null())
                     .col(ColumnDef::new(AppSetting::QuitType).string().not_null())
                     .col(ColumnDef::new(AppSetting::Lang).string().not_null())

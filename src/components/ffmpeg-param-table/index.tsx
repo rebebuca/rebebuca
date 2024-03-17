@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { shell } from '@tauri-apps/api'
 import { Table } from 'antd'
-import type { TableColumnsType, TableProps } from 'antd'
+import type { TableColumnsType } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { argKeyList } from '@/constants/keys'
 import { argKeyListEn } from '@/constants/keys-en'

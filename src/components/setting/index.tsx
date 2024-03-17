@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Modal, Menu, Radio, Select, Space, Tooltip, Form, Input, Button, Checkbox } from 'antd'
+import { Modal, Menu, Radio, Select, Space, Tooltip, Form, Input } from 'antd'
 import { InfoCircleOutlined, SettingOutlined } from '@ant-design/icons'
 import { getVersion } from '@tauri-apps/api/app'
 
@@ -16,11 +16,7 @@ import { invoke } from '@tauri-apps/api'
 import { Command } from '@tauri-apps/api/shell'
 import Link from 'antd/lib/typography/Link'
 
-const { TextArea } = Input
-
 const formItemLayout = { labelCol: { span: 4 }, wrapperCol: { span: 14 } }
-
-const buttonItemLayout = { wrapperCol: { span: 14, offset: 4 } }
 
 function getItem(
   label: React.ReactNode,
@@ -43,7 +39,8 @@ export interface IAppSettingItem {
   version?: string
   ffmpeg?: string
   ai: {
-    type: string
+    type?: string
+    key?: string
   }
   theme?: string
   quit_type?: string
@@ -89,7 +86,8 @@ export default (props: PropsType) => {
 
   const [appSetting, setAppSetting] = useState<IAppSettingItem>({
     ai: {
-      type: '2'
+      type: '2',
+      key: ''
     }
   })
 
@@ -97,8 +95,6 @@ export default (props: PropsType) => {
   const [defaultVersion, setDefaultVersion] = useState('')
   const [localVersion, setLocalVersion] = useState('')
   const [disabled, setDisabled] = useState(true)
-
-  const [componentDisabled, setComponentDisabled] = useState<boolean>(true)
 
   const dispatch = useDispatch()
 
@@ -175,6 +171,25 @@ export default (props: PropsType) => {
     initPage()
   }
 
+  const onChangeAppAiSetting = async (value: string, type: string) => {
+    console.log(55555, value, type)
+    const opts = {
+      ...appSetting,
+      ai: {
+        ...appSetting.ai,
+        [type]: value
+      }
+    }
+    updateSettings({
+      ...opts
+    })
+    return
+    await invoke('update_app_setting', {
+      appSetting: opts
+    })
+    initPage()
+  }
+
   const initPage = async () => {
     const data: Array<IAppSettingItem> = await invoke('get_app_setting')
     if (data.length == 0) {
@@ -183,7 +198,8 @@ export default (props: PropsType) => {
         theme: 'light',
         ffmpeg: 'default',
         ai: {
-          type: '2'
+          type: '2',
+          key: ''
         },
         version: '1.0',
         quit_type: '1'
@@ -194,7 +210,8 @@ export default (props: PropsType) => {
       setAppSetting(data[0])
     } else {
       data[0].ai = {
-        type: '2'
+        type: '2',
+        key: ''
       }
       setAppSetting(data[0])
     }
@@ -307,33 +324,26 @@ export default (props: PropsType) => {
                   <div>{t('AI')}</div>
                   <div className="ai">
                     <Radio.Group
-                      onChange={e => onChangeAppSetting(e.target.value, 'ai')}
+                      onChange={e => onChangeAppAiSetting(e.target.value, 'type')}
                       value={appSetting.ai.type}
                     >
                       <Space>
-                        <Radio value="1">{t('none')}</Radio>
+                        <Radio value={'1'}>{t('none')}</Radio>
                         <Radio disabled={disabled} value="2">
                           {t('deepseek')}
                         </Radio>
                       </Space>
                     </Radio.Group>
                     <div className="ai-form">
-                      <Form
-                        // disabled={componentDisabled}
-                        {...formItemLayout}
-                        layout="horizontal"
-                        style={{ maxWidth: 600 }}
-                      >
-                        {/* sk-3bd52ee65d594a5fbfcea97f48e9be53 */}
-                        <Form.Item label="Key">
-                          <Input.Password placeholder="input deepseek key" />
+                      <Form {...formItemLayout} layout="horizontal" style={{ maxWidth: 600 }}>
+                        <Form.Item label="key">
+                          <Input.Password
+                            placeholder="input deepseek key"
+                            value={appSetting.ai.key || 'sk-015d8ea28d544c9e8b741c514272db3c4b'}
+                            onChange={e => onChangeAppAiSetting(e.target.value, 'key')}
+                          />
+                          {/* <Input.Password placeholder="input deepseek key" value="sk-015d8ea28d544c9e8b741c514272db3c4b" /> */}
                         </Form.Item>
-                        {/* <Form.Item label="Prompt">
-                          <TextArea autoSize={{ minRows: 5, maxRows: 5 }} />
-                        </Form.Item>
-                        <Form.Item {...buttonItemLayout}>
-                          <Button type="primary">{t('保存')}</Button>
-                        </Form.Item> */}
                       </Form>
                     </div>
                   </div>
