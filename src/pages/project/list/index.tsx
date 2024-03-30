@@ -3,7 +3,17 @@ import dayjs from 'dayjs'
 import { produce } from 'immer'
 import { invoke } from '@tauri-apps/api'
 import { Command } from '@tauri-apps/api/shell'
-import { Button, Popconfirm, message, Typography, Tooltip, Drawer, Space, Divider } from 'antd'
+import {
+  Button,
+  Popconfirm,
+  message,
+  Typography,
+  Tooltip,
+  Drawer,
+  Space,
+  Divider,
+  Dropdown
+} from 'antd'
 import { useEffect, useState, useRef } from 'react'
 import { ProTable } from '@ant-design/pro-components'
 import { useSelector, useDispatch } from 'react-redux'
@@ -31,6 +41,8 @@ export type ListItem = {
   pid: number
   arg_list?: string
 }
+
+let tempData: Array<object> = []
 
 export default () => {
   const { t } = useTranslation()
@@ -89,6 +101,8 @@ export default () => {
     const res: Array<ListItem> = await invoke('get_project_detail', {
       projectId: searchParams.get('projectId')
     })
+    if (JSON.stringify(res) == JSON.stringify(tempData)) return
+    tempData = res
     setList(() => {
       return res
     })
@@ -178,7 +192,7 @@ export default () => {
     },
     {
       title: t('操作'),
-      width: '25%',
+      width: '23%',
       key: `${ulid()}_option`,
       valueType: 'option',
       render: (_, record: ListItem) => [
@@ -320,14 +334,14 @@ export default () => {
         >
           {t('Edit')}
         </a>,
-        <a
-          key="copy"
-          onClick={() => {
-            copyApi(record)
-          }}
-        >
-          {t('Copy')}
-        </a>,
+        // <a
+        //   key="copy"
+        //   onClick={() => {
+        //     copyApi(record)
+        //   }}
+        // >
+        //   {t('Copy')}
+        // </a>,
         settings.ai.type != '1' && (
           <a
             key="ai"
@@ -364,22 +378,51 @@ export default () => {
             {t('AI')}
           </a>
         ),
-        <Popconfirm
-          title={t('Prompt')}
-          description={t('Are you sure you want to delete this command?')}
-          onConfirm={() => {
-            if (record.status == '12') {
-              message.success(t('正在运行中，不可删除'), 2)
-              return
-            }
-            delProjectDetail(record.id as string)
+        <Dropdown
+          key="more"
+          menu={{
+            items: [
+              {
+                label: (
+                  <a
+                    key="copy"
+                    onClick={() => {
+                      copyApi(record)
+                    }}
+                  >
+                    {t('Copy')}
+                  </a>
+                ),
+                key: '001'
+              },
+              {
+                label: (
+                  <Popconfirm
+                    title={t('Prompt')}
+                    description={t('Are you sure you want to delete this command?')}
+                    onConfirm={() => {
+                      if (record.status == '12') {
+                        message.success(t('正在运行中，不可删除'), 2)
+                        return
+                      }
+                      delProjectDetail(record.id as string)
+                    }}
+                    key="del"
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <a style={{ opacity: 0.88, color: 'red' }}>{t('Delete')}</a>
+                  </Popconfirm>
+                ),
+                key: '002'
+              }
+            ]
           }}
-          key="del"
-          okText="Yes"
-          cancelText="No"
         >
-          <a style={{ opacity: 0.88, color: 'red' }}>{t('Delete')}</a>
-        </Popconfirm>
+          <a style={{ color: 'black' }} onClick={e => e.preventDefault()}>
+            <Space>more</Space>
+          </a>
+        </Dropdown>
       ]
     }
   ]
