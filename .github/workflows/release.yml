@@ -146,7 +146,7 @@ jobs:
       with:
         target: ${{ matrix.rust_target }}
         projectPath: src-tauri
-        debug: true
+        debug: false
 
     - name: copy ouputs
       run: |
