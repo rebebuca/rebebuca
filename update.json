@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "notes": "增加 ffmpeg 参数注释、增加AI助手、优化交互",
+    "platforms": {
+      "darwin-aarch64": {
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTYVA5Y05DUUZGQW9NZTRZUUpqY0VVblZDMFl5ZTBZY0VpOUlYeE9PcThXaElDMTZBSkZ3MmtKWDNNRUc0NGQ3MHZHbUx6djRxamJHV0tuQ3M1OGhzUkJEUUtlaXVMYUFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzEyMTM0MjIxCWZpbGU6UmViZWJ1Y2EuYXBwLnRhci5negpJdDZoZGlMNW13bGlKcHgvMCs0bUhoZHQ4MXRVbHFzS0xqOXVsaThLWUpVWkxPWjdVcW0zSENINEUvOUt3TkdNOERGeEdTTWlqYSt2S3RzSWpGbXlEZz09Cg==",
+        "url": "https://download.m7s.live/rb/Rebebuca.app.tar.gz"
+      },
+      "darwin-x86_64": {
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTYVA5Y05DUUZGQW9NZTRZUUpqY0VVblZDMFl5ZTBZY0VpOUlYeE9PcThXaElDMTZBSkZ3MmtKWDNNRUc0NGQ3MHZHbUx6djRxamJHV0tuQ3M1OGhzUkJEUUtlaXVMYUFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzEyMTM0MjIxCWZpbGU6UmViZWJ1Y2EuYXBwLnRhci5negpJdDZoZGlMNW13bGlKcHgvMCs0bUhoZHQ4MXRVbHFzS0xqOXVsaThLWUpVWkxPWjdVcW0zSENINEUvOUt3TkdNOERGeEdTTWlqYSt2S3RzSWpGbXlEZz09Cg==",
+        "url": "https://download.m7s.live/rb/Rebebuca.app.tar.gz"
+      },
+       "windows-x86_64": {
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTYVA5Y05DUUZGQXJVR1AydlJLbWZTVm5mSzZJa0w3Rm1aY0tzK05rcFB0RzJoWTF5NmJ1Rlg1ckpLN2MvU1FCNWd2WUtXRmFvbHVIbW9zU0UyZjJXNC9nUkNpRkpJREFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzA3ODg2Nzc1CWZpbGU6UmViZWJ1Y2FfMC4xLjBfeDY0X2VuLVVTLm1zaS56aXAKcGVrNXo2aFpYNjRJeWlxZTJLWHBLYUdueUNDelZ4c2dVdjZEOHN0VGl6c1BWR0ZCRkg2aXY2ZXk3QWlIbHNIdEZKTWlMQ1d4Z2xIZi93WDVySG1GRGc9PQo=",
+        "url": "https://download.m7s.live/rb/Rebebuca_0.2.0_x64_en-US.msi.zip"
+      }
+    }
+  }
