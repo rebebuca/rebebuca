@@ -16,20 +16,20 @@ impl EntityName for Entity {
 pub struct Model {
     pub version: String,
     pub ffmpeg: String,
-    pub ai: String,
     pub theme: String,
     pub quit_type: String,
     pub lang: String,
+    pub ai: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveColumn)]
 pub enum Column {
     Version,
     Ffmpeg,
-    Ai,
     Theme,
     QuitType,
     Lang,
+    Ai,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DerivePrimaryKey)]
@@ -53,10 +53,10 @@ impl ColumnTrait for Column {
         match self {
             Self::Version => ColumnType::String(None).def(),
             Self::Ffmpeg => ColumnType::String(None).def(),
-            Self::Ai => ColumnType::String(None).def(),
             Self::Theme => ColumnType::String(None).def(),
             Self::QuitType => ColumnType::String(None).def(),
             Self::Lang => ColumnType::String(None).def(),
+            Self::Ai => ColumnType::String(None).def().null(),
         }
     }
 }

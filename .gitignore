@@ -23,5 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-rb.sqlite
+rb_prod.sqlite
 rb-dev.sqlite

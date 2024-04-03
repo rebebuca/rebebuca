@@ -101,7 +101,9 @@ export default () => {
     const res: Array<ListItem> = await invoke('get_project_detail', {
       projectId: searchParams.get('projectId')
     })
-    if (JSON.stringify(res) == JSON.stringify(tempData)) return
+    if (JSON.stringify(res) == JSON.stringify(tempData)) {
+      return
+    }
     tempData = res
     setList(() => {
       return res
@@ -440,6 +442,7 @@ export default () => {
     }, 3000)
     return () => {
       clearInterval(interval)
+      tempData = []
     }
   }, [])
 

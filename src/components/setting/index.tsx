@@ -73,11 +73,9 @@ export default (props: PropsType) => {
     ),
     getItem(t('General'), '2', <SettingOutlined></SettingOutlined>),
     getItem(t('高级选项'), '3', <SettingOutlined></SettingOutlined>),
-    // getItem(t('AI'), '5', <SettingOutlined></SettingOutlined>),
     getItem(t('About Rebebuca'), '4', <InfoCircleOutlined />)
   ]
 
-  // const [currentKey, setCurrentKey] = useState('1')
   const [currentKey, setCurrentKey] = useState('3')
 
   const onClick: MenuProps['onClick'] = e => {
