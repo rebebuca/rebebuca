@@ -58,7 +58,7 @@ const FFmpegParamTable: React.FC = () => {
           {value}
           <img
             className="link-svg"
-            src="/public/link.svg"
+            src="/link.svg"
             alt=""
             onClick={() => {
               shell.open(
