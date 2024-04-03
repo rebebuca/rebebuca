@@ -6,7 +6,32 @@ import copy from 'copy-to-clipboard'
 import './index.scss'
 import { CopyOutlined } from '@ant-design/icons'
 
+function replaceOddBackticks(str: string): string {
+  let backtickCount = 0
+  let result = ''
+  let isInsideCodeBlock = false
+
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === '`' && str[i + 1] === '`' && str[i + 2] === '`') {
+      backtickCount++
+      isInsideCodeBlock = !isInsideCodeBlock
+      if (backtickCount % 2 === 1 && isInsideCodeBlock) {
+        result += '```sh'
+        i += 2
+      } else {
+        result += '```'
+        i += 2
+      }
+    } else {
+      result += str[i]
+    }
+  }
+  return result
+}
+
 const Answer: FC<{ answer: string }> = ({ answer }) => {
+  let str = answer
+  const re = replaceOddBackticks(str)
   return (
     <div>
       <Space direction="vertical" size="middle">
@@ -15,6 +40,7 @@ const Answer: FC<{ answer: string }> = ({ answer }) => {
             code(props) {
               const { children, className, node, ...rest } = props
               const match = /language-(\w+)/.exec(className || '')
+              console.log('🚀 ~ code ~ match:', className)
               return match ? (
                 <div className="code-box">
                   <div className="copy">
@@ -48,7 +74,7 @@ const Answer: FC<{ answer: string }> = ({ answer }) => {
             }
           }}
         >
-          {answer}
+          {re}
         </Markdown>
       </Space>
     </div>

@@ -1,9 +1,9 @@
 {
-    "version": "0.1.0",
+    "version": "0.2.0",
     "notes": "增加 ffmpeg 参数注释、增加AI助手、优化交互",
     "platforms": {
       "darwin-aarch64": {
-        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTYVA5Y05DUUZGQXVTc2VGOXhnSHB1dWxKRFM5Njdpek5PZVcyMUNYN1hJNWJpYnA2ZkJGMVdMaXdYK0g1dXhDZmtlT0JqdVlHM2ozMTZoWVE3Zkh0T1pzS0tmNXk2cmc0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzEyMTM4ODkwCWZpbGU6UmViZWJ1Y2EuYXBwLnRhci5negp2SkxLRHNnd2RpWmRXRVdEbnhnZmVJSmNXRE1lNjhiMDFQem53YWpMT01VeXZ0dWZ5UnhkdVdZU1Exako1YUxmVnV3dDVBK1hOQVV6RTc4UysydHVBUT09Cg==",
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTYVA5Y05DUUZGQW8zQUhudXlpM3RKc3dBa3Y1bnFVb3dvWWtmUDM2WmVwZXE5UEQ5b0ozQ0dKZXlJaldrdWhkVWhIdEZPUHRUTW4zaHZPWCtrUWQvYkVWL0FHaHE4TmdvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzEyMTUzMzY0CWZpbGU6UmViZWJ1Y2EuYXBwLnRhci5negp2VGpwRGYvcGJJZXdaZ2JiaUFCZ0I3U1FlQ1BLTG92QjJodGtJYU9XNFZCMXVhRWozVzZjUlRGSVBvMTRNVWdwdkFwWiszM2p5YXJHdmFKYnc5N3dBUT09Cg==",
         "url": "https://download.m7s.live/rb/Rebebuca.app.tar.gz"
       },
       "darwin-x86_64": {
