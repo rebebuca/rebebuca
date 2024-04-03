@@ -74,6 +74,7 @@ export default () => {
   // const [open, setOpen] = useState(true)
   const [open, setOpen] = useState(false)
   const [dark, setDark] = useState(false)
+  // @ts-ignore
   const [appSetting, setAppSetting] = useState<IAppSettingItem>({})
 
   const [isMaximize, setIsMaximize] = useState(false)

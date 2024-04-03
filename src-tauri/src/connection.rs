@@ -25,7 +25,6 @@ pub async fn establish_connection() -> Result<DbConn, DbErr> {
     };
         
     // let database_url = format!("sqlite://{}", file.into_os_string().into_string().unwrap());
-    println!("1111{}", database_url);
 
     let db = Database::connect(&database_url)
         .await

@@ -35,8 +35,6 @@ const Home: FC = () => {
 
   const [selectValue, setSelectValue] = useState('')
 
-  const [answer, setAnswer] = useState('')
-
   const newProject = async () => {
     const project = {
       project_id: ulid(),

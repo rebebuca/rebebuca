@@ -47,6 +47,7 @@ const FFmpegParamTable: React.FC = () => {
       ],
       width: '33%',
       filterSearch: true,
+      // @ts-ignore
       onFilter: (value: string, record) => record.value.startsWith(value)
     },
     {

@@ -97,6 +97,7 @@ const ProjectItemEdit: React.FC = () => {
         showSearch: true,
         options: options,
         optionLabelProp: 'value',
+        // @ts-ignore
         optionRender: option => <Space>{option.data.value}</Space>
       }
     },
