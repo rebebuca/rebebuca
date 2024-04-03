@@ -18,7 +18,7 @@ pub async fn establish_connection() -> Result<DbConn, DbErr> {
         .unwrap();
 
     let database_url = if cfg!(debug_assertions) {
-        format!("sqlite://{}", "../rb-dev.sqlite?mode=rwc")
+        format!("sqlite://{}", "./rb-dev.sqlite?mode=rwc")
     } else {
         format!("sqlite://{}", file.into_os_string().into_string().unwrap())
     };
