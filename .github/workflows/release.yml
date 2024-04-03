@@ -59,7 +59,7 @@ jobs:
       run: |
           pnpm i
           cd src-tauri
-          mkdir -p bin
+          mkdir -p bin -ErrorAction Ignore
           cd bin
           Invoke-WebRequest -Uri https://download.m7s.live/bin/ffmpeg-x86_64-pc-windows-msvc.exe -OutFile .\ffmpeg-x86_64-pc-windows-msvc.exe
 
