@@ -47,6 +47,7 @@ fn main() {
             project_detail::del_project_detail,
             project_detail::update_project_detail,
             project_detail::get_project_detail_item,
+            util::get_env,
         ])
         .menu(menu::init())
         .on_menu_event(menu::menu_handler)

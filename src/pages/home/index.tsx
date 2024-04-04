@@ -5,10 +5,7 @@ import { invoke, shell } from '@tauri-apps/api'
 import { ulid } from 'ulid'
 import dayjs from 'dayjs'
 import { parseFFUrl } from '@/utils/parseFFUrl'
-// import { parseStreaming } from '@/utils/parse-streaming'
 import { useNavigate } from 'react-router-dom'
-// import Markdown from 'react-markdown'
-// import SyntaxHighlighter from 'react-syntax-highlighter'
 
 const { Title, Text } = Typography
 const { TextArea } = Input

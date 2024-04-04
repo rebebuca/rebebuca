@@ -121,5 +121,7 @@
   "将ffmpeg命令行复制粘贴到下面文本框中": "Copy and paste the ffmpeg command line into the text box below",
   "请粘贴以ffmpeg开头的命令行": "Please paste the command line starting with ffmpeg",
   "当前项目导出成功，请前往电脑下载目录查看文件": "The current project has been exported successfully. Please go to the computer download directory to view the file.",
-  "不能自定义，如果下拉选项没有你想要的key，请写在value中": "It cannot be customized. If the drop-down option does not have the key you want, please write it in the value."
+  "不能自定义，如果下拉选项没有你想要的key，请写在value中": "It cannot be customized. If the drop-down option does not have the key you want, please write it in the value.",
+  "如果是空内容，则加载环境变量 DEEPSEEK_API_KEY": "If it is empty content, load the environment variable DEEPSEEK_API_KEY",
+  "如果是空内容，则加载环境变量 OPENAI_API_KEY": "If it is empty content, load the environment variable OPENAI_API_KEY"
 }

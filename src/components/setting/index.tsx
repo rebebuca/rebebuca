@@ -41,6 +41,7 @@ export interface IAppSettingItem {
   ai: {
     type: string
     key: string
+    openaiKey: string
   }
   theme?: string
   quit_type?: string
@@ -85,7 +86,8 @@ export default (props: PropsType) => {
   const [appSetting, setAppSetting] = useState<IAppSettingItem>({
     ai: {
       type: '2',
-      key: 'sk-f5b754a7d80849fa91aa02e3c9eba6174b'
+      key: '',
+      openaiKey: ''
     }
   })
 
@@ -172,26 +174,55 @@ export default (props: PropsType) => {
     initPage()
   }
 
-  const onChangeAppAiSetting = async (value: string, type: string) => {
-    const opts = {
-      ...appSetting,
-      ai: {
-        type: appSetting.ai.type,
-        key: appSetting.ai.key || '',
-        [type]: value
+  const onChangeAppAiSetting = async (action: number, value: string, type: string) => {
+    if (action == 1) {
+      const opts = {
+        ...appSetting,
+        ai: {
+          type: value,
+          key: appSetting.ai.key || '',
+          openaiKey: appSetting.ai.openaiKey || '',
+          [type]: value
+        }
       }
+      updateSettings({
+        ...opts
+      })
+      await invoke('update_app_setting', {
+        appSetting: {
+          ...opts,
+          ai: JSON.stringify(opts.ai)
+        }
+      })
+      localStorage.setItem('ai-type', value)
+      if (value == '2') localStorage.setItem('ai-key', opts.ai.key)
+      else if (value == '3') localStorage.setItem('ai-key', opts.ai.openaiKey)
+      else localStorage.setItem('ai-key', '')
     }
-    updateSettings({
-      ...opts
-    })
-    await invoke('update_app_setting', {
-      appSetting: {
-        ...opts,
-        ai: JSON.stringify(opts.ai)
+    if (action == 2) {
+      const opts = {
+        ...appSetting,
+        ai: {
+          type: appSetting.ai.type,
+          key: appSetting.ai.key || '',
+          openaiKey: appSetting.ai.openaiKey || '',
+          [type]: value
+        }
       }
-    })
-    localStorage.setItem('ai-type', type)
-    localStorage.setItem('ai-key', value)
+      updateSettings({
+        ...opts
+      })
+      await invoke('update_app_setting', {
+        appSetting: {
+          ...opts,
+          ai: JSON.stringify(opts.ai)
+        }
+      })
+      // localStorage.setItem('ai-type', type)
+      if (type == 'key') localStorage.setItem('ai-key', opts.ai.key)
+      else if (type == 'openaiKey') localStorage.setItem('ai-key', opts.ai.openaiKey)
+      else localStorage.setItem('ai-key', '')
+    }
     initPage()
   }
 
@@ -204,7 +235,8 @@ export default (props: PropsType) => {
         ffmpeg: 'default',
         ai: JSON.stringify({
           type: '2',
-          key: 'sk-f5b754a7d80849fa91aa02e3c9eba6174b'
+          key: '',
+          openaiKey: ''
         }),
         version: '1.0',
         quit_type: '1'
@@ -326,7 +358,7 @@ export default (props: PropsType) => {
                   <div>{t('AI')}</div>
                   <div className="ai">
                     <Radio.Group
-                      onChange={e => onChangeAppAiSetting(e.target.value, 'type')}
+                      onChange={e => onChangeAppAiSetting(1, e.target.value, 'type')}
                       value={appSetting.ai.type}
                     >
                       <Space>
@@ -334,17 +366,35 @@ export default (props: PropsType) => {
                         <Radio disabled={disabled} value={'2'}>
                           {t('deepseek')}
                         </Radio>
+                        <Radio disabled={disabled} value={'3'}>
+                          {t('openai')}
+                        </Radio>
                       </Space>
                     </Radio.Group>
-                    {appSetting.ai.type != '1' && (
+                    {appSetting.ai.type == '2' && (
                       <div className="ai-form">
                         <Form {...formItemLayout} layout="horizontal" style={{ maxWidth: 600 }}>
                           <Form.Item label="key">
                             <Input.Password
                               placeholder="input deepseek key"
                               value={appSetting.ai.key}
-                              onChange={e => onChangeAppAiSetting(e.target.value, 'key')}
+                              onChange={e => onChangeAppAiSetting(2, e.target.value, 'key')}
                             />
+                            <div>{t('如果是空内容，则加载环境变量 DEEPSEEK_API_KEY')}</div>
+                          </Form.Item>
+                        </Form>
+                      </div>
+                    )}
+                    {appSetting.ai.type == '3' && (
+                      <div className="ai-form">
+                        <Form {...formItemLayout} layout="horizontal" style={{ maxWidth: 600 }}>
+                          <Form.Item label="key">
+                            <Input.Password
+                              placeholder="input openai key"
+                              value={appSetting.ai.openaiKey}
+                              onChange={e => onChangeAppAiSetting(2, e.target.value, 'openaiKey')}
+                            />
+                            <div>{t('如果是空内容，则加载环境变量 OPENAI_API_KEY')}</div>
                           </Form.Item>
                         </Form>
                       </div>

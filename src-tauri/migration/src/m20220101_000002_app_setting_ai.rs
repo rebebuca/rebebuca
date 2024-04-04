@@ -11,9 +11,11 @@ impl MigrationTrait for Migration {
             .alter_table(
                 sea_query::Table::alter()
                     .table(AppSetting::Table)
-                    .add_column(&mut ColumnDef::new(Alias::new("ai")).string().default(
-                        "{\"type\":\"2\",\"key\":\"sk-f5b754a7d80849fa91aa02e3c9eba6174b\"}",
-                    ))
+                    .add_column(
+                        &mut ColumnDef::new(Alias::new("ai"))
+                            .string()
+                            .default("{\"type\":\"2\",\"key\":\"\"}"),
+                    )
                     .to_owned(),
             )
             .await?;

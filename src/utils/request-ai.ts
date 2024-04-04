@@ -1,5 +1,6 @@
 import { message } from 'antd'
 import _ from 'lodash'
+import { invoke } from '@tauri-apps/api'
 
 type TResponseCallback = {
   onData?: (data: any) => void
@@ -9,13 +10,38 @@ type TResponseCallback = {
   onAborted?: () => void
 }
 
-export const requestDeepseek = async (query: string, callback: TResponseCallback) => {
+export const requestAI = async (query: string, callback: TResponseCallback) => {
   const abortController = new AbortController()
   callback?.setAbortController?.(abortController)
-  const url = 'https://api.deepseek.com/v1/chat/completions'
-  let salt = localStorage.getItem('ai-key')
-  if (salt == 'sk-f5b754a7d80849fa91aa02e3c9eba6174b') salt = 'sk-f5b754a7d80849fa91aa02e3c9eba617'
-  const token = 'Bearer ' + salt
+
+  let url
+  let key
+  let params
+  const type = localStorage.getItem('ai-type')
+
+  if (type == '2') {
+    url = 'https://api.deepseek.com/v1/chat/completions'
+    key = localStorage.getItem('ai-key')
+    if (!key) {
+      key = await invoke('get_env', { name: 'DEEPSEEK_API_KEY' })
+    }
+    params = {
+      model: 'deepseek-coder'
+    }
+  }
+
+  if (type == '3') {
+    url = 'https://api.openai.com/v1/chat/completions'
+    key = localStorage.getItem('ai-key')
+    if (!key) {
+      key = await invoke('get_env', { name: 'OPENAI_API_KEY' })
+    }
+    params = {
+      model: 'gpt-3.5-turbo'
+    }
+  }
+
+  const token = 'Bearer ' + key
   const data = JSON.stringify({
     messages: [
       {
@@ -27,14 +53,14 @@ export const requestDeepseek = async (query: string, callback: TResponseCallback
         role: 'user'
       }
     ],
-    model: 'deepseek-coder',
     frequency_penalty: 0,
     max_tokens: 2048,
     presence_penalty: 0,
     stop: null,
     stream: true,
     temperature: 1,
-    top_p: 1
+    top_p: 1,
+    ...params
   })
 
   let fetchOptions = {
@@ -49,7 +75,7 @@ export const requestDeepseek = async (query: string, callback: TResponseCallback
 
   let options = _.merge({ signal: abortController.signal }, fetchOptions)
 
-  fetch(url, options)
+  fetch(url!, options)
     .then(response => {
       if (response.status == 401) {
         message.error('API key 错误，认证失败')

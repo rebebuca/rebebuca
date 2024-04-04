@@ -25,7 +25,7 @@ import i18next from 'i18next'
 import { runFFmpeg, splitStringWithQuotes } from '@/utils'
 import { updateCommand, resetCommandLog } from '@/store/commandList'
 import { writeSettingToDownload } from '@/utils/export'
-import { requestDeepseek } from '@/utils/request-deepseek'
+import { requestAI } from '@/utils/request-ai'
 import Anwser from '@/components/anwser/index'
 import type { StateType } from '@/store'
 
@@ -72,7 +72,7 @@ export default () => {
     if (i18next.language == 'ch') {
       query = '请用中文解释' + clickFFmpegUrl
     } else query = clickFFmpegUrl
-    requestDeepseek(query, {
+    requestAI(query, {
       setAbortController,
       onData(data) {
         setRunState(0)
@@ -361,7 +361,7 @@ export default () => {
                 return
               }
 
-              requestDeepseek(query, {
+              requestAI(query, {
                 setAbortController,
                 onData(data) {
                   setRunState(0)

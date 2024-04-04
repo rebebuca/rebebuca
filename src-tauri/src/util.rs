@@ -45,3 +45,8 @@ pub fn open_file(path: PathBuf) {
     #[cfg(target_os = "linux")]
     Command::new("xdg-open").arg(pathname).spawn().unwrap();
 }
+
+#[tauri::command]
+pub fn get_env(name: &str) -> String {
+    std::env::var(String::from(name)).unwrap_or(String::from(""))
+}
