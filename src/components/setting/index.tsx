@@ -157,7 +157,10 @@ export default (props: PropsType) => {
       ...opts
     })
     await invoke('update_app_setting', {
-      appSetting: opts
+      appSetting: {
+        ...opts,
+        ai: JSON.stringify(opts.ai)
+      }
     })
     if (type == 'ffmpeg') {
       localStorage.setItem('ffmpeg', value)
