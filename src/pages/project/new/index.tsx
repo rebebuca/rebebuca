@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import React, { useEffect, useRef, useState } from 'react'
 import type { ProColumns } from '@ant-design/pro-components'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { FileOutlined, FolderOpenOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import { FileOutlined, FolderOpenOutlined, ImportOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import type { ProFormInstance, EditableFormInstance, ActionType } from '@ant-design/pro-components'
 import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
 import {
@@ -386,10 +386,11 @@ const ProjectItemNew: React.FC = () => {
                         <div key="555">
                           {t('FFMPEG参数设置')}{' '}
                           <Button
-                            type="text"
+                            type="dashed"
                             onClick={() => {
                               showModal()
                             }}
+                            icon={<ImportOutlined />}
                           >
                             {t('点击导入ffmpeg命令行')}
                             <Tooltip placement="top" title={t('导入成功后会清空当前存在的参数')}>
