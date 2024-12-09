@@ -7,7 +7,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import React, { useRef, useState, useEffect } from 'react'
 import type { ProColumns } from '@ant-design/pro-components'
-import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
+import { FileOutlined, FolderOpenOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons'
 import type { ProFormInstance, EditableFormInstance } from '@ant-design/pro-components'
 import { EditableProTable, ProForm, ProFormText, ProCard } from '@ant-design/pro-components'
 import { Tabs, Space, Button, Descriptions, Segmented, message, Tooltip, Typography } from 'antd'
@@ -88,7 +88,7 @@ const ProjectItemEdit: React.FC = () => {
   const columns: ProColumns<DataSourceType>[] = [
     {
       title: t('参数key'),
-      width: '25%',
+      width: '20%',
       key: 'key',
       dataIndex: 'key',
       valueType: 'select',
@@ -104,7 +104,7 @@ const ProjectItemEdit: React.FC = () => {
     {
       title: t('参数value'),
       dataIndex: 'value',
-      width: '57%'
+      width: '50%'
     },
     {
       title: t('操作'),
@@ -347,6 +347,36 @@ const ProjectItemEdit: React.FC = () => {
                                 style={{ cursor: 'pointer' }}
                                 onClick={() => {
                                   selectFileOrDir(row, 2)
+                                }}
+                              />
+                            </Tooltip>,
+                            <Tooltip placement="top" title={t('上移')} key="up">
+                              <ArrowUpOutlined
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => {
+                                  const dataSource = formRef.current?.getFieldValue('url');
+                                  const index = dataSource.findIndex((item: DataSourceType) => item.id === row.id);
+                                  if (index > 0) {
+                                    const newDataSource = [...dataSource];
+                                    [newDataSource[index - 1], newDataSource[index]] = [newDataSource[index], newDataSource[index - 1]];
+                                    formRef.current?.setFieldValue('url', newDataSource);
+                                    onValuesChange();
+                                  }
+                                }}
+                              />
+                            </Tooltip>,
+                            <Tooltip placement="top" title={t('下移')} key="down">
+                              <ArrowDownOutlined
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => {
+                                  const dataSource = formRef.current?.getFieldValue('url');
+                                  const index = dataSource.findIndex((item: DataSourceType) => item.id === row.id);
+                                  if (index < dataSource.length - 1) {
+                                    const newDataSource = [...dataSource];
+                                    [newDataSource[index], newDataSource[index + 1]] = [newDataSource[index + 1], newDataSource[index]];
+                                    formRef.current?.setFieldValue('url', newDataSource);
+                                    onValuesChange();
+                                  }
                                 }}
                               />
                             </Tooltip>
