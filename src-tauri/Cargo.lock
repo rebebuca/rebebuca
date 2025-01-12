@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "Rebebuca"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "entity",
  "fix-path-env",
@@ -1321,7 +1321,7 @@ dependencies = [
 
 [[package]]
 name = "entity"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "sea-orm",
  "serde",
@@ -2723,7 +2723,7 @@ dependencies = [
 
 [[package]]
 name = "migration"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "async-std",
  "sea-orm-migration",
