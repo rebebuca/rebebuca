@@ -29,9 +29,9 @@ https://rebebuca.com
 
 ## 下载安装
 
-- Windows 下载地址：[rebebuca.msi](https://download.m7s.live/rb/Rebebuca_0.2.0_x64_en-US.msi)
-- Mac 安装下载地址：[rebebuca.dmg](https://download.m7s.live/rb/Rebebuca_0.2.0_x64.dmg)
-- Mac(arm64) 安装下载地址：[rebebuca-arm64.dmg](https://download.m7s.live/rb/Rebebuca_0.2.0_aarch64.dmg)
+- Windows 下载地址：[rebebuca.msi](https://download.m7s.live/rb/Rebebuca_0.2.1_x64_en-US.msi)
+- Mac 安装下载地址：[rebebuca.dmg](https://download.m7s.live/rb/Rebebuca_0.2.1_x64.dmg)
+- Mac(arm64) 安装下载地址：[rebebuca-arm64.dmg](https://download.m7s.live/rb/Rebebuca_0.2.1_aarch64.dmg)
 
 ## 快速上手
 

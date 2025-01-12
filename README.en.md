@@ -25,9 +25,9 @@ https://rebebuca.com
 
 ## Download and install
 
-- Windows download address: [rebebuca.msi](https://download.m7s.live/rb/Rebebuca_0.2.0_x64_en-US.msi)
-- Mac installation download address: [rebebuca.dmg](https://download.m7s.live/rb/Rebebuca_0.2.0_x64.dmg)
-- Mac(arm64) installation download address: [rebebuca-arm64.dmg](https://download.m7s.live/rb/Rebebuca_0.2.0_aarch64.dmg)
+- Windows download address: [rebebuca.msi](https://download.m7s.live/rb/Rebebuca_0.2.1_x64_en-US.msi)
+- Mac installation download address: [rebebuca.dmg](https://download.m7s.live/rb/Rebebuca_0.2.1_x64.dmg)
+- Mac(arm64) installation download address: [rebebuca-arm64.dmg](https://download.m7s.live/rb/Rebebuca_0.2.1_aarch64.dmg)
 
 ## Get started quickly
 
