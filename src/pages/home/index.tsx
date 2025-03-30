@@ -124,39 +124,6 @@ const Home: FC = () => {
   return (
     <div>
       <Space direction="vertical" size="middle">
-        {/* <div
-          onClick={() =>
-            parseStreaming('用js实现快速排序', (value: string) => {
-              setAnswer(value)
-            })
-          }
-        >
-          测试
-        </div>
-        <Markdown
-          components={{
-            code(props) {
-              const { children, className, node, ...rest } = props
-              const match = /language-(\w+)/.exec(className || '')
-              return match ? (
-                <div className="code-box">
-                  <SyntaxHighlighter
-                    PreTag="div"
-                    children={String(children).replace(/\n$/, '')}
-                    language={match[1]}
-                    showLineNumbers
-                  />
-                </div>
-              ) : (
-                <code {...rest} className={className}>
-                  {children}
-                </code>
-              )
-            }
-          }}
-        >
-          {answer}
-        </Markdown> */}
         <Title level={4}>{t('欢迎使用 Rebebuca ! ')}</Title>
         <Text style={{ fontWeight: 'bold' }}>{t('30秒完成创建、运行、管理你的 ffmpeg 命令')}</Text>
         <Text>{t('请复制粘贴你的 ffmpeg 命令行到下面的输入框中')}</Text>
