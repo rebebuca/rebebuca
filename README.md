@@ -39,23 +39,6 @@ https://rebebuca.com
 
 https://rebebuca.com/guide/startup.html
 
-
-## 赞助作者
-
-<table>
-<tr>
-<td>支付宝</td>
-<td>微信</td>
-</tr>
-<tr>
-<td>
-<img src="./docs/zfb-pay.jpg" width="180" height="180" alt="支付宝赞赏码">
-</td>
-<td>
-<img src="./docs/wx-pay.jpg" width="180" height="180" alt="微信赞赏码"></td>
-</tr>
-</table>
-
 ## 技术支持
 
 <img src="https://rebebuca.com/author.jpg" alt="author" width="200" height="200">
